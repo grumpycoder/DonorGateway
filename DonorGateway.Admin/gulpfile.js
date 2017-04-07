@@ -47,9 +47,9 @@ gulp.task('build-app:js', function () {
         .pipe(print())
         .pipe(sourcemaps.init())
         //.pipe(uglify())
-        .pipe(concat('modules.min.js'))
+        .pipe(concat('app.min.js'))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('app/'));
+        .pipe(gulp.dest('js/'));
 });
 
 gulp.task('build-app:css', function () {

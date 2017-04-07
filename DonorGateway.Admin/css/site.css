@@ -1,0 +1,131 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,700);
+
+html, body {
+    font-family: 'roboto', sans-serif;
+}
+
+[ng-click], a {
+    cursor: pointer;
+}
+
+[ng-click], a:hover {
+    text-decoration: none; 
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+.ng-hide-add, .ng-hide-remove {
+    /* ensure visibility during the transition */
+    display: block !important; /* yes, important */
+}
+
+.info-box-content {
+    cursor: default;
+}
+
+fieldset>legend {
+    cursor: default;
+}
+
+td {
+    cursor: default;
+}
+
+form#logoutForm {
+    border: none;
+    margin-left: 18px;
+}
+
+th[st-sort] {
+    cursor: pointer;
+}
+
+.st-sort-ascent:before {
+    content: '\25B2';
+}
+
+.st-sort-descent:before {
+    content: '\25BC';
+}
+
+.error-messages {
+    color: maroon;
+    font-weight: bold;
+    position: relative;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+    .error-messages div {
+        position: absolute;
+        -ms-opacity: 1;
+        opacity: 1;
+        -webkit-transition: 0.3s linear all;
+        -moz-transition: 0.3s linear all;
+        -ms-transition: 0.3s linear all;
+        -o-transition: 0.3s linear all;
+        transition: 0.3s linear all;
+        font-size: 0.9em;
+    }
+
+        .error-messages div.ng-enter {
+            -ms-opacity: 0;
+            opacity: 0;
+            top: -20px;
+        }
+
+            .error-messages div.ng-enter.ng-enter-active {
+                -ms-opacity: 1;
+                opacity: 1;
+                top: 0;
+            }
+
+        .error-messages div.ng-leave {
+            -ms-opacity: 1;
+            opacity: 1;
+            top: 0;
+        }
+
+        .error-messages div.ng-leave-active {
+            -ms-opacity: 0;
+            opacity: 0;
+            top: 20px;
+        }
+
+.drop-box {
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    /*width: 200px;
+    height: 65px;*/
+    text-align: center;
+    padding: 20px;
+    margin: 10px;
+    /*padding-top: 25px;
+    margin: 10px;*/
+}
+
+.dragover {
+    border: 5px dashed blue;
+}
+
+.form-control {
+    -ms-border-radius: 2px;
+    border-radius: 2px;
+}
+
+#long-button>button#split-button {
+    width: 112px;
+}
+
+/*Bootstrap Overrides*/
+.alert {
+    margin-bottom: 5px;
+}
+
+td .btn-group {
+    display: flex;
+}
+
+
