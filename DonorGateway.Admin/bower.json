@@ -1,8 +1,79 @@
 {
-  "name": "asp.net",
+  "name": "admin.web",
   "private": true,
-  "dependencies": {},
-  "devDependencies": {
-    "bootstrap": "^3.3.7"
+  "authors": [
+    "Mark Lawrence <mark.lawrence@splcenter.org>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "2.1.4",
+    "angular": "1.4.6",
+    "angular-ui-router": "^0.2.18",
+    "angular-animate": "^1.5.7",
+    "angularLocalStorage": "^0.3.2",
+    "angular-messages": "^1.5.5",
+    "angular-bootstrap": "^1.3.2",
+    "angular-smart-table": "~2.1.8",
+    "angularjs-slider": "~2.13.0",
+    "ng-tags-input": "3.0.0",
+    "ng-file-upload": "^12.0.4",
+    "gfl-text-avatar": "^0.2.0",
+    "font-awesome-bower": "~4.5.0",
+    "toastr": "^2.1.2",
+    "lodash": "3.10.1",
+    "moment": "~2.13.0",
+    "AdminLTE": "admin-lte#^2.3.3",
+    "bootstrap": "^3.3.6",
+    "textAngular": "^1.5.1",
+    "bootstrap-toggle": "^2.2.2",
+    "angular-switcher": "^0.2.6",
+    "angular-route": "^1.5.6",
+    "smart-table-sticky-header": "st-sticky-header#^1.0.1",
+    "angular-bootstrap-datetimepicker": "^1.0.1",
+    "Ionicons": "ionicons#^2.0.1",
+    "angular-confirm-modal": "^1.2.5",
+    "ng-csv": "^0.3.6"
+  },
+  "overrides": {
+    "angular-bootstrap-datetimepicker": {
+      "main": [
+        "src/css/datetimepicker.css",
+        "src/js/datetimepicker.js",
+        "src/js/datetimepicker.template.js",
+        "src/templates/datetimepicker.html"
+      ]
+    },
+    "bootstrap": {
+      "main": [
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js",
+        "dist/fonts/glyphicons-halflings-regular.eot",
+        "dist/fonts/glyphicons-halflings-regular.svg",
+        "dist/fonts/glyphicons-halflings-regular.ttf",
+        "dist/fonts/glyphicons-halflings-regular.woff",
+        "dist/fonts/glyphicons-halflings-regular.woff2"
+      ]
+    },
+    "AdminLTE": {
+      "main": [
+        "dist/css/AdminLTE.css",
+        "dist/js/app.js",
+        "dist/css/skins/_all-skins.css"
+      ]
+    }
+  },
+  "resolutions": {
+    "angular": "1.6.4",
+    "jquery": "1.9.1 - 3"
   }
 }
