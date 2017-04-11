@@ -107,7 +107,7 @@ namespace DonorGateway.Admin.Controllers
             vm.FilteredCount = filterCount;
             vm.TotalPages = totalPages;
 
-            vm.Items = list.ToList();
+            vm.Results = list.ToList();
 
             return Ok(vm);
 

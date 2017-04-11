@@ -1,8 +1,11 @@
+using System;
+using AutoMapper;
 using DonorGateway.Domain;
+using Heroic.AutoMapper;
 
 namespace DonorGateway.Admin.ViewModels
 {
-    public class MailerViewModel
+    public class MailerViewModel : IMapFrom<Mailer>, IHaveCustomMappings
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -20,7 +23,15 @@ namespace DonorGateway.Admin.ViewModels
         public bool? Suppress { get; set; }
         public int? CampaignId { get; set; }
         public int? ReasonId { get; set; }
-        public SuppressReason Reason { get; set; }
-        public Campaign Campaign { get; set; }
+        public string Reason { get; set; }
+        public string Campaign { get; set; }
+
+        public void CreateMappings(IMapperConfiguration configuration)
+        {
+            configuration.CreateMap<Mailer, MailerViewModel>()
+                   .ForMember(d => d.Reason, opt => opt.MapFrom(s => s.Reason.Name))
+                   .ForMember(d => d.Campaign, opt => opt.MapFrom(s => s.Campaign.Name))
+                   ;
+        }
     }
 }

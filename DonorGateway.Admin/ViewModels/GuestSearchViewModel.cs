@@ -1,6 +1,6 @@
 ﻿namespace DonorGateway.Admin.ViewModels
 {
-    public class GuestSearchViewModel : Pager<GuestViewModel>
+    public class GuestSearchViewModel : PagerModel<GuestViewModel>
     {
         public string LookupId { get; set; }
         public string FinderNumber { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace DonorGateway.Admin.ViewModels
 {
-    public class ConsituentSearchViewModel : Pager<ConstituentViewModel>
+    public class ConsituentSearchViewModel : PagerModel<ConstituentViewModel>
     {
         public string Name { get; set; }
         public string FinderNumber { get; set; }

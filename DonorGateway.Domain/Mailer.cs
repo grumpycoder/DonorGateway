@@ -1,6 +1,6 @@
 ﻿namespace DonorGateway.Domain
 {
-    public class Mailer: BaseEntity
+    public class Mailer : BaseEntity
     {
         public int Id { get; set; }
         public string FirstName { get; set; }

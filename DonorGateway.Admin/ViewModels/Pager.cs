@@ -2,21 +2,16 @@
 
 namespace DonorGateway.Admin.ViewModels
 {
-    public class Pager<T>
+    public class PagerModel<T>
     {
         public int? Page { get; set; } = 0;
         public int? PageSize { get; set; } = 20;
-        public bool AllRecords { get; set; } = false;
         public string OrderBy { get; set; }
         public string OrderDirection { get; set; }
 
+        public double TotalPages { get; set; }
         public int TotalCount { get; set; }
-        public int Count { get; set; }
-
         public int FilteredCount { get; set; }
-        public int TotalPages { get; set; }
-
-        //public IList<T> Items { get; set; }
-        public List<T> Items { get; set; }
+        public IEnumerable<T> Results { get; set; }
     }
 }

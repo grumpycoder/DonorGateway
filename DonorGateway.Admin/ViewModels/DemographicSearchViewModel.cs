@@ -1,6 +1,6 @@
 namespace DonorGateway.Admin.ViewModels
 {
-    public class DemographicSearchViewModel : Pager<DemographicViewModel>
+    public class DemographicSearchViewModel : PagerModel<DemographicViewModel>
     {
         public string Name { get; set; }
         public string LookupId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace DonorGateway.Admin.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class HomeController : Controller
     {
         public ActionResult Index()

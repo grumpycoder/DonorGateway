@@ -1,0 +1,117 @@
+﻿
+<form name="form" novalidate>
+    <div class="modal-header">
+        <div class="panel-title">
+            {{$ctrl.title}}
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="box no-border no-shadow">
+            <div class="box-body">
+
+                <div class="row">
+
+                    <div class="col-md-12" ng-show="$ctrl.showCreate">
+                        <div class="form-group">
+                            <label class="control-label">Campaign Name</label>
+                            <input type="text" class="form-control" ng-model="$ctrl.campaign.name" placeholder="Campaign name eg. August 20xx..." />
+                        </div>
+                        <button class="btn btn-primary" ng-click="$ctrl.saveCampaign()">Create</button>
+                        <button class="btn btn-default" ng-click="$ctrl.showCreate = false">Cancel</button>
+                    </div>
+
+                    <div class="col-md-12" ng-hide="$ctrl.showCreate">
+                        <div class="form-group" ng-hide="$ctrl.showCreate">
+                            <label class="control-label">Campaigns</label>
+                            <select ng-model="$ctrl.selectedCampaign"
+                                    ng-options="campaign.name for campaign in $ctrl.campaigns"
+                                    ng-disabled="false"
+                                    class="form-control">
+                                <option value="">Choose Campaign</option>
+                            </select>
+
+                        </div>
+
+                        <button class="btn btn-primary" ng-click="$ctrl.showCreate = !$ctrl.showCreate">
+                            <span ng-hide="$ctrl.showCreate">Add New Campaign</span>
+                        </button>
+
+                        <div class="form-group">
+
+                            <div ngf-drop ng-model="$ctrl.file" class="drop-box" name="file"
+                                 ngf-select
+                                 ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false"
+                                 ngf-change="$ctrl.fileSelected($ctrl.file, $event)">Drop CSV here or click to upload</div>
+
+                            <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+
+                        </div>
+                        <div ng-show="$ctrl.file">
+                            <dl class="dl-horizontal">
+                                <dt>Filename</dt>
+                                <dd>{{$ctrl.file.name}}</dd>
+                                <dt>Size</dt>
+                                <dd>{{$ctrl.file.size}}</dd>
+                                <dt>Last Modified</dt>
+                                <dd>{{$ctrl.file.lastModifiedDate | date: 'MM/dd/yyyy HH:mm'}}</dd>
+                            </dl>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-primary"
+                                        ng-click="$ctrl.isNotesOpen = !$ctrl.isNotesOpen"
+                                        uib-popover="Click here for additional information"
+                                        popover-trigger="mouseenter"
+                                        popover-placement="right">
+                                    Additional Notes
+                                </button>
+
+                                <div uib-collapse="!$ctrl.isNotesOpen">
+                                    <div class="well in">
+                                        <h4>Helpful tips:</h4>
+                                        <ul>
+                                            <li>Choose your tax data file to upload.</li>
+                                            <li>Click the <kbd>Load File</kbd> button to begin processing the file. Depending on the number of records could take some time.</li>
+                                        </ul>
+
+                                        <h4>File Formatting:</h4>
+                                        <p>
+                                            File must have header in the following format:<br />
+                                        <p>
+                                            <code>
+                                                [FinderNumber], [SourceCode], [FirstName], [MiddleName], [LastName],
+                                                [AddressLine1], [AddressLine2], [AddressLine3], [City], [StateAbreviation], [Zipcode]
+                                            </code>
+                                        </p>
+                                        <p>
+                                            Header field names are case sensitive and must be in the exact case or word spacing specified and
+                                            have at minimum the fields indicated. Any additional fields will be ignored.
+                                        </p>
+                                        <p>
+                                            If you receive error regarding column mappings, make sure you update the file header format to match.
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+
+            </div><div class="overlay" ng-show="$ctrl.isBusy">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="$ctrl.upload()" ng-disabled="$ctrl.isBusy || !$ctrl.file || form.$pristine">
+            Load File
+        </button>
+        <button class="btn btn-default pull-left" ng-click="$ctrl.cancel()" ng-disabled="$ctrl.isBusy">
+            Close
+        </button>
+    </div>
+
+</form>
