@@ -269,6 +269,7 @@
     <Content Include="app\directives\toggleCheckbox.directive.js" />
     <Content Include="app\mailers\mailer-list.component.html" />
     <Content Include="app\mailers\mailer-list.component.js" />
+    <Content Include="app\mailers\mailer-suppress.component.html" />
     <Content Include="app\mailers\mailer-upload.component.html" />
     <Content Include="app\mailers\mailer-upload.component.js" />
     <Content Include="css\site.min.css" />
@@ -333,6 +334,7 @@
     <Content Include="fonts\ionicons.woff" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app\mailers\mailer-suppress.component.js" />
     <None Include="Properties\PublishProfiles\DonorGateway - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\DonorGateway - Web Deploy.pubxml" />
     <Content Include="Views\Home\Mailers.cshtml" />

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Http;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using CsvHelper;
 using DonorGateway.Admin.Helpers;
@@ -151,16 +152,19 @@ namespace DonorGateway.Admin.Controllers
             return Ok(campaign);
         }
 
-        //[HttpPut]
-        //public IHttpActionResult Put(Mailer mailer)
-        //{
-        //    var m = _context.Mailers.Find(mailer.Id);
-        //    if (m == null) return NotFound();
+        [HttpPut]
+        public IHttpActionResult Put(Mailer mailer)
+        {
+            var m = _context.Mailers.Find(mailer.Id);
+            if (m == null) return NotFound();
 
-        //    _context.Mailers.AddOrUpdate(mailer);
-        //    _context.SaveChanges();
-        //    return Ok(m);
-        //}
+            _context.Mailers.AddOrUpdate(mailer);
+            _context.SaveChanges();
+
+            m = _context.Mailers.FirstOrDefault(e => e.Id == mailer.Id);
+            var vm = Mapper.Map<MailerViewModel>(m);
+            return Ok(vm);
+        }
 
     }
 }

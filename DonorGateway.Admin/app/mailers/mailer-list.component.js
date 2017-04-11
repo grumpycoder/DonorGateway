@@ -20,15 +20,15 @@
 
         $ctrl.$onInit = function () {
             console.log('mail list init');
-            $http.get('api/mailer/campaigns').then(function(r) {
+            $http.get('api/mailer/campaigns').then(function (r) {
                 $ctrl.campaigns = r.data;
-            }); 
+            });
             $http.get('api/mailer/reasons').then(function (r) {
                 $ctrl.reasons = r.data;
-            }); 
+            });
         }
 
-        $ctrl.download = function() {
+        $ctrl.download = function () {
             $ctrl.isBusy = true;
             $http.post('api/mailer/export', $ctrl.searchModel)
                 .then(function (data) {
@@ -73,15 +73,15 @@
                     $ctrl.mailers = r.data.results;
                     $ctrl.searchModel = r.data;
                     delete $ctrl.searchModel.results;
-                }).catch(function(err) {
+                }).catch(function (err) {
                     console.log('Oops', err.data.message);
                     toastr.error('Oops ' + err.data.message);
-                }).finally(function() {
+                }).finally(function () {
                     $ctrl.isBusy = false;
                 });
         }
 
-        $ctrl.showUpload = function() {
+        $ctrl.showUpload = function () {
             $modal.open({
                 component: 'mailerUpload',
                 bindings: {
@@ -102,6 +102,35 @@
             $ctrl.showSuppress = !$ctrl.showSuppress;
             $ctrl.searchModel.suppress = $ctrl.showSuppress;
             $ctrl.search(tableStateRef);
+        }
+
+        $ctrl.toggleSuppress = function (mailer) {
+            if (mailer.suppress) {
+                mailer.suppress = false;
+                mailer.reasonId = null;
+                return $http.put('api/mailer', mailer).then(function (r) {
+                    angular.extend(mailer, r.data);
+                }).catch(function (err) {
+                    console.log('Error saving mailer', err.message);
+                    $toastr.error('Oops ' + err.data.message);
+                }).finally(function () {
+                });
+            } else {
+                $modal.open({
+                    component: 'mailerSuppress',
+                    bindings: {
+                        modalInstance: "<"
+                    },
+                    resolve: {
+                        mailer: mailer
+                    },
+                    size: 'md'
+                }).result.then(function (result) {
+                    angular.extend(mailer, result);
+                    toastr.info('Saved ' + result.firstName + ' ' + result.lastName);
+                }, function (reason) {
+                });
+            }
         }
     }
 
