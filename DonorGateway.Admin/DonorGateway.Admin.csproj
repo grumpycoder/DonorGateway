@@ -346,7 +346,7 @@
       <Name>DonorGateway.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\DonorGateway.Domain\DonorGateway.Domain.csproj">
-      <Project>{BD7D064D-693E-4AFD-8B54-EA21269160CA}</Project>
+      <Project>{bd7d064d-693e-4afd-8b54-ea21269160ca}</Project>
       <Name>DonorGateway.Domain</Name>
     </ProjectReference>
   </ItemGroup>

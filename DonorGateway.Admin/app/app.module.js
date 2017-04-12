@@ -9,6 +9,7 @@
                 'ngAnimate',
 
                 //third party modules
+                'angular-duration-format', 
                 'smart-table',
                 'ui.bootstrap',
                 'ngTagsInput',

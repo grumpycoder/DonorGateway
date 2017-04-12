@@ -66,85 +66,92 @@
                         <div class="col-md-12">
                             <table class="table table-responsive table-bordered">
                                 <thead>
-                                    <tr>
-                                        <th class="sort-header"></th>
-                                        <th class="sort-header" st-sort="firstName">First Name</th>
-                                        <th class="sort-header" st-sort="lastName">Last Name</th>
-                                        <th class="sort-header">Address</th>
-                                        <th class="sort-header" st-sort="city">City</th>
-                                        <th class="sort-header" st-sort="state">State</th>
-                                        <th class="sort-header" st-sort="zipCode">ZipCode</th>
-                                        <th class="sort-header" st-sort="finderNumber">Finder Number</th>
-                                        <th class="sort-header" st-sort="sourceCode">Source Code</th>
-                                        <th class="sort-header" st-sort="campaignId">Campaign</th>
-                                        <th class="sort-header" st-sort="reasonId">Reason</th>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            <toggle st-search="suppress" ng-model="$ctrl.toggleSuppress" ng-change="$ctrl.filterSuppress()"></toggle>
-                                        </th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.firstName" class="form-control" placeholder="First Name" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.lastName" class="form-control" placeholder="Last Name" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.address" class="form-control" placeholder="Address" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.city" class="form-control" placeholder="City" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.state" class="form-control" placeholder="State" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.zipCode" style="width: 100px;" class="form-control" placeholder="Zipcode" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.finderNumber" style="width: 120px;" class="form-control" placeholder="Finder Number" /></th>
-                                        <th><input st-clear-key ng-model="$ctrl.searchModel.sourceCode" class="form-control" placeholder="Source Code" /></th>
-                                        <th>
-                                            <select st-clear-key class="form-control" ng-model="$ctrl.searchModel.campaignId"
-                                                    ng-options="campaign.id as campaign.name for campaign in $ctrl.campaigns"></select>
-                                        </th>
-                                        <th style="width: 100px;">
-                                            <select st-clear-key class="form-control" ng-model="$ctrl.searchModel.reasonId"
-                                                    ng-options="reason.id as reason.name for reason in $ctrl.reasons"></select>
-                                        </th>
-                                    </tr>
+                                <tr>
+                                    <th class="sort-header"></th>
+                                    <th class="sort-header" st-sort="firstName">First Name</th>
+                                    <th class="sort-header" st-sort="lastName">Last Name</th>
+                                    <th class="sort-header">Address</th>
+                                    <th class="sort-header" st-sort="city">City</th>
+                                    <th class="sort-header" st-sort="state">State</th>
+                                    <th class="sort-header" st-sort="zipCode">ZipCode</th>
+                                    <th class="sort-header" st-sort="finderNumber">Finder Number</th>
+                                    <th class="sort-header" st-sort="sourceCode">Source Code</th>
+                                    <th class="sort-header" st-sort="campaignId">Campaign</th>
+                                    <th class="sort-header" st-sort="reasonId">Reason</th>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <toggle st-search="suppress" ng-model="$ctrl.toggleSuppress" ng-change="$ctrl.filterSuppress()"></toggle>
+                                    </th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.firstName" class="form-control" placeholder="First Name" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.lastName" class="form-control" placeholder="Last Name" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.address" class="form-control" placeholder="Address" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.city" class="form-control" placeholder="City" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.state" class="form-control" placeholder="State" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.zipCode" style="width: 100px;" class="form-control" placeholder="Zipcode" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.finderNumber" style="width: 120px;" class="form-control" placeholder="Finder Number" /></th>
+                                    <th><input st-clear-key ng-model="$ctrl.searchModel.sourceCode" class="form-control" placeholder="Source Code" /></th>
+                                    <th>
+                                        <select st-clear-key class="form-control" ng-model="$ctrl.searchModel.campaignId"
+                                                ng-options="campaign.id as campaign.name for campaign in $ctrl.campaigns"></select>
+                                    </th>
+                                    <th style="width: 100px;">
+                                        <select st-clear-key class="form-control" ng-model="$ctrl.searchModel.reasonId"
+                                                ng-options="reason.id as reason.name for reason in $ctrl.reasons"></select>
+                                    </th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="m in $ctrl.mailers">
-                                        <td>
-                                            <button class="btn" ng-class="m.suppress ? 'btn-warning' : 'btn-primary'" ng-click="$ctrl.toggleSuppress(m)" uib-popover="{{m.suppress ? 'Clear' : 'Suppress'}}" popover-trigger="mouseenter" popover-placement="right">
-                                                <span ng-hide="m.suppress"><i class="icon ion-android-hand"></i> </span>
-                                                <span ng-show="m.suppress"><i class="icon ion-ios-flag"></i> </span>
-                                            </button>
-                                        </td>
-                                        <td>{{m.firstName}}</td>
-                                        <td>{{m.lastName}}</td>
-                                        <td>
-                                            <address>
-                                                {{m.address}}
-                                                <br>
-                                                {{m.address2}}<br>
-                                                {{m.address3}}
-                                            </address>
-                                        </td>
-                                        <td>{{m.city}}</td>
-                                        <td>{{m.state}}</td>
-                                        <td>{{m.zipCode}}</td>
-                                        <td>{{m.finderNumber}}</td>
-                                        <td>{{m.sourceCode}}</td>
-                                        <td>{{m.campaign}}</td>
-                                        <td>{{m.reason}}</td>
-                                    </tr>
+                                <tr ng-repeat="m in $ctrl.mailers">
+                                    <td>
+                                        <button class="btn" ng-class="m.suppress ? 'btn-warning' : 'btn-primary'" ng-click="$ctrl.toggleSuppress(m)" uib-popover="{{m.suppress ? 'Clear' : 'Suppress'}}" popover-trigger="mouseenter" popover-placement="right">
+                                            <span ng-hide="m.suppress"><i class="icon ion-android-hand"></i> </span>
+                                            <span ng-show="m.suppress"><i class="icon ion-ios-flag"></i> </span>
+                                        </button>
+                                    </td>
+                                    <td>{{m.firstName}}</td>
+                                    <td>{{m.lastName}}</td>
+                                    <td>
+                                        <address>
+                                            {{m.address}}
+                                            <br>
+                                            {{m.address2}}<br>
+                                            {{m.address3}}
+                                        </address>
+                                    </td>
+                                    <td>{{m.city}}</td>
+                                    <td>{{m.state}}</td>
+                                    <td>{{m.zipCode}}</td>
+                                    <td>{{m.finderNumber}}</td>
+                                    <td>{{m.sourceCode}}</td>
+                                    <td>{{m.campaign}}</td>
+                                    <td>{{m.reason}}</td>
+                                </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr>
-                                        <td colspan="11" class="text-center">
-                                            <uib-pagination total-items="$ctrl.searchModel.filteredCount"
-                                                            ng-model="$ctrl.searchModel.page"
-                                                            ng-show="$ctrl.searchModel.totalPages > 1"
-                                                            max-size="5"
-                                                            items-per-page="$ctrl.searchModel.pageSize"
-                                                            class="pagination-sm"
-                                                            boundary-link-numbers="true"
-                                                            ng-change="$ctrl.paged()"
-                                                            rotate="false">
-                                            </uib-pagination>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    
+                                    <td colspan="11" class="text-center">
+                                        
+                                        <span uib-pagination total-items="$ctrl.searchModel.filteredCount"
+                                              ng-model="$ctrl.searchModel.page"
+                                              max-size="5"
+                                              items-per-page="$ctrl.searchModel.pageSize"
+                                              class="pagination-sm"
+                                              boundary-link-numbers="true"
+                                              ng-change="$ctrl.paged()"
+                                              rotate="false">
+                                        </span>
+                                    </td>
+                                </tr>
                                 </tfoot>
                             </table>
+                            <div>
+                                <span class="pull-right text-muted small">
+                                    {{ $ctrl.searchModel.elapsedTime }}
+                                </span>
+                            </div>
+                                        
                         </div>
                     </div>
                 </div>

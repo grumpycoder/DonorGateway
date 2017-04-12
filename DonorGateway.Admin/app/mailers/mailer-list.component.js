@@ -13,8 +13,8 @@
         $ctrl.searchModel = {
             page: 1,
             pageSize: pageSizeDefault,
-            orderBy: 'campaignId',
-            orderDirection: 'desc',
+            //orderBy: 'campaignId',
+            //orderDirection: 'desc',
             suppress: false
         };
 
@@ -70,6 +70,7 @@
             if ($ctrl.searchModel.suppress === null) $ctrl.searchModel.suppress = false;
             return $http.get('api/mailer', { params: $ctrl.searchModel })
                 .then(function (r) {
+                    console.log('r', r.data);
                     $ctrl.mailers = r.data.results;
                     $ctrl.searchModel = r.data;
                     delete $ctrl.searchModel.results;
@@ -105,15 +106,18 @@
         }
 
         $ctrl.toggleSuppress = function (mailer) {
+            $ctrl.isBusy = true; 
             if (mailer.suppress) {
                 mailer.suppress = false;
                 mailer.reasonId = null;
+                $ctrl.isBusy = true;
                 return $http.put('api/mailer', mailer).then(function (r) {
                     angular.extend(mailer, r.data);
                 }).catch(function (err) {
                     console.log('Error saving mailer', err.message);
                     $toastr.error('Oops ' + err.data.message);
                 }).finally(function () {
+                    $ctrl.isBusy = false;
                 });
             } else {
                 $modal.open({
@@ -131,6 +135,7 @@
                 }, function (reason) {
                 });
             }
+            $ctrl.isBusy = false; 
         }
     }
 

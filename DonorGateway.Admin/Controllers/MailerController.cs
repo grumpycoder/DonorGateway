@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -36,6 +37,8 @@ namespace DonorGateway.Admin.Controllers
         {
             try
             {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Restart();
                 if (pager == null) pager = new MailerSearchModel();
 
                 var query = _context.Mailers;
@@ -46,10 +49,10 @@ namespace DonorGateway.Admin.Controllers
                 if (!string.IsNullOrWhiteSpace(pager.LastName)) pred = pred.And(p => p.LastName.StartsWith(pager.LastName));
                 if (!string.IsNullOrWhiteSpace(pager.Address)) pred = pred.And(p => p.Address.Contains(pager.Address));
                 if (!string.IsNullOrWhiteSpace(pager.City)) pred = pred.And(p => p.City.Contains(pager.City));
-                if (!string.IsNullOrWhiteSpace(pager.State)) pred = pred.And(p => p.State.Contains(pager.State));
+                if (!string.IsNullOrWhiteSpace(pager.State)) pred = pred.And(p => p.State.Equals(pager.State));
                 if (!string.IsNullOrWhiteSpace(pager.ZipCode)) pred = pred.And(p => p.ZipCode.Contains(pager.ZipCode));
-                if (!string.IsNullOrWhiteSpace(pager.SourceCode)) pred = pred.And(p => p.SourceCode.Contains(pager.SourceCode));
-                if (!string.IsNullOrWhiteSpace(pager.FinderNumber)) pred = pred.And(p => p.FinderNumber.Contains(pager.FinderNumber));
+                if (!string.IsNullOrWhiteSpace(pager.SourceCode)) pred = pred.And(p => p.SourceCode.Equals(pager.SourceCode));
+                if (!string.IsNullOrWhiteSpace(pager.FinderNumber)) pred = pred.And(p => p.FinderNumber.Equals(pager.FinderNumber));
                 if (pager.CampaignId != null) pred = pred.And(p => p.CampaignId == pager.CampaignId);
                 if (pager.ReasonId != null) pred = pred.And(p => p.ReasonId == pager.ReasonId);
                 pred = pred.And(p => p.Suppress == pager.Suppress);
@@ -60,7 +63,7 @@ namespace DonorGateway.Admin.Controllers
 
                 var results = await filteredQuery.Where(pred)
                                            .Order(pager.OrderBy, pager.OrderDirection == "desc" ? SortDirection.Descending : SortDirection.Ascending)
-                                           .ThenByDescending(e => e.CampaignId)
+                                           //.ThenByDescending(e => e.CampaignId)
                                            .Skip(pager.PageSize * (pager.Page - 1) ?? 0)
                                            .Take(pager.PageSize ?? PAGE_SIZE)
                                            .ProjectTo<MailerViewModel>().ToListAsync();
@@ -69,7 +72,8 @@ namespace DonorGateway.Admin.Controllers
                 pager.FilteredCount = pagerCount;
                 pager.TotalPages = totalPages;
                 pager.Results = results;
-
+                stopwatch.Stop();
+                pager.ElapsedTime = stopwatch.Elapsed;
                 return Ok(pager);
             }
             catch (Exception ex)

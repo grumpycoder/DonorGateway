@@ -42,7 +42,8 @@
     "angular-bootstrap-datetimepicker": "^1.0.1",
     "Ionicons": "ionicons#^2.0.1",
     "angular-confirm-modal": "^1.2.5",
-    "ng-csv": "^0.3.6"
+    "ng-csv": "^0.3.6",
+    "angular-duration-format": "^1.0.1"
   },
   "overrides": {
     "angular-bootstrap-datetimepicker": {

@@ -1,4 +1,6 @@
-﻿namespace DonorGateway.Admin.ViewModels
+﻿using System;
+
+namespace DonorGateway.Admin.ViewModels
 {
     public class MailerSearchModel : PagerModel<MailerViewModel>
     {
@@ -13,5 +15,6 @@
         public bool? Suppress { get; set; } = false;
         public int? CampaignId { get; set; }
         public int? ReasonId { get; set; }
+        public TimeSpan ElapsedTime { get; set; }
     }
 }
