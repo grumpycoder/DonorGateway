@@ -1,4 +1,7 @@
 ﻿using System.Configuration;
+using System.IdentityModel.Tokens;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using DonorGateway.Admin.Identity;
 using DonorGateway.Data;
 using Microsoft.Owin;
@@ -45,7 +48,19 @@ namespace DonorGateway.Admin
                 {
                     ClientId = clientId,
                     Authority = Authority,
-                    PostLogoutRedirectUri = postLogoutRedirectUri
+                    PostLogoutRedirectUri = postLogoutRedirectUri, 
+                    //Notifications = new OpenIdConnectAuthenticationNotifications()
+                    //{
+                    //    RedirectToIdentityProvider = notification =>
+                    //    {
+                    //        notification.ProtocolMessage.Prompt = "select account"; 
+                    //        return Task.FromResult(0);
+                    //    }
+                    //}, 
+                    TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        RoleClaimType = "roles"
+                    }
                 });
             app.UseWindowsAzureActiveDirectoryBearerAuthentication(
                 new WindowsAzureActiveDirectoryBearerAuthenticationOptions

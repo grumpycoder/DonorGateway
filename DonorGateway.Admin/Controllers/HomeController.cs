@@ -1,49 +1,50 @@
 ﻿using System.Security.Claims;
 using System.Web.Mvc;
-using ClaimTypes = System.IdentityModel.Claims.ClaimTypes;
+using DonorGateway.Admin.Filters;
 
 namespace DonorGateway.Admin.Controllers
 {
-    [Authorize]
+
     public class HomeController : Controller
     {
+        public HomeController()
+        {
+            if (ClaimsPrincipal.Current.Identity.IsAuthenticated) ViewBag.GivenName = ClaimsPrincipal.Current.FindFirst("name").Value;
+
+        }
+
         public ActionResult Index()
         {
-            ViewBag.GivenName = ClaimsPrincipal.Current.FindFirst(ClaimTypes.GivenName).Value;
             return View();
         }
 
+        [AuthorizeEx(Roles = "rsvp")]
         public ActionResult Events()
         {
-            ViewBag.GivenName = ClaimsPrincipal.Current.FindFirst(ClaimTypes.GivenName).Value;
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
+        [AuthorizeEx(Roles = "tax, administrator")]
         public ActionResult DonorTax()
         {
-            ViewBag.GivenName = ClaimsPrincipal.Current.FindFirst(ClaimTypes.GivenName).Value;
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
+        [AuthorizeEx(Roles = "markit, administrator")]
         public ActionResult Mailers()
         {
-            ViewBag.GivenName = ClaimsPrincipal.Current.FindFirst(ClaimTypes.GivenName).Value;
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
+        [AuthorizeEx(Roles = "demographics, administrator")]
         public ActionResult Demographics()
         {
-            ViewBag.GivenName = ClaimsPrincipal.Current.FindFirst(ClaimTypes.GivenName).Value;
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
 
+        public ActionResult Unauthorized()
+        {
+            return View();
+        }
     }
 }
