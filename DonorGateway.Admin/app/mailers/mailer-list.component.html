@@ -104,7 +104,9 @@
                                 <tbody>
                                 <tr ng-repeat="m in $ctrl.mailers">
                                     <td>
-                                        <button class="btn" ng-class="m.suppress ? 'btn-warning' : 'btn-primary'" ng-click="$ctrl.toggleSuppress(m)" uib-popover="{{m.suppress ? 'Clear' : 'Suppress'}}" popover-trigger="mouseenter" popover-placement="right">
+                                        <button class="btn" ng-class="m.suppress ? 'btn-warning' : 'btn-primary'" 
+                                                ng-click="$ctrl.toggleSuppress(m)" uib-popover="{{m.suppress ? 'Clear' : 'Suppress'}}" 
+                                                popover-trigger="'mouseenter'" popover-placement="right">
                                             <span ng-hide="m.suppress"><i class="icon ion-android-hand"></i> </span>
                                             <span ng-show="m.suppress"><i class="icon ion-ios-flag"></i> </span>
                                         </button>
