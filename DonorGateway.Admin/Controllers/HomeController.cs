@@ -18,25 +18,25 @@ namespace DonorGateway.Admin.Controllers
             return View();
         }
 
-        [AuthorizeEx(Roles = "rsvp")]
+        [AuthorizeEx]
         public ActionResult Events()
         {
             return View();
         }
 
-        [AuthorizeEx(Roles = "tax, administrator")]
+        [AuthorizeEx]
         public ActionResult DonorTax()
         {
             return View();
         }
 
-        [AuthorizeEx(Roles = "markit, administrator")]
+        [AuthorizeEx]
         public ActionResult Mailers()
         {
             return View();
         }
 
-        [AuthorizeEx(Roles = "demographics, administrator")]
+        [AuthorizeEx]
         public ActionResult Demographics()
         {
             return View();

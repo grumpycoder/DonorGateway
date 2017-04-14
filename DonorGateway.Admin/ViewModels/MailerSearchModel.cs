@@ -15,6 +15,5 @@ namespace DonorGateway.Admin.ViewModels
         public bool? Suppress { get; set; } = false;
         public int? CampaignId { get; set; }
         public int? ReasonId { get; set; }
-        public TimeSpan ElapsedTime { get; set; }
     }
 }

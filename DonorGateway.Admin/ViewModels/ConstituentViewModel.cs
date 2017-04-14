@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using AutoMapper;
 using DonorGateway.Domain;
+using Heroic.AutoMapper;
 
 namespace DonorGateway.Admin.ViewModels
 {
-    public class ConstituentViewModel
+    public class ConstituentViewModel : IMapFrom<Constituent>, IHaveCustomMappings
     {
         public ConstituentViewModel()
         {
@@ -22,5 +24,13 @@ namespace DonorGateway.Admin.ViewModels
         public string Phone { get; set; }
 
         public List<TaxItem> TaxItems { get; set; }
+
+        public void CreateMappings(IMapperConfiguration configuration)
+        {
+            configuration.CreateMap<Constituent, ConstituentViewModel>()
+                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
+                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.Email)).ReverseMap()
+                ;
+        }
     }
 }

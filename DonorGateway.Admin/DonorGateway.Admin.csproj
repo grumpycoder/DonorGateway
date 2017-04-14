@@ -226,10 +226,12 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ConstituentController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MailerController.cs" />
+    <Compile Include="Controllers\TaxController.cs" />
     <Compile Include="Filters\AuthorizeExAtrribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -258,6 +260,7 @@
     <Compile Include="ViewModels\MailerViewModel.cs" />
     <Compile Include="ViewModels\Pager.cs" />
     <Compile Include="ViewModels\TaxImportMap.cs" />
+    <Compile Include="ViewModels\TaxItemViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +271,12 @@
     <Content Include="app\directives\date-input.directive.js" />
     <Content Include="app\directives\smart-table.directive.js" />
     <Content Include="app\directives\toggleCheckbox.directive.js" />
+    <Content Include="app\donortax\constituent-edit.component.html" />
+    <Content Include="app\donortax\constituent-edit.component.js" />
+    <Content Include="app\donortax\constituent-list.component.html" />
+    <Content Include="app\donortax\constituent-list.component.js" />
+    <Content Include="app\donortax\tax-detail.component.js" />
+    <Content Include="app\donortax\tax-details.component.html" />
     <Content Include="app\mailers\mailer-list.component.html" />
     <Content Include="app\mailers\mailer-list.component.js" />
     <Content Include="app\mailers\mailer-suppress.component.html" />

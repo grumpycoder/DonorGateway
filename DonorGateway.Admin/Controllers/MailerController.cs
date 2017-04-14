@@ -30,7 +30,7 @@ namespace DonorGateway.Admin.Controllers
 
         public MailerController()
         {
-            _context = new DataContext();
+            _context = DataContext.Create();
         }
 
         public async Task<object> Get([FromUri] MailerSearchModel pager = null)
