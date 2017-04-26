@@ -1,0 +1,100 @@
+﻿
+<div>
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            {{$ctrl.title}}<small>{{$ctrl.description}}</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">{{$ctrl.title}}</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+
+                <div class="box box-success" ng-class="{'box-solid' : $ctrl.selectedEvent}">
+                    <div class="box-header with-border">
+                        <span class="box-title" ng-show="$ctrl.selectedEvent">
+                            Event: {{$ctrl.selectedEvent.name}}
+                        </span>
+                    </div><!-- /.box-header -->
+
+                    <div class="box-body">
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+                                    <select ng-model="$ctrl.selectedEvent"
+                                            ng-options="event.name for event in $ctrl.events"
+                                            ng-disabled="false"
+                                            ng-change="$ctrl.changeEvent(); showNewEvent = false"
+                                            class="form-control">
+                                        <option value="">Choose an Event</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="col-md-8">
+                                <button class="btn btn-primary pull-right" ng-click="$ctrl.showCreateEvent()">
+                                    <i class="fa fa-plus"></i>
+                                    Create Event
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6" ng-show="showNewEvent">
+                                <input type="text" ng-model="$ctrl.newEvent.name" class="form-control" placeholder="New Event name..." />
+                                <button class="btn btn-primary" ng-click="$ctrl.createEvent(); showNewEvent = false">
+                                    Create
+                                </button>
+                                <button class="btn btn-default" ng-click="$ctrl.newEvent = {}; showNewEvent = false">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-hide="$ctrl.selectedEvent">
+                            <div class="col-md-12">
+                                <h4>
+                                    Choose an event from the list above to begin editing
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="$ctrl.selectedEvent">
+
+                            <div class="col-md-12">
+
+                                <uib-tabset>
+                                    
+                                    <uib-tab index="1" heading="Guests">
+                                        <guest-list event-id="$ctrl.selectedEvent.id"></guest-list>
+                                    </uib-tab>
+                                    <uib-tab index="0" heading="Details">
+                                        <event-detail event-id="$ctrl.selectedEvent.id"></event-detail>
+                                    </uib-tab>
+                                    <uib-tab index="2" heading="Template">
+                                        Template
+                                    </uib-tab>
+                                </uib-tabset>
+
+                            </div>
+                        </div>
+                    </div><!--/box-body-->
+
+                    <div class="overlay" ng-show="$ctrl.isBusy">
+                        <i class="fa fa-refresh fa-spin"></i>
+                    </div>
+                </div><!--/box-->
+            </div>
+        </div>
+    </section>
+</div>  

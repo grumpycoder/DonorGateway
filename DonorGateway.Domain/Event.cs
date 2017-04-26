@@ -48,9 +48,8 @@ namespace DonorGateway.Domain
                 if (remaining < 0) remaining = 0;
                 return remaining;
             }
-
-
         }
+
         [NotMapped]
         public bool IsAtCapacity => TicketRemainingCount <= 0;
 
@@ -60,7 +59,8 @@ namespace DonorGateway.Domain
         public void CancelRegistration(Guest guest)
         {
             if (guest.IsMailed) TicketMailedCount -= guest.TicketCount ?? 0;
-            if (guest.IsWaiting ?? false) GuestWaitingCount -= guest.TicketCount ?? 0;
+            if (guest.IsWaiting) GuestWaitingCount -= guest.TicketCount ?? 0;
+            
             GuestAttendanceCount -= guest.TicketCount ?? 0;
 
             guest.ResponseDate = DateTime.Now;
@@ -76,7 +76,7 @@ namespace DonorGateway.Domain
         {
             guest.ResponseDate = DateTime.Now;
             guest.TicketCount = guest.TicketCount ?? 0;
-            guest.IsAttending = guest.IsAttending ?? false;
+            guest.IsAttending = true;
 
             if (TicketRemainingCount - guest.TicketCount < 0)
             {

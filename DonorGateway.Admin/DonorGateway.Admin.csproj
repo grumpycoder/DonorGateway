@@ -248,6 +248,7 @@
     <Compile Include="ViewModels\ConstituentViewModel.cs" />
     <Compile Include="ViewModels\DemographicSearchViewModel.cs" />
     <Compile Include="ViewModels\DemographicViewModel.cs" />
+    <Compile Include="ViewModels\EventSummaryViewModel.cs" />
     <Compile Include="ViewModels\EventViewModel.cs" />
     <Compile Include="ViewModels\GuestExportMap.cs" />
     <Compile Include="ViewModels\GuestExportViewModel.cs" />
@@ -277,6 +278,12 @@
     <Content Include="app\donortax\constituent-list.component.js" />
     <Content Include="app\donortax\tax-detail.component.js" />
     <Content Include="app\donortax\tax-details.component.html" />
+    <Content Include="app\events\event-dashboard.component.html" />
+    <Content Include="app\events\event-dashboard.component.js" />
+    <Content Include="app\events\event-detail.component.html" />
+    <Content Include="app\events\event-detail.component.js" />
+    <Content Include="app\events\guest-list.component.html" />
+    <Content Include="app\events\guest-list.component.js" />
     <Content Include="app\mailers\mailer-list.component.html" />
     <Content Include="app\mailers\mailer-list.component.js" />
     <Content Include="app\mailers\mailer-suppress.component.html" />
@@ -299,6 +306,7 @@
     <Content Include="robots.txt" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="templates\datetimepicker.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

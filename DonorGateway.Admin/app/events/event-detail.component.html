@@ -1,0 +1,304 @@
+﻿
+
+<form novalidate name="detailsForm">
+    <div class="box no-border">
+
+        <div class="box-body">
+
+            <!--<div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div>
+                            <pre>{{ $ctrl.event | json}}</pre>
+                        </div>
+                    </div>
+
+                </div>
+            </div>-->
+
+
+            <div class="row">
+                <div class="col-md-3 col-md-6 col-xs-6">
+                    <div class="info-box bg-green">
+                        <span class="info-box-icon">
+                            <i class="fa fa-key"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Guests Attending</span>
+                            <span class="info-box-number">{{$ctrl.event.guestAttendanceCount}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-md-6 col-xs-6">
+                    <div class="info-box  bg-red">
+                        <span class="info-box-icon">
+                            <i class="fa fa-clock-o"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Guests Waiting</span>
+                            <span class="info-box-number">{{$ctrl.event.guestWaitingCount}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-md-6 col-xs-6">
+                    <div class="info-box bg-blue">
+                        <span class="info-box-icon ">
+                            <i class="fa fa-envelope"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Tickets Mailed</span>
+                            <span class="info-box-number">{{$ctrl.event.ticketMailedCount}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-md-6 col-xs-6">
+                    <div class="info-box bg-yellow">
+                        <span class="info-box-icon ">
+                            <i class="fa fa-ticket"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Tickets Remaining</span>
+                            <span class="info-box-number">{{$ctrl.event.ticketRemainingCount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-warning" role="alert" ng-show="$ctrl.event.isExpired">
+                        <i class="fa fa-exclamation-triangle"></i> Expired
+                    </div>
+                    <div class="alert alert-danger" role="alert" ng-show="$ctrl.event.isAtCapacity">
+                        <i class="fa fa-exclamation-triangle"></i> Attendance at Capacity
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-4">
+                    <fieldset>
+                        <legend>
+                            <span>General</span>
+                            <span class="pull-right"><button class="btn btn-default" ng-click="$ctrl.refresh()"><i class="fa fa-refresh"></i></button></span>
+                        </legend>
+                        <div class="form-group">
+                            <label class="control-label">
+                                Name - Url
+                            </label>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Display Name
+                            </label>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.displayName" />
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Venue
+                            </label>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.venue" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Speaker
+                            </label>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.speaker" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Capacity
+                            </label>
+                            <input type="number" class="form-control" ng-model="$ctrl.event.capacity" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Tickets Allowed
+                            </label>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.ticketAllowance" />
+                        </div>
+
+                        <div class="form-group">
+                            <a ng-href="http://{{$ctrl.hostLocation + $ctrl.event.name}}" target="_blank">{{$ctrl.hostLocation + $ctrl.event.name}}</a>
+                        </div>
+
+                    </fieldset><!-- /.fieldset -->
+                </div><!-- /.col-md-4 -->
+
+                <div class="col-md-4">
+                    <fieldset>
+                        <legend>
+                            Venue Location
+                        </legend>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">Street</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="Address Line 1" class="form-control" ng-model="$ctrl.event.street">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">City</label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="City" class="form-control" ng-model="$ctrl.event.city">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-2 control-label">State</label>
+                                <div class="col-sm-4">
+                                    <input type="text" placeholder="State" class="form-control" ng-model="$ctrl.event.state">
+                                </div>
+
+                                <label class="col-sm-2 control-label">Zipcode</label>
+                                <div class="col-sm-4">
+                                    <input type="text" placeholder="Post Code" class="form-control" ng-model="$ctrl.event.zipcode">
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset><!-- /.fieldset -->
+                </div><!-- /.col-md-4 -->
+
+                <div class="col-md-4">
+                    <fieldset>
+                        <legend>
+                            Event Date/Times
+                        </legend>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Event Start Date/Time
+                            </label>
+
+                            <div class="dropdown">
+                                <a href="" class="dropdown-toggle start-toggle-select" role="button" data-toggle="dropdown" data-target="#">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="startDate" ng-model="$ctrl.event.startDate" date-input="{{$ctrl.dateFormat}}" />
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                                <div ng-messages="detailsForm.startDate.$error" ng-messages-multiple class="error-messages" ng-show="detailsForm.startDate.$dirty">
+                                    <div ng-message="max">Max of {{$ctrl.event.ticketAllowance}} per guest allowed</div>
+                                </div>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <datetimepicker data-ng-model="$ctrl.event.startDate"
+                                                    date-format
+                                                    data-datetimepicker-config="{ dropdownSelector: '.start-toggle-select' }"></datetimepicker>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Event End Date/Time
+                            </label>
+                            <div class="dropdown">
+                                <a href="" class="dropdown-toggle end-toggle-select" role="button" data-toggle="dropdown" data-target="#">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="$ctrl.event.endDate" date-input="{{$ctrl.dateFormat}}" />
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <datetimepicker data-ng-model="$ctrl.event.endDate"
+                                                    date-format
+                                                    data-datetimepicker-config="{ dropdownSelector: '.end-toggle-select' }"></datetimepicker>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Venue Doors Open Date/Time
+                            </label>
+
+                            <div class="dropdown">
+                                <a href="" class="dropdown-toggle venue-toggle-select" role="button" data-toggle="dropdown" data-target="#">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="$ctrl.event.venueOpenDate" date-input="{{$ctrl.dateFormat}}" datepicker-config="$ctrl.dateOptions" />
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <datetimepicker data-ng-model="$ctrl.event.venueOpenDate"
+                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mm a' }"
+                                                    data-datetimepicker-config="{ dropdownSelector: '.venue-toggle-select' }"></datetimepicker>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">
+                                Registration Close Date/Time
+                            </label>
+
+                            <div class="dropdown">
+                                <a href="" class="dropdown-toggle regclose-toggle-select" role="button" data-toggle="dropdown" data-target="#">
+
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" ng-model="$ctrl.event.registrationCloseDate" date-input="{{$ctrl.dateFormat}}" />
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <datetimepicker data-ng-model="$ctrl.event.registrationCloseDate"
+                                                    date-format
+                                                    data-datetimepicker-config="{ dropdownSelector: '.regclose-toggle-select' }"></datetimepicker>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </fieldset><!-- /.fieldset -->
+                </div><!-- /.col-md-4 -->
+
+            </div>
+
+        </div><!-- /.box-body -->
+
+        <div class="box-footer">
+            <div class="pull-left">
+                <button class="btn"
+                        ng-disabled="$ctrl.event.isExpired"
+                        ng-hide="$ctrl.event.isExpired"
+                        ng-class="{'btn-success' : $ctrl.event.isCancelled, 'btn-warn' : !$ctrl.event.isCancelled }"
+                        ng-click="$ctrl.toggleCancel(detailsForm)">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    {{$ctrl.event.isCancelled ? 'Restore Event' : 'Cancel Event'}}
+                </button>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-danger" ng-click="$ctrl.deleteEvent($ctrl.event.id)"
+                        confirm="Delete {{$ctrl.event.name}} Event?" confirm-settings="{size: 'sm'}">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-primary" ng-click="$ctrl.saveEvent(detailsForm)" ng-disabled="detailsForm.$pristine"><i class="fa fa-save"></i> Save</button>
+            </div>
+        </div><!-- /.box-footer-->
+        <div class="overlay" ng-show="$ctrl.isBusy">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+    </div><!-- /.box -->
+</form><!-- /.form -->

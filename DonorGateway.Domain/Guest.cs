@@ -39,7 +39,7 @@ namespace DonorGateway.Domain
         public bool IsMailed { get; set; }
 
         public bool? IsAttending { get; set; }
-        public bool? IsWaiting { get; set; }
+        public bool IsWaiting { get; set; }
 
         public DateTime? ResponseDate { get; set; }
         public DateTime? MailedDate { get; set; }

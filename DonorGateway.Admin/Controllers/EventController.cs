@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Http;
@@ -17,283 +19,302 @@ using DonorGateway.Admin.ViewModels;
 using DonorGateway.Data;
 using DonorGateway.Domain;
 using EntityFramework.Utilities;
+#pragma warning disable 618
 
 namespace DonorGateway.Admin.Controllers
 {
     [RoutePrefix("api/event")]
     public class EventController : ApiController
     {
-        private readonly DataContext context;
+        private readonly DataContext _context;
+        private const int PAGE_SIZE = 20;
 
         public EventController()
         {
-            context = DataContext.Create();
+            _context = DataContext.Create();
         }
 
-        public IHttpActionResult Get()
+        public async Task<object> Get()
         {
-            var list = context.Events.Include(x => x.Template).ToList();
-
+            var list = await _context.Events.ProjectTo<EventSummaryViewModel>().ToListAsync();
             return Ok(list);
         }
 
         [Route("{name}")]
-        public IHttpActionResult Get(string name)
+        public async Task<object> Get(string name)
         {
-            var vm = context.Events.AsQueryable().SingleOrDefault(x => x.Name == name);
-            return Ok(vm);
+            var model = await _context.Events.FirstOrDefaultAsync(e => e.Name == name);
+            if (model == null) return BadRequest("Event not found");
+
+            var @event = Mapper.Map<EventSummaryViewModel>(model);
+            return Ok(@event);
         }
 
         [HttpGet, Route("{id:int}")]
-        public IHttpActionResult Get(int id)
+        public async Task<object> Get(int id)
         {
-            var @event = context.Events.Include(t => t.Template).SingleOrDefault(x => x.Id == id);
+            var @event = await _context.Events.SingleOrDefaultAsync(x => x.Id == id);
             if (@event == null) return NotFound();
 
-
-            var attendanceCount = context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount);
+            var attendanceCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount);
             @event.GuestAttendanceCount = attendanceCount ?? 0;
-            var waitingCount = context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == true).Sum(g => g.TicketCount);
+            var waitingCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == true).Sum(g => g.TicketCount);
             @event.GuestWaitingCount = waitingCount ?? 0;
-            @event.TicketMailedCount = context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsMailed).Sum(g => g.TicketCount) ?? 0;
-            context.SaveChanges();
+            @event.TicketMailedCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsMailed).Sum(g => g.TicketCount) ?? 0;
+            _context.SaveChanges();
 
             var model = Mapper.Map<EventViewModel>(@event);
             return Ok(model);
         }
 
-        [HttpPost, Route("{id:int}/guests")]
-        public IHttpActionResult Guests(int id, GuestSearchViewModel vm)
+        [HttpGet, Route("{id:int}/guests")]
+        public async Task<object> Guests(int id, [FromUri]GuestSearchModel pager)
         {
-            var page = vm.Page.GetValueOrDefault(0);
-            var pageSize = vm.PageSize.GetValueOrDefault(10);
-            var skipRows = (page - 1) * pageSize;
-            var ticketMailed = vm.IsMailed ?? false;
-            var isWaiting = vm.IsWaiting ?? false;
-            var isAttending = vm.IsAttending ?? false;
+            var stopwatch = new Stopwatch();
+            stopwatch.Restart();
+            if (pager == null) pager = new GuestSearchModel();
 
-            var baseQuery = context.Guests.Where(e => e.EventId == id);
-
-            var pred = PredicateBuilder.True<Guest>();
-            if (!string.IsNullOrWhiteSpace(vm.Address)) pred = pred.And(p => p.Address.Contains(vm.Address));
-            if (!string.IsNullOrWhiteSpace(vm.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(vm.FinderNumber));
-            if (!string.IsNullOrWhiteSpace(vm.Name)) pred = pred.And(p => p.Name.Contains(vm.Name));
-            if (!string.IsNullOrWhiteSpace(vm.City)) pred = pred.And(p => p.City.StartsWith(vm.City));
-            if (!string.IsNullOrWhiteSpace(vm.State)) pred = pred.And(p => p.State.Equals(vm.State));
-            if (!string.IsNullOrWhiteSpace(vm.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(vm.ZipCode));
-            if (!string.IsNullOrWhiteSpace(vm.Phone)) pred = pred.And(p => p.Phone.Contains(vm.Phone));
-            if (!string.IsNullOrWhiteSpace(vm.Email)) pred = pred.And(p => p.Email.StartsWith(vm.Email));
-            if (!string.IsNullOrWhiteSpace(vm.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(vm.LookupId));
-            if (!string.IsNullOrWhiteSpace(vm.ConstituentType)) pred = pred.And(p => p.ConstituentType.StartsWith(vm.ConstituentType));
-            if (vm.TicketCount != null) pred = pred.And(p => p.TicketCount == vm.TicketCount);
-            if (vm.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
-            if (vm.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
-            if (vm.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
-
-            var filteredQuery = baseQuery.Where(pred);
-
-            var list = filteredQuery
-                .Order(vm.OrderBy, vm.OrderDirection == "desc" ? SortDirection.Descending : SortDirection.Ascending)
-                .Where(pred)
-                .Skip(skipRows)
-                .Take(pageSize)
-                .ProjectTo<GuestViewModel>();
-
-            var totalCount = baseQuery.Count();
-            var filterCount = filteredQuery.Count();
-            var totalPages = (int)Math.Ceiling((decimal)filterCount / pageSize);
-
-            vm.TotalCount = totalCount;
-            vm.FilteredCount = filterCount;
-            vm.TotalPages = totalPages;
-
-            vm.Results = list.ToList();
-
-            return Ok(vm);
-
-        }
-
-        [HttpPost, Route("{id:int}/guests/export")]
-        public IHttpActionResult Export(int id, GuestSearchViewModel vm)
-        {
-            var ticketMailed = vm.IsMailed ?? false;
-            var isWaiting = vm.IsWaiting ?? false;
-            var isAttending = vm.IsAttending ?? false;
+            var ticketMailed = pager.IsMailed ?? false;
+            var isWaiting = pager.IsWaiting ?? false;
+            var isAttending = pager.IsAttending ?? false;
+            var query = _context.Guests.Where(e => e.EventId == id);
+            var totalCount = await query.CountAsync();
 
             var pred = PredicateBuilder.True<Guest>();
             pred = pred.And(p => p.EventId == id);
-            if (!string.IsNullOrWhiteSpace(vm.Address)) pred = pred.And(p => p.Address.Contains(vm.Address));
-            if (!string.IsNullOrWhiteSpace(vm.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(vm.FinderNumber));
-            if (!string.IsNullOrWhiteSpace(vm.Name)) pred = pred.And(p => p.Name.Contains(vm.Name));
-            if (!string.IsNullOrWhiteSpace(vm.City)) pred = pred.And(p => p.City.StartsWith(vm.City));
-            if (!string.IsNullOrWhiteSpace(vm.State)) pred = pred.And(p => p.State.Equals(vm.State));
-            if (!string.IsNullOrWhiteSpace(vm.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(vm.ZipCode));
-            if (!string.IsNullOrWhiteSpace(vm.Phone)) pred = pred.And(p => p.Phone.Contains(vm.Phone));
-            if (!string.IsNullOrWhiteSpace(vm.Email)) pred = pred.And(p => p.Email.StartsWith(vm.Email));
-            if (!string.IsNullOrWhiteSpace(vm.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(vm.LookupId));
-            if (vm.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
-            if (vm.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
-            if (vm.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
+            if (!string.IsNullOrWhiteSpace(pager.Address)) pred = pred.And(p => p.Address.Contains(pager.Address));
+            if (!string.IsNullOrWhiteSpace(pager.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(pager.FinderNumber));
+            if (!string.IsNullOrWhiteSpace(pager.Name)) pred = pred.And(p => p.Name.Contains(pager.Name));
+            if (!string.IsNullOrWhiteSpace(pager.City)) pred = pred.And(p => p.City.StartsWith(pager.City));
+            if (!string.IsNullOrWhiteSpace(pager.State)) pred = pred.And(p => p.State.Equals(pager.State));
+            if (!string.IsNullOrWhiteSpace(pager.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(pager.ZipCode));
+            if (!string.IsNullOrWhiteSpace(pager.Phone)) pred = pred.And(p => p.Phone.Contains(pager.Phone));
+            if (!string.IsNullOrWhiteSpace(pager.Email)) pred = pred.And(p => p.Email.StartsWith(pager.Email));
+            if (!string.IsNullOrWhiteSpace(pager.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(pager.LookupId));
+            if (!string.IsNullOrWhiteSpace(pager.ConstituentType)) pred = pred.And(p => p.ConstituentType.StartsWith(pager.ConstituentType));
+            if (pager.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
+            if (pager.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
+            if (pager.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
 
-            var list = context.Guests.AsQueryable()
-                    .Where(pred)
-                    .ProjectTo<GuestExportViewModel>();
+            var filteredQuery = query.Where(pred);
+            var pagerCount = await filteredQuery.CountAsync();
+            var totalPages = Math.Ceiling((double)pagerCount / pager.PageSize ?? PAGE_SIZE);
 
-            var path = HttpContext.Current.Server.MapPath(@"~\app_data\guestlist.csv");
+            var results = await query.Where(pred)
+                .Order(pager.OrderBy, pager.OrderDirection == "desc" ? SortDirection.Descending : SortDirection.Ascending)
+                .Skip(pager.PageSize * (pager.Page - 1) ?? 0)
+                .Take(pager.PageSize ?? PAGE_SIZE)
+                .ProjectTo<GuestViewModel>().ToListAsync();
 
-            using (var csv = new CsvWriter(new StreamWriter(File.Create(path))))
-            {
-                csv.Configuration.RegisterClassMap<GuestExportMap>();
-                csv.WriteHeader<GuestExportViewModel>();
-                csv.WriteRecords(list);
-            }
-            var filename = $"guest-list-{DateTime.Now.ToString("u")}.csv";
-
-            var response = new HttpResponseMessage(HttpStatusCode.OK);
-            var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-            response.Content = new StreamContent(stream);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileName = filename
-            };
-            response.Content.Headers.Add("x-filename", filename);
-
-            return ResponseMessage(response);
+            pager.TotalCount = totalCount;
+            pager.FilteredCount = pagerCount;
+            pager.TotalPages = totalPages;
+            pager.Results = results;
+            stopwatch.Stop();
+            pager.ElapsedTime = stopwatch.Elapsed;
+            return Ok(pager);
         }
 
-        [HttpDelete, Route("{id}")]
-        public IHttpActionResult Delete(int id)
+        //[HttpPost, Route("{id:int}/guests/export")]
+        //public IHttpActionResult Export(int id, GuestSearchModel vm)
+        //{
+        //    var ticketMailed = vm.IsMailed ?? false;
+        //    var isWaiting = vm.IsWaiting ?? false;
+        //    var isAttending = vm.IsAttending ?? false;
+
+        //    var pred = PredicateBuilder.True<Guest>();
+        //    pred = pred.And(p => p.EventId == id);
+        //    if (!string.IsNullOrWhiteSpace(vm.Address)) pred = pred.And(p => p.Address.Contains(vm.Address));
+        //    if (!string.IsNullOrWhiteSpace(vm.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(vm.FinderNumber));
+        //    if (!string.IsNullOrWhiteSpace(vm.Name)) pred = pred.And(p => p.Name.Contains(vm.Name));
+        //    if (!string.IsNullOrWhiteSpace(vm.City)) pred = pred.And(p => p.City.StartsWith(vm.City));
+        //    if (!string.IsNullOrWhiteSpace(vm.State)) pred = pred.And(p => p.State.Equals(vm.State));
+        //    if (!string.IsNullOrWhiteSpace(vm.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(vm.ZipCode));
+        //    if (!string.IsNullOrWhiteSpace(vm.Phone)) pred = pred.And(p => p.Phone.Contains(vm.Phone));
+        //    if (!string.IsNullOrWhiteSpace(vm.Email)) pred = pred.And(p => p.Email.StartsWith(vm.Email));
+        //    if (!string.IsNullOrWhiteSpace(vm.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(vm.LookupId));
+        //    if (vm.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
+        //    if (vm.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
+        //    if (vm.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
+
+        //    var list = _context.Guests.AsQueryable()
+        //            .Where(pred)
+        //            .ProjectTo<GuestExportViewModel>();
+
+        //    var path = HttpContext.Current.Server.MapPath(@"~\app_data\guestlist.csv");
+
+        //    using (var csv = new CsvWriter(new StreamWriter(File.Create(path))))
+        //    {
+        //        csv.Configuration.RegisterClassMap<GuestExportMap>();
+        //        csv.WriteHeader<GuestExportViewModel>();
+        //        csv.WriteRecords(list);
+        //    }
+        //    var filename = $"guest-list-{DateTime.Now.ToString("u")}.csv";
+
+        //    var response = new HttpResponseMessage(HttpStatusCode.OK);
+        //    var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        //    response.Content = new StreamContent(stream);
+        //    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        //    response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+        //    {
+        //        FileName = filename
+        //    };
+        //    response.Content.Headers.Add("x-filename", filename);
+
+        //    return ResponseMessage(response);
+        //}
+
+        //[HttpDelete, Route("{id}")]
+        //public IHttpActionResult Delete(int id)
+        //{
+        //    var @event = _context.Events.Find(id);
+        //    if (@event == null) return NotFound();
+
+        //    var template = _context.Templates.Find(@event.TemplateId);
+
+        //    if (template != null) _context.Templates.Remove(template);
+        //    _context.SaveChanges();
+
+        //    _context.Events.Remove(@event);
+        //    _context.SaveChanges();
+
+        //    return Ok("Deleted Event");
+        //}
+
+        //public IHttpActionResult Post(Event vm)
+        //{
+        //_context.Templates.Add(vm.Template);
+        //_context.SaveChanges();
+        //_context.Events.Add(vm);
+        //_context.SaveChanges();
+
+        //var @event = Mapper.Map<EventViewModel>(vm);
+
+        //return Ok(@event);
+        //}
+
+        //public IHttpActionResult Put(Event vm)
+        //{
+        //    _context.Events.AddOrUpdate(vm);
+        //    _context.SaveChanges();
+
+        //    var model = Mapper.Map<EventViewModel>(vm);
+
+        //    return Ok(model);
+        //}
+
+        [HttpPost, Route("{id:int}/register")]
+        public async Task<object> RegisterGuest(int id, [FromBody]GuestViewModel model)
         {
-            var @event = context.Events.Find(id);
-            if (@event == null) return NotFound();
+            var @event = _context.Events.Find(id);
+            if (@event == null) return BadRequest("Event not found");
+            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
+            if (guest == null) return BadRequest("Guest not found");
 
-            var template = context.Templates.Find(@event.TemplateId);
+            Mapper.Map(model, guest);
 
-            if (template != null) context.Templates.Remove(template);
-            context.SaveChanges();
+            @event.RegisterGuest(guest);
+            @event.SendEmail(guest);
 
-            context.Events.Remove(@event);
-            context.SaveChanges();
+            //TODO: Create Demographic Change entry
 
-            return Ok("Deleted Event");
+            _context.Entry(@event.Template).State = EntityState.Unchanged;
+
+            _context.Events.AddOrUpdate(@event);
+
+            _context.Guests.AddOrUpdate(guest);
+            _context.SaveChanges();
+
+            var dto = Mapper.Map<GuestViewModel>(guest);
+            return Ok(dto);
         }
 
-        public IHttpActionResult Post(Event vm)
+        [HttpPost, Route("{id:int}/CancelRegister/{guestId:int}")]
+        public async Task<object> CancelRegistration(int id, int guestId)
         {
-            context.Templates.Add(vm.Template);
-            context.SaveChanges();
-            context.Events.Add(vm);
-            context.SaveChanges();
+            var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+            if (@event == null) return BadRequest("Event not found");
 
-            var @event = Mapper.Map<EventViewModel>(vm);
+            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == guestId);
+            if (guest == null) return BadRequest("No guest found");
 
-            return Ok(@event);
+            @event.CancelRegistration(guest);
+
+            //_context.Entry(@event.Template).State = EntityState.Unchanged;
+
+            _context.Events.AddOrUpdate(@event);
+
+            _context.Guests.AddOrUpdate(guest);
+
+            _context.SaveChanges();
+            var dto = Mapper.Map<GuestViewModel>(guest);
+            return Ok(dto);
         }
 
-        public IHttpActionResult Put(Event vm)
+        [HttpPost, Route("{id:int}/mailticket/{guestId:int}")]
+        public async Task<object> MailTicket(int id, int guestId)
         {
-            context.Events.AddOrUpdate(vm);
-            context.SaveChanges();
+            var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+            if (@event == null) return BadRequest("Event not found");
 
-            var model = Mapper.Map<EventViewModel>(vm);
+            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == guestId);
 
+            if (guest == null) return BadRequest("Guest not found");
+
+            @event.MailTicket(guest);
+
+            _context.Events.AddOrUpdate(@event);
+            _context.Guests.AddOrUpdate(guest);
+            _context.SaveChanges();
+
+            var dto = Mapper.Map<GuestViewModel>(guest);
+            return Ok(dto);
+        }
+        
+        [HttpPost, Route("{id:int}/addticket")]
+        public async Task<object> AddTicket(int id, GuestViewModel model)
+        {
+            var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+            if (@event == null) return BadRequest("Event not found");
+
+            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
+            if (guest == null) return BadRequest("Guest not found");
+
+            //TODO: Record demographic change update
+
+            //var guest = Mapper.Map<Guest>(dto);
+            //var current = _context.Guests.Find(dto.Id);
+
+            //if (current != guest)
+            //{
+            //    var demoChange = Mapper.Map<DemographicChange>(guest);
+            //    demoChange.Source = Source.RSVP;
+            //    _context.DemographicChanges.Add(demoChange);
+            //}
+
+            @event.AddTickets(guest, model.AdditionalTickets);
+
+            _context.Events.AddOrUpdate(@event);
+            _context.Guests.AddOrUpdate(guest);
+            _context.SaveChanges();
+
+            Mapper.Map(guest, model);
+            //dto.Event = @event;
             return Ok(model);
         }
 
-        [HttpPost, Route("{id:int}/CancelRegistration")]
-        public IHttpActionResult CancelRegistration(int id, Guest dto)
-        {
-            var @event = context.Events.Find(id);
 
-            if (@event == null) return NotFound();
 
-            @event.CancelRegistration(dto);
-
-            context.Entry(@event.Template).State = EntityState.Unchanged;
-
-            context.Events.AddOrUpdate(@event);
-
-            context.Guests.AddOrUpdate(dto);
-
-            dto.Event = @event;
-            context.SaveChanges();
-
-            return Ok(dto);
-        }
-
-        [HttpPost, Route("{id:int}/registerguest")]
-        public IHttpActionResult RegisterGuest(int id, Guest dto)
-        {
-            var @event = context.Events.Find(id);
-            var guest = context.Guests.Find(dto.Id);
-
-            if (@event == null) return NotFound();
-
-            @event.RegisterGuest(dto);
-            @event.SendEmail(dto);
-
-            if (guest != null)
-            {
-                if (!guest.Equals(dto))
-                {
-                    var demoChange = Mapper.Map<DemographicChange>(dto);
-                    demoChange.Source = Source.RSVP;
-                    context.DemographicChanges.Add(demoChange);
-                }
-            }
-
-            context.Entry(@event.Template).State = EntityState.Unchanged;
-
-            dto.Event = @event;
-
-            context.Events.AddOrUpdate(@event);
-
-            context.Guests.AddOrUpdate(dto);
-            context.SaveChanges();
-
-            return Ok(dto);
-        }
-
-        [HttpPost, Route("{id:int}/addticket")]
-        public IHttpActionResult AddTicket(int id, GuestViewModel dto)
-        {
-            var @event = context.Events.Find(id);
-
-            if (@event == null) return NotFound();
-            if (dto == null) return NotFound();
-
-            var guest = Mapper.Map<Guest>(dto);
-            var current = context.Guests.Find(dto.Id);
-
-            if (current != guest)
-            {
-                var demoChange = Mapper.Map<DemographicChange>(guest);
-                demoChange.Source = Source.RSVP;
-                context.DemographicChanges.Add(demoChange);
-            }
-
-            @event.AddTickets(guest, dto.AdditionalTickets);
-
-            context.Events.AddOrUpdate(@event);
-
-            context.Guests.AddOrUpdate(guest);
-            context.SaveChanges();
-
-            Mapper.Map(guest, dto);
-            dto.Event = @event;
-            return Ok(dto);
-        }
 
         [HttpPut, Route("{id:int}/mailalltickets")]
         public IHttpActionResult MailAllTickets(int id)
         {
             //var @event = context.Events.Include(g => g.Guests).SingleOrDefault(e => e.Id == id);
-            var @event = context.Events.SingleOrDefault(e => e.Id == id);
+            var @event = _context.Events.SingleOrDefault(e => e.Id == id);
 
             if (@event == null) return NotFound();
 
-            var list = context.Guests.Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == false);
+            var list = _context.Guests.Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == false);
 
             //TODO: Event should do this
             foreach (var guest in list)
@@ -302,14 +323,14 @@ namespace DonorGateway.Admin.Controllers
                 guest.MailedDate = DateTime.Now;
                 @event.TicketMailedCount++;
             }
-            context.Events.AddOrUpdate(@event);
-            context.SaveChanges();
+            _context.Events.AddOrUpdate(@event);
+            _context.SaveChanges();
 
-            EFBatchOperation.For(context, context.Guests).UpdateAll(@event.Guests.ToList(), x => x.ColumnsToUpdate(c => c.IsMailed, c => c.MailedDate));
-            context.SaveChanges();
+            EFBatchOperation.For(_context, _context.Guests).UpdateAll(@event.Guests.ToList(), x => x.ColumnsToUpdate(c => c.IsMailed, c => c.MailedDate));
+            _context.SaveChanges();
 
-            @event.TicketMailedCount = context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount) ?? 0;
-            context.SaveChanges();
+            @event.TicketMailedCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount) ?? 0;
+            _context.SaveChanges();
 
             return Ok(@event);
         }
@@ -317,11 +338,11 @@ namespace DonorGateway.Admin.Controllers
         [HttpPut, Route("{id:int}/mailallwaiting")]
         public IHttpActionResult MailAllWaiting(int id)
         {
-            var @event = context.Events.SingleOrDefault(e => e.Id == id);
+            var @event = _context.Events.SingleOrDefault(e => e.Id == id);
 
             if (@event == null) return NotFound();
 
-            var list = context.Guests.Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == true);
+            var list = _context.Guests.Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == true);
 
             //TODO: Event should do this
             foreach (var guest in list)
@@ -329,43 +350,22 @@ namespace DonorGateway.Admin.Controllers
                 guest.IsMailed = true;
                 guest.MailedDate = DateTime.Now;
             }
-            context.Events.AddOrUpdate(@event);
-            context.SaveChanges();
+            _context.Events.AddOrUpdate(@event);
+            _context.SaveChanges();
 
-            EFBatchOperation.For(context, context.Guests).UpdateAll(@event.Guests.ToList(), x => x.ColumnsToUpdate(c => c.IsMailed, c => c.MailedDate));
-            context.SaveChanges();
+            EFBatchOperation.For(_context, _context.Guests).UpdateAll(@event.Guests.ToList(), x => x.ColumnsToUpdate(c => c.IsMailed, c => c.MailedDate));
+            _context.SaveChanges();
 
-            context.SaveChanges();
+            _context.SaveChanges();
 
             return Ok(@event);
         }
 
-        [HttpPost, Route("{id:int}/mailticket")]
-        public IHttpActionResult MailTicket(int id, Guest dto)
-        {
-            var @event = context.Events.Find(id);
-
-            if (@event == null) return NotFound();
-
-            if (dto == null) return NotFound();
-
-            @event.MailTicket(dto);
-
-            dto.Event = @event;
-
-            context.Events.AddOrUpdate(@event);
-            context.SaveChanges();
-
-            context.Guests.AddOrUpdate(dto);
-            context.SaveChanges();
-
-            return Ok(dto);
-        }
 
         [HttpPost, Route("{id:int}/addtomail")]
         public IHttpActionResult AddToMail(int id, Guest dto)
         {
-            var @event = context.Events.Find(id);
+            var @event = _context.Events.Find(id);
 
             if (@event == null) return NotFound();
 
@@ -374,11 +374,11 @@ namespace DonorGateway.Admin.Controllers
             @event.MoveToMailQueue(dto);
             dto.Event = @event;
 
-            context.Events.AddOrUpdate(@event);
-            context.SaveChanges();
+            _context.Events.AddOrUpdate(@event);
+            _context.SaveChanges();
 
-            context.Guests.AddOrUpdate(dto);
-            context.SaveChanges();
+            _context.Guests.AddOrUpdate(dto);
+            _context.SaveChanges();
 
             return Ok(dto);
         }

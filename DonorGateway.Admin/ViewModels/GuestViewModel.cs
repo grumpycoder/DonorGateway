@@ -1,9 +1,11 @@
 using DonorGateway.Domain;
 using System;
+using AutoMapper;
+using Heroic.AutoMapper;
 
 namespace DonorGateway.Admin.ViewModels
 {
-    public class GuestViewModel
+    public class GuestViewModel : IMapFrom<Guest>, IHaveCustomMappings
     {
         public int Id { get; set; }
         public string LookupId { get; set; }
@@ -39,7 +41,7 @@ namespace DonorGateway.Admin.ViewModels
         public bool IsMailed { get; set; } = false;
 
         public bool? IsAttending { get; set; } = false;
-        public bool? IsWaiting { get; set; } = false;
+        public bool IsWaiting { get; set; } = false;
 
         public DateTime? ResponseDate { get; set; }
         public DateTime? MailedDate { get; set; }
@@ -47,7 +49,59 @@ namespace DonorGateway.Admin.ViewModels
 
         public int? EventId { get; set; }
 
-        public virtual Event Event { get; set; }
         public int AdditionalTickets { get; set; }
+
+        public bool CanRegister
+        {
+            get
+            {
+                if (IsAttending == null) return true;
+                return (bool)!IsAttending && !IsWaiting;
+            }
+        }
+
+        public bool CanMail
+        {
+            get
+            {
+                if (IsAttending == null) return false;
+
+                return !IsMailed && (bool)IsAttending && !IsWaiting;
+            }
+        }
+
+        public bool CanCancel
+        {
+            get
+            {
+                if (IsAttending == null) return false;
+                return (bool)IsAttending;
+            }
+        }
+        public bool CanAddTickets
+        {
+            get
+            {
+                if (IsAttending == null) return false;
+                return (bool)IsAttending;
+            }
+        }
+
+        public bool CanAddToAttending
+        {
+            get
+            {
+                //if (IsAttending == null) return false;
+                return IsWaiting;
+            }
+        }
+
+        public void CreateMappings(IMapperConfiguration configuration)
+        {
+            configuration.CreateMap<Guest, GuestViewModel>()
+                .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
+                .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
+                .ReverseMap();
+        }
     }
 }

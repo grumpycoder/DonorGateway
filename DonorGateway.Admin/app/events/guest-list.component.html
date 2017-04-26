@@ -1,0 +1,172 @@
+﻿
+<div class="box no-border" st-table="$ctrl.guests" st-pipe="$ctrl.search">
+    <div class="box-header">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <span>
+                    <button class="btn btn-primary" st-submit-search>
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    <button class="btn btn-default" ng-click="$ctrl.resetSearch()">Clear</button>
+                </span>
+
+                <span class="">
+
+                    <span class="btn-group">
+                        <label class="btn btn-default" ng-model="$ctrl.quickFilter" ng-change="$ctrl.quickFilterChange()" uib-btn-radio="'WaitingAndSent'" uncheckable><i class="fa fa-paper-plane"></i> WL -Letter Sent</label>
+                        <label class="btn btn-default" ng-model="$ctrl.quickFilter" ng-change="$ctrl.quickFilterChange()" uib-btn-radio="'WaitingAndNotSent'" uncheckable><i class="fa fa-clock-o"></i> WL -Send Letter</label>
+                        <label class="btn btn-default" ng-model="$ctrl.quickFilter" ng-change="$ctrl.quickFilterChange()" uib-btn-radio="'TicketNotSent'" uncheckable><i class="fa fa-envelope"> </i> Send Tickets</label>
+                        <label class="btn btn-default" ng-model="$ctrl.quickFilter" ng-change="$ctrl.quickFilterChange()" uib-btn-radio="'TicketSent'" uncheckable><i class="fa fa-paper-plane"></i> Tickets Sent</label>
+                    </span>
+                </span>
+                <span class="pull-right">
+                    <button class="btn btn-default" uib-popover="New Guest" popover-trigger="mouseenter" ng-click="$ctrl.createGuest()">
+                        <i class="fa fa-plus-circle"></i>
+                    </button>
+                    <button class="btn" ng-click="$ctrl.showGuestUpload()"><i class="fa fa-cloud-upload"></i> Upload</button>
+
+                    <button class="btn btn-info" ng-click="$ctrl.exportGuests()">
+                        <i class="fa fa-download"></i>
+                        Export
+                    </button>
+
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <small>({{$ctrl.searchModel.filteredCount}} / {{$ctrl.searchModel.totalCount}}) Total Records</small>
+            <span class="pull-right">
+                <small>Page {{$ctrl.searchModel.page}} of {{$ctrl.searchModel.totalPages}}</small>
+            </span>
+            <table class="table table-striped table-bordered table-hover">
+
+                <thead class="text-nowrap">
+                <tr>
+                    <th st-sort="name">Name</th>
+                    <th>Address</th>
+                    <th st-sort="city">City</th>
+                    <th st-sort="state" class="hidden-xs hidden-sm hidden-md">State</th>
+                    <th st-sort="zipcode" class="hidden-xs hidden-sm hidden-md">Zipcode</th>
+                    <th st-sort="ticketCount">Tickets</th>
+                    <th st-sort="email" class="hidden-xs hidden-sm hidden-md">Email</th>
+                    <th st-sort="phone" class="hidden-xs hidden-sm hidden-md">Phone</th>
+                    <th st-sort="finderNumber">Finder Number</th>
+                    <th st-sort="constituentType">Type</th>
+                    <th st-sort="mailedDate" class="hidden-xs hidden-sm hidden-md">Mailed</th>
+                    <th st-sort="responseDate" class="hidden-xs hidden-sm hidden-md">Responded</th>
+                    <th class="hidden-xs hidden-sm hidden-md">Comments</th>
+                    <th class="hidden-xs hidden-sm hidden-md">SPLC Comments</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td><input type="text" st-clear-key ng-model="$ctrl.searchModel.name" class="form-control" placeholder="Name"/></td>
+                    <td><input type="text" st-clear-key ng-model="$ctrl.searchModel.address" class="form-control" placeholder="Address"/></td>
+                    <td><input type="text" st-clear-key ng-model="$ctrl.searchModel.city" class="form-control" placeholder="City"/></td>
+                    <td class="hidden-xs hidden-sm hidden-md"><input type="text" st-clear-key ng-model="$ctrl.searchModel.state" class="form-control " placeholder="State"/></td>
+                    <td class="hidden-xs hidden-sm hidden-md"><input type="text" st-clear-key ng-model="$ctrl.searchModel.zipcode" class="form-control" placeholder="Zipcode"/></td>
+                    <td><input type="text" st-clear-key ng-model="$ctrl.searchModel.ticketCount" class="form-control" placeholder="Tickets"/></td>
+                    <td class="hidden-xs hidden-sm hidden-md"><input type="text" st-clear-key ng-model="$ctrl.searchModel.email" class="form-control " placeholder="Email"/></td>
+                    <td class="hidden-xs hidden-sm hidden-md"><input type="text" st-clear-key ng-model="$ctrl.searchModel.phone" class="form-control " placeholder="Phone"/></td>
+                    <td><input type="text" st-clear-key ng-model="$ctrl.searchModel.finderNumber" class="form-control" placeholder="Finder Number"/></td>
+                    <td><input type="text" st-clear-key ng-model="$ctrl.searchModel.constituentType" class="form-control" placeholder="Type"/></td>
+                    <td class="hidden-xs hidden-sm hidden-md"></td>
+                    <td class="hidden-xs hidden-sm hidden-md"></td>
+                    <td class="text-center hidden-xs hidden-sm hidden-md"></td>
+                    <td class="text-center hidden-xs hidden-sm hidden-md"></td>
+                    <td>
+                        <div class="pull-right">
+                            <button class="btn btn-danger" ng-show="$ctrl.showMail" ng-click="$ctrl.mailAllTickets()"> <i class="fa fa-paper-plane"></i> Send All Tickets</button>
+                            <button class="btn btn-danger" ng-show="$ctrl.showWaiting" ng-click="$ctrl.mailAllWaiting()"> <i class="fa fa-paper-plane"></i> Send All Waiting</button>
+
+                        </div>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr ng-repeat="g in $ctrl.guests">
+                    <td>{{g.name}}</td>
+                    <td>
+                        <address>
+                            {{g.address}}
+                            <br>
+                            {{g.address2}}<br>
+                            {{g.address3}}
+                        </address>
+                    </td>
+                    <td>{{g.id}}</td>
+                    <td class="hidden-xs hidden-sm hidden-md">{{g.state}}</td>
+                    <td class="hidden-xs hidden-sm hidden-md">{{g.zipcode}}</td>
+                    <td class="text-center">{{g.ticketCount}}</td>
+                    <td class="hidden-xs hidden-sm hidden-md">{{g.email}}</td>
+                    <td class="hidden-xs hidden-sm hidden-md">{{g.phone}}</td>
+                    <td>{{g.finderNumber}}</td>
+                    <td>{{g.constituentType}}</td>
+                    <td class="hidden-xs hidden-sm hidden-md">{{g.mailedDate | date :'MM/dd/yyyy'}}</td>
+                    <td class="hidden-xs hidden-sm hidden-md">{{g.responseDate | date :'MM/dd/yyyy'}}</td>
+                    <td class="text-center hidden-xs hidden-sm hidden-md">
+                        <i ng-show="g.comment.length > 0" class="fa fa-comment" uib-popover="{{g.comment}}" popover-trigger="mouseenter"></i>
+                    </td>
+                    <td class="text-center hidden-xs hidden-sm hidden-md">
+                        <i ng-show="g.splcComment.length > 0" class="fa fa-comment" uib-popover="{{g.splcComment}}" popover-trigger="mouseenter"></i>
+                    </td>
+                    <td>
+
+                        <!-- Split button -->
+                        <div>
+                            <button type="button" class="btn btn-primary btn-block" ng-click="g.primaryChoice.command(g)" ng-show="g.choices.length == 0">
+                                <i ng-class="g.primaryChoice.icon"></i> <span>{{g.primaryChoice.name}}</span>
+                            </button>
+
+                            <div id="long-button" class="btn-group" uib-dropdown ng-show="g.choices.length > 0">
+                                <button id="split-button" type="button" class="btn btn-primary" ng-click="g.primaryChoice.command(g)">
+                                    <i ng-class="g.primaryChoice.icon"></i> <span>{{g.primaryChoice.name}}</span>
+                                </button>
+                                <button type="button" class="btn btn-primary" uib-dropdown-toggle>
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Split button</span>
+                                </button>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="split-button" ng-show="g.choices.length > 0">
+                                    <li role="menuitem" ng-repeat="choice in g.choices">
+                                        <a ng-click="choice.command(g)"><i ng-class="choice.icon"></i> {{choice.name}}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="15" class="text-center">
+                        <span uib-pagination total-items="$ctrl.searchModel.filteredCount"
+                              ng-model="$ctrl.searchModel.page"
+                              max-size="5"
+                              items-per-page="$ctrl.searchModel.pageSize"
+                              class="pagination-sm"
+                              boundary-link-numbers="true"
+                              ng-change="$ctrl.paged()"
+                              rotate="false">
+                        </span>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+            <div>
+                <span class="pull-right text-muted small">
+                    {{ $ctrl.searchModel.elapsedTime }}
+                </span>
+            </div>
+        </div>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+    </div>
+    <!-- ./box-footer -->
+    <div class="overlay" ng-show="$ctrl.isBusy">
+        <i class="fa fa-refresh fa-spin"></i>
+    </div>
+</div>
