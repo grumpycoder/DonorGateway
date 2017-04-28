@@ -281,6 +281,8 @@
     <Content Include="app\donortax\constituent-list.component.js" />
     <Content Include="app\donortax\tax-detail.component.js" />
     <Content Include="app\donortax\tax-details.component.html" />
+    <Content Include="app\events\event-create.component.html" />
+    <Content Include="app\events\event-create.component.js" />
     <Content Include="app\events\event-dashboard.component.html" />
     <Content Include="app\events\event-dashboard.component.js" />
     <Content Include="app\events\event-detail.component.html" />

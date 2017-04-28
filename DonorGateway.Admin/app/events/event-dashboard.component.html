@@ -42,7 +42,7 @@
 
                             </div>
                             <div class="col-md-8">
-                                <button class="btn btn-primary pull-right" ng-click="$ctrl.showCreateEvent()">
+                                <button class="btn btn-primary pull-right" ng-click="$ctrl.create()">
                                     <i class="fa fa-plus"></i>
                                     Create Event
                                 </button>
@@ -75,11 +75,11 @@
 
                                 <uib-tabset>
                                     
+                                    <uib-tab index="0" heading="Details">
+                                        <event-detail event-id="$ctrl.selectedEvent.id" on-delete="$ctrl.eventDeleted()"></event-detail>
+                                    </uib-tab>
                                     <uib-tab index="1" heading="Guests">
                                         <guest-list event-id="$ctrl.selectedEvent.id"></guest-list>
-                                    </uib-tab>
-                                    <uib-tab index="0" heading="Details">
-                                        <event-detail event-id="$ctrl.selectedEvent.id"></event-detail>
                                     </uib-tab>
                                     <uib-tab index="2" heading="Template">
                                         Template

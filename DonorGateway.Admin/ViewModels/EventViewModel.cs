@@ -5,7 +5,7 @@ using Heroic.AutoMapper;
 
 namespace DonorGateway.Admin.ViewModels
 {
-    public class EventViewModel : IMapFrom<Event>
+    public class EventViewModel : IMapFrom<Event>, IMapTo<Event>
     {
         public int Id { get; set; }
         public string Name { get; set; }

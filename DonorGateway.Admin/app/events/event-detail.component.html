@@ -1,6 +1,6 @@
 ﻿
 
-<form novalidate name="detailsForm">
+<form novalidate name="form">
     <div class="box no-border">
 
         <div class="box-body">
@@ -290,11 +290,11 @@
                 </button>
             </div>
             <div class="pull-right">
-                <button class="btn btn-danger" ng-click="$ctrl.deleteEvent($ctrl.event.id)"
+                <button class="btn btn-danger" ng-click="$ctrl.delete()"
                         confirm="Delete {{$ctrl.event.name}} Event?" confirm-settings="{size: 'sm'}">
                     <i class="fa fa-trash"></i> Delete
                 </button>
-                <button class="btn btn-primary" ng-click="$ctrl.saveEvent(detailsForm)" ng-disabled="detailsForm.$pristine"><i class="fa fa-save"></i> Save</button>
+                <button class="btn btn-primary" ng-click="$ctrl.save(detailsForm)" ng-disabled="form.$pristine"><i class="fa fa-save"></i> Save</button>
             </div>
         </div><!-- /.box-footer-->
         <div class="overlay" ng-show="$ctrl.isBusy">

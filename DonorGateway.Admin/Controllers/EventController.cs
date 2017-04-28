@@ -68,6 +68,69 @@ namespace DonorGateway.Admin.Controllers
             return Ok(model);
         }
 
+        public async Task<object> Put(EventViewModel model)
+        {
+            try
+            {
+                var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == model.Id);
+                if (@event == null) return BadRequest("Event not found");
+
+                Mapper.Map(model, @event);
+
+                _context.Events.AddOrUpdate(@event);
+                await _context.SaveChangesAsync();
+
+                Mapper.Map(@event, model);
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<object> Post(EventViewModel model)
+        {
+            try
+            {
+                var @event = await _context.Events.FirstOrDefaultAsync(e => e.Name == model.Name);
+                if (@event != null) return BadRequest("Event name already exists");
+
+                @event = Mapper.Map<Event>(model);
+                _context.Events.AddOrUpdate(@event);
+                await _context.SaveChangesAsync();
+                Mapper.Map(@event, model);
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete, Route("{id}")]
+        public async Task<object> Delete(int id)
+        {
+            try
+            {
+                var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
+                if (@event == null) return BadRequest("Event not found");
+
+                var template = await _context.Templates.FirstOrDefaultAsync(e => e.Id == @event.TemplateId);
+                _context.Templates.Remove(template);
+                await _context.SaveChangesAsync();
+                await _context.Events.DeleteAsync(e => e.Id == id);
+                await _context.SaveChangesAsync();
+                return Ok("Deleted Event");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet, Route("{id:int}/guests")]
         public async Task<object> Guests(int id, [FromUri]GuestSearchModel pager)
         {
@@ -114,45 +177,6 @@ namespace DonorGateway.Admin.Controllers
             pager.ElapsedTime = stopwatch.Elapsed;
             return Ok(pager);
         }
-
-        //[HttpDelete, Route("{id}")]
-        //public IHttpActionResult Delete(int id)
-        //{
-        //    var @event = _context.Events.Find(id);
-        //    if (@event == null) return NotFound();
-
-        //    var template = _context.Templates.Find(@event.TemplateId);
-
-        //    if (template != null) _context.Templates.Remove(template);
-        //    _context.SaveChanges();
-
-        //    _context.Events.Remove(@event);
-        //    _context.SaveChanges();
-
-        //    return Ok("Deleted Event");
-        //}
-
-        //public IHttpActionResult Post(Event vm)
-        //{
-        //_context.Templates.Add(vm.Template);
-        //_context.SaveChanges();
-        //_context.Events.Add(vm);
-        //_context.SaveChanges();
-
-        //var @event = Mapper.Map<EventViewModel>(vm);
-
-        //return Ok(@event);
-        //}
-
-        //public IHttpActionResult Put(Event vm)
-        //{
-        //    _context.Events.AddOrUpdate(vm);
-        //    _context.SaveChanges();
-
-        //    var model = Mapper.Map<EventViewModel>(vm);
-
-        //    return Ok(model);
-        //}
 
         [HttpPost, Route("{id:int}/register")]
         public async Task<object> RegisterGuest(int id, [FromBody]GuestViewModel model)
@@ -310,8 +334,6 @@ namespace DonorGateway.Admin.Controllers
             }
         }
 
-        //[HttpPost, Route("{id:int}/guests/export")]
-        //public async Task<object> Export(int id, [FromUri]GuestSearchModel pager)
         [HttpGet, Route("{id:int}/guests/export")]
         public async Task<object> Export(int id, [FromUri]GuestSearchModel pager)
         {
