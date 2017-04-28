@@ -10,7 +10,7 @@
         }
 
         $ctrl.$onInit = function () {
-            console.log('event detail init', $ctrl);
+            console.log('event detail init');
         }
 
         $ctrl.refresh = function () {

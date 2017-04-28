@@ -1,0 +1,163 @@
+﻿<form name="form" novalidate>
+
+    <div class="modal-header">
+        <h3 class="modal-title">{{$ctrl.title}}</h3>
+    </div>
+    <div class="modal-body">
+        <!--<div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div>
+                        <pre>{{$ctrl.guest | json}}</pre>
+                    </div>
+                </div>
+
+            </div>
+        </div>-->
+
+        <fieldset>
+            <legend>Request</legend>
+            <div class="row">
+
+                <div class="col-md-8 col-sm-8 col-xs-8">
+                    <div class="form-group">
+                        <label class="control-label">Attending?</label>
+                        <div class="clearfix" style="width: 100%;">
+
+                            <input toggle-checkbox type="checkbox"
+                                   ng-change="$ctrl.changeAttending()"
+                                   data-toggle="toggle"
+                                   data-on="YES" data-off="NO"
+                                   ng-model="$ctrl.guest.isAttending"
+                                   data-onstyle="success"
+                                   data-offstyle="danger" style="width: 125px !important; height: 34px;">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-4">
+                    <div class="form-group">
+                        <label class="control-label">Tickets Requested</label>
+
+                        <select ng-model="$ctrl.guest.ticketCount"
+                                ng-change="$ctrl.changeTicket()"
+                                ng-options="x for x in $ctrl.ticketCountList "
+                                class="form-control">
+                            <option value="">-- Choose Ticket --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-sm-12" ng-show="$ctrl.isFull">
+                    <div class="alert alert-info">
+                        No space left. Guest will be added to waiting list
+                    </div>
+                </div>
+            </div>
+
+          
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Contact</legend>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Name</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.guest.name" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label class="control-label">Email</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.guest.email" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label">Phone</label>
+                        <input type="text" class="form-control" ng-model="$ctrl.guest.phone" />
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>
+                Address
+            </legend>
+
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-2 control-label">Street</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="Address Line 1" class="form-control" ng-model="$ctrl.guest.address">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-2 control-label">Street</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="Address Line 2" class="form-control" ng-model="$ctrl.guest.address2">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-2 control-label">Street</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="Address Line 3" class="form-control" ng-model="$ctrl.guest.address3">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-2 control-label">City</label>
+                    <div class="col-sm-10">
+                        <input type="text" placeholder="City" class="form-control" ng-model="$ctrl.guest.city">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-sm-2 control-label">State</label>
+                    <div class="col-sm-4">
+                        <input type="text" placeholder="State" class="form-control" ng-model="$ctrl.guest.state">
+                    </div>
+
+                    <label class="col-sm-2 control-label">Zipcode</label>
+                    <div class="col-sm-4">
+                        <input type="text" placeholder="Zipcode" class="form-control" ng-model="$ctrl.guest.zipcode">
+                    </div>
+                </div>
+            </div>
+        </fieldset><!-- /.fieldset -->
+
+
+        <fieldset>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Comments</label>
+                        <textarea class="form-control" ng-model="$ctrl.guest.splccomment"></textarea>
+                    </div>
+                </div>
+            </div>
+        </fieldset><!-- /.fieldset -->
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-disabled="form.$invalid" ng-click="$ctrl.save()">Save</button>
+        <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+    </div>
+
+
+</form>
+
+

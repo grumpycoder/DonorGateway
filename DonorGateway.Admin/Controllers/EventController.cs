@@ -18,7 +18,8 @@ using DonorGateway.Admin.Helpers;
 using DonorGateway.Admin.ViewModels;
 using DonorGateway.Data;
 using DonorGateway.Domain;
-using EntityFramework.Utilities;
+using EntityFramework.Extensions;
+
 #pragma warning disable 618
 
 namespace DonorGateway.Admin.Controllers
@@ -58,9 +59,9 @@ namespace DonorGateway.Admin.Controllers
 
             var attendanceCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount);
             @event.GuestAttendanceCount = attendanceCount ?? 0;
-            var waitingCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == true).Sum(g => g.TicketCount);
+            var waitingCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting).Sum(g => g.TicketCount);
             @event.GuestWaitingCount = waitingCount ?? 0;
-            @event.TicketMailedCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsMailed).Sum(g => g.TicketCount) ?? 0;
+            @event.TicketMailedCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsMailed && !g.IsWaiting).Sum(g => g.TicketCount) ?? 0;
             _context.SaveChanges();
 
             var model = Mapper.Map<EventViewModel>(@event);
@@ -81,7 +82,6 @@ namespace DonorGateway.Admin.Controllers
             var totalCount = await query.CountAsync();
 
             var pred = PredicateBuilder.True<Guest>();
-            pred = pred.And(p => p.EventId == id);
             if (!string.IsNullOrWhiteSpace(pager.Address)) pred = pred.And(p => p.Address.Contains(pager.Address));
             if (!string.IsNullOrWhiteSpace(pager.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(pager.FinderNumber));
             if (!string.IsNullOrWhiteSpace(pager.Name)) pred = pred.And(p => p.Name.Contains(pager.Name));
@@ -114,55 +114,6 @@ namespace DonorGateway.Admin.Controllers
             pager.ElapsedTime = stopwatch.Elapsed;
             return Ok(pager);
         }
-
-        //[HttpPost, Route("{id:int}/guests/export")]
-        //public IHttpActionResult Export(int id, GuestSearchModel vm)
-        //{
-        //    var ticketMailed = vm.IsMailed ?? false;
-        //    var isWaiting = vm.IsWaiting ?? false;
-        //    var isAttending = vm.IsAttending ?? false;
-
-        //    var pred = PredicateBuilder.True<Guest>();
-        //    pred = pred.And(p => p.EventId == id);
-        //    if (!string.IsNullOrWhiteSpace(vm.Address)) pred = pred.And(p => p.Address.Contains(vm.Address));
-        //    if (!string.IsNullOrWhiteSpace(vm.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(vm.FinderNumber));
-        //    if (!string.IsNullOrWhiteSpace(vm.Name)) pred = pred.And(p => p.Name.Contains(vm.Name));
-        //    if (!string.IsNullOrWhiteSpace(vm.City)) pred = pred.And(p => p.City.StartsWith(vm.City));
-        //    if (!string.IsNullOrWhiteSpace(vm.State)) pred = pred.And(p => p.State.Equals(vm.State));
-        //    if (!string.IsNullOrWhiteSpace(vm.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(vm.ZipCode));
-        //    if (!string.IsNullOrWhiteSpace(vm.Phone)) pred = pred.And(p => p.Phone.Contains(vm.Phone));
-        //    if (!string.IsNullOrWhiteSpace(vm.Email)) pred = pred.And(p => p.Email.StartsWith(vm.Email));
-        //    if (!string.IsNullOrWhiteSpace(vm.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(vm.LookupId));
-        //    if (vm.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
-        //    if (vm.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
-        //    if (vm.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
-
-        //    var list = _context.Guests.AsQueryable()
-        //            .Where(pred)
-        //            .ProjectTo<GuestExportViewModel>();
-
-        //    var path = HttpContext.Current.Server.MapPath(@"~\app_data\guestlist.csv");
-
-        //    using (var csv = new CsvWriter(new StreamWriter(File.Create(path))))
-        //    {
-        //        csv.Configuration.RegisterClassMap<GuestExportMap>();
-        //        csv.WriteHeader<GuestExportViewModel>();
-        //        csv.WriteRecords(list);
-        //    }
-        //    var filename = $"guest-list-{DateTime.Now.ToString("u")}.csv";
-
-        //    var response = new HttpResponseMessage(HttpStatusCode.OK);
-        //    var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
-        //    response.Content = new StreamContent(stream);
-        //    response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-        //    response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-        //    {
-        //        FileName = filename
-        //    };
-        //    response.Content.Headers.Add("x-filename", filename);
-
-        //    return ResponseMessage(response);
-        //}
 
         //[HttpDelete, Route("{id}")]
         //public IHttpActionResult Delete(int id)
@@ -209,7 +160,7 @@ namespace DonorGateway.Admin.Controllers
             var @event = _context.Events.Find(id);
             if (@event == null) return BadRequest("Event not found");
             var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
-            if (guest == null) return BadRequest("Guest not found");
+            if (guest == null) guest = Mapper.Map<Guest>(model);
 
             Mapper.Map(model, guest);
 
@@ -270,7 +221,7 @@ namespace DonorGateway.Admin.Controllers
             var dto = Mapper.Map<GuestViewModel>(guest);
             return Ok(dto);
         }
-        
+
         [HttpPost, Route("{id:int}/addticket")]
         public async Task<object> AddTicket(int id, GuestViewModel model)
         {
@@ -303,85 +254,169 @@ namespace DonorGateway.Admin.Controllers
             return Ok(model);
         }
 
-
-
-
-        [HttpPut, Route("{id:int}/mailalltickets")]
-        public IHttpActionResult MailAllTickets(int id)
+        [HttpGet, Route("guest/{id:int}")]
+        public async Task<object> GetGuest(int id)
         {
-            //var @event = context.Events.Include(g => g.Guests).SingleOrDefault(e => e.Id == id);
-            var @event = _context.Events.SingleOrDefault(e => e.Id == id);
+            var guest = await _context.Guests.Include("Event").ProjectTo<GuestViewModel>().FirstOrDefaultAsync(e => e.Id == id);
+            if (guest == null) return BadRequest("Guest not found");
+            return Ok(guest);
+        }
 
-            if (@event == null) return NotFound();
-
-            var list = _context.Guests.Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == false);
-
-            //TODO: Event should do this
-            foreach (var guest in list)
+        [HttpPost, Route("{id:int}/sendalltickets")]
+        public async Task<object> SendAllTickets(int id)
+        {
+            try
             {
-                guest.IsMailed = true;
-                guest.MailedDate = DateTime.Now;
-                @event.TicketMailedCount++;
+                var @event = await _context.Events.SingleOrDefaultAsync(e => e.Id == id);
+                if (@event == null) return BadRequest("Event not found");
+
+                _context.Guests
+                    .Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == false)
+                    .Update(t => new Guest() { IsMailed = true, MailedDate = DateTime.Now });
+                _context.SaveChanges();
+
+                @event.TicketMailedCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount) ?? 0;
+                _context.SaveChanges();
+
+                return Ok(@event);
             }
-            _context.Events.AddOrUpdate(@event);
-            _context.SaveChanges();
-
-            EFBatchOperation.For(_context, _context.Guests).UpdateAll(@event.Guests.ToList(), x => x.ColumnsToUpdate(c => c.IsMailed, c => c.MailedDate));
-            _context.SaveChanges();
-
-            @event.TicketMailedCount = _context.Guests.Where(g => g.EventId == id && g.IsAttending == true && g.IsWaiting == false).Sum(g => g.TicketCount) ?? 0;
-            _context.SaveChanges();
-
-            return Ok(@event);
-        }
-
-        [HttpPut, Route("{id:int}/mailallwaiting")]
-        public IHttpActionResult MailAllWaiting(int id)
-        {
-            var @event = _context.Events.SingleOrDefault(e => e.Id == id);
-
-            if (@event == null) return NotFound();
-
-            var list = _context.Guests.Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == true);
-
-            //TODO: Event should do this
-            foreach (var guest in list)
+            catch (Exception e)
             {
-                guest.IsMailed = true;
-                guest.MailedDate = DateTime.Now;
+                return BadRequest(e.Message);
             }
-            _context.Events.AddOrUpdate(@event);
-            _context.SaveChanges();
-
-            EFBatchOperation.For(_context, _context.Guests).UpdateAll(@event.Guests.ToList(), x => x.ColumnsToUpdate(c => c.IsMailed, c => c.MailedDate));
-            _context.SaveChanges();
-
-            _context.SaveChanges();
-
-            return Ok(@event);
         }
 
-
-        [HttpPost, Route("{id:int}/addtomail")]
-        public IHttpActionResult AddToMail(int id, Guest dto)
+        [HttpPost, Route("{id:int}/sendallwaiting")]
+        public async Task<object> SendAllWaiting(int id)
         {
-            var @event = _context.Events.Find(id);
+            try
+            {
+                var @event = await _context.Events.SingleOrDefaultAsync(e => e.Id == id);
+                if (@event == null) return NotFound();
 
-            if (@event == null) return NotFound();
+                _context.Guests
+                    .Where(x => x.EventId == id && x.IsMailed == false && x.IsAttending == true && x.IsWaiting == true)
+                    .Update(t => new Guest() { IsMailed = true, MailedDate = DateTime.Now });
+                _context.SaveChanges();
 
-            if (dto == null) return NotFound();
+                _context.Events.AddOrUpdate(@event);
+                _context.SaveChanges();
 
-            @event.MoveToMailQueue(dto);
-            dto.Event = @event;
-
-            _context.Events.AddOrUpdate(@event);
-            _context.SaveChanges();
-
-            _context.Guests.AddOrUpdate(dto);
-            _context.SaveChanges();
-
-            return Ok(dto);
+                return Ok(@event);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
+
+        //[HttpPost, Route("{id:int}/guests/export")]
+        //public async Task<object> Export(int id, [FromUri]GuestSearchModel pager)
+        [HttpGet, Route("{id:int}/guests/export")]
+        public async Task<object> Export(int id, [FromUri]GuestSearchModel pager)
+        {
+            try
+            {
+                if (pager == null) pager = new GuestSearchModel();
+
+                var ticketMailed = pager.IsMailed ?? false;
+                var isWaiting = pager.IsWaiting ?? false;
+                var isAttending = pager.IsAttending ?? false;
+                var query = _context.Guests.Where(e => e.EventId == id);
+
+                var pred = PredicateBuilder.True<Guest>();
+                if (!string.IsNullOrWhiteSpace(pager.Address)) pred = pred.And(p => p.Address.Contains(pager.Address));
+                if (!string.IsNullOrWhiteSpace(pager.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(pager.FinderNumber));
+                if (!string.IsNullOrWhiteSpace(pager.Name)) pred = pred.And(p => p.Name.Contains(pager.Name));
+                if (!string.IsNullOrWhiteSpace(pager.City)) pred = pred.And(p => p.City.StartsWith(pager.City));
+                if (!string.IsNullOrWhiteSpace(pager.State)) pred = pred.And(p => p.State.Equals(pager.State));
+                if (!string.IsNullOrWhiteSpace(pager.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(pager.ZipCode));
+                if (!string.IsNullOrWhiteSpace(pager.Phone)) pred = pred.And(p => p.Phone.Contains(pager.Phone));
+                if (!string.IsNullOrWhiteSpace(pager.Email)) pred = pred.And(p => p.Email.StartsWith(pager.Email));
+                if (!string.IsNullOrWhiteSpace(pager.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(pager.LookupId));
+                if (!string.IsNullOrWhiteSpace(pager.ConstituentType)) pred = pred.And(p => p.ConstituentType.StartsWith(pager.ConstituentType));
+                if (pager.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
+                if (pager.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
+                if (pager.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
+
+                var filteredQuery = query.Where(pred);
+
+                var results = await filteredQuery
+                    .ProjectTo<GuestExportViewModel>().ToListAsync();
+
+                var path = HttpContext.Current.Server.MapPath(@"~\app_data\guestlist.csv");
+
+                using (var csv = new CsvWriter(new StreamWriter(File.Create(path))))
+                {
+                    csv.Configuration.RegisterClassMap<GuestExportMap>();
+                    csv.WriteHeader<GuestExportViewModel>();
+                    csv.WriteRecords(results);
+                }
+                var filename = $"guest-list-{DateTime.Now:u}.csv";
+
+                var response = new HttpResponseMessage(HttpStatusCode.OK);
+                var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                response.Content = new StreamContent(stream);
+                response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+                {
+                    FileName = filename
+                };
+                response.Content.Headers.Add("x-filename", filename);
+
+                return ResponseMessage(response);
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            //var ticketMailed = vm.IsMailed ?? false;
+            //var isWaiting = vm.IsWaiting ?? false;
+            //var isAttending = vm.IsAttending ?? false;
+
+            //var pred = PredicateBuilder.True<Guest>();
+            //pred = pred.And(p => p.EventId == id);
+            //if (!string.IsNullOrWhiteSpace(vm.Address)) pred = pred.And(p => p.Address.Contains(vm.Address));
+            //if (!string.IsNullOrWhiteSpace(vm.FinderNumber)) pred = pred.And(p => p.FinderNumber.StartsWith(vm.FinderNumber));
+            //if (!string.IsNullOrWhiteSpace(vm.Name)) pred = pred.And(p => p.Name.Contains(vm.Name));
+            //if (!string.IsNullOrWhiteSpace(vm.City)) pred = pred.And(p => p.City.StartsWith(vm.City));
+            //if (!string.IsNullOrWhiteSpace(vm.State)) pred = pred.And(p => p.State.Equals(vm.State));
+            //if (!string.IsNullOrWhiteSpace(vm.ZipCode)) pred = pred.And(p => p.Zipcode.StartsWith(vm.ZipCode));
+            //if (!string.IsNullOrWhiteSpace(vm.Phone)) pred = pred.And(p => p.Phone.Contains(vm.Phone));
+            //if (!string.IsNullOrWhiteSpace(vm.Email)) pred = pred.And(p => p.Email.StartsWith(vm.Email));
+            //if (!string.IsNullOrWhiteSpace(vm.LookupId)) pred = pred.And(p => p.LookupId.StartsWith(vm.LookupId));
+            //if (vm.IsMailed != null) pred = pred.And(p => p.IsMailed == ticketMailed);
+            //if (vm.IsWaiting != null) pred = pred.And(p => p.IsWaiting == isWaiting);
+            //if (vm.IsAttending != null) pred = pred.And(p => p.IsAttending == isAttending);
+
+            //var list = _context.Guests.AsQueryable()
+            //    .Where(pred)
+            //    .ProjectTo<GuestExportViewModel>();
+
+            //var path = HttpContext.Current.Server.MapPath(@"~\app_data\guestlist.csv");
+
+            //using (var csv = new CsvWriter(new StreamWriter(File.Create(path))))
+            //{
+            //    csv.Configuration.RegisterClassMap<GuestExportMap>();
+            //    csv.WriteHeader<GuestExportViewModel>();
+            //    csv.WriteRecords(list);
+            //}
+            //var filename = $"guest-list-{DateTime.Now.ToString("u")}.csv";
+
+            //var response = new HttpResponseMessage(HttpStatusCode.OK);
+            //var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            //response.Content = new StreamContent(stream);
+            //response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            //response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            //{
+            //    FileName = filename
+            //};
+            //response.Content.Headers.Add("x-filename", filename);
+
+            //return ResponseMessage(response);
+        }
+
 
     }
 }

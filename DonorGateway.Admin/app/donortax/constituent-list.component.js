@@ -45,7 +45,6 @@
         };
 
         $ctrl.edit = function (person) {
-            console.log('edit', person);
             $modal.open({
                 component: 'constituentEdit',
                 bindings: {

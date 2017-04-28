@@ -1,4 +1,6 @@
-﻿
+﻿<!--<pre>
+{{ $ctrl.searchModel | json }}
+</pre>-->
 <div class="box no-border" st-table="$ctrl.guests" st-pipe="$ctrl.search">
     <div class="box-header">
         <div class="row">
@@ -20,12 +22,12 @@
                     </span>
                 </span>
                 <span class="pull-right">
-                    <button class="btn btn-default" uib-popover="New Guest" popover-trigger="mouseenter" ng-click="$ctrl.createGuest()">
+                    <button class="btn btn-default" uib-popover="New Guest" popover-trigger="'mouseenter'" ng-click="$ctrl.registerGuest()">
                         <i class="fa fa-plus-circle"></i>
                     </button>
                     <button class="btn" ng-click="$ctrl.showGuestUpload()"><i class="fa fa-cloud-upload"></i> Upload</button>
 
-                    <button class="btn btn-info" ng-click="$ctrl.exportGuests()">
+                    <button class="btn btn-info" ng-click="$ctrl.export()">
                         <i class="fa fa-download"></i>
                         Export
                     </button>
@@ -77,9 +79,8 @@
                     <td class="text-center hidden-xs hidden-sm hidden-md"></td>
                     <td>
                         <div class="pull-right">
-                            <button class="btn btn-danger" ng-show="$ctrl.showMail" ng-click="$ctrl.mailAllTickets()"> <i class="fa fa-paper-plane"></i> Send All Tickets</button>
-                            <button class="btn btn-danger" ng-show="$ctrl.showWaiting" ng-click="$ctrl.mailAllWaiting()"> <i class="fa fa-paper-plane"></i> Send All Waiting</button>
-
+                            <button class="btn btn-danger" ng-show="$ctrl.showSendMail" ng-click="$ctrl.sendAllMail()"> <i class="fa fa-paper-plane"></i> Send All Tickets</button>
+                            <button class="btn btn-danger" ng-show="$ctrl.showSendWaiting" ng-click="$ctrl.sendAllWaiting()"> <i class="fa fa-paper-plane"></i> Send All Waiting</button>
                         </div>
                     </td>
                 </tr>

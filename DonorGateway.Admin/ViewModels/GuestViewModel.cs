@@ -50,6 +50,7 @@ namespace DonorGateway.Admin.ViewModels
         public int? EventId { get; set; }
 
         public int AdditionalTickets { get; set; }
+        public int? TicketAllowance { get; set; }
 
         public bool CanRegister
         {
@@ -101,6 +102,7 @@ namespace DonorGateway.Admin.ViewModels
             configuration.CreateMap<Guest, GuestViewModel>()
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
+                .ForMember(d => d.TicketAllowance, opt => opt.MapFrom(s => s.Event.TicketAllowance))
                 .ReverseMap();
         }
     }

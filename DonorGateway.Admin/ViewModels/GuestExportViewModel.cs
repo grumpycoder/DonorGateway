@@ -1,18 +1,20 @@
 using System;
+using DonorGateway.Domain;
+using Heroic.AutoMapper;
 
 namespace DonorGateway.Admin.ViewModels
 {
-    public class GuestExportViewModel
+    public class GuestExportViewModel : IMapFrom<Guest>
     {
         public string LookupId { get; set; }
         public string FinderNumber { get; set; }
-        public object DonorType { get; set; }
+        public string DonorType { get; set; }
         public string ConstituentType { get; set; }
         public string SourceCode { get; set; }
         public string InteractionId { get; set; }
 
         public string MembershipYear { get; set; }
-        public string LeadershipCouncil { get; set; }
+        public bool LeadershipCouncil { get; set; }
         public string InsideSalutation { get; set; }
         public string OutsideSalutation { get; set; }
         public string HouseholdSalutation1 { get; set; }

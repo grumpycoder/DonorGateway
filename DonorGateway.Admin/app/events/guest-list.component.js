@@ -2,7 +2,7 @@
 (function () {
     var module = angular.module('app');
 
-    function controller($http, toastr) {
+    function controller($http, $modal, toastr) {
         var $ctrl = this;
         var tableStateRef;
         var pageSizeDefault = 10;
@@ -13,8 +13,7 @@
             { id: 4, name: "Guest List", command: function (e) { $ctrl.reservationOverride(e) }, icon: 'icon ion-android-add-circle', default: false },
             { id: 5, name: "Add Tickets", command: function (e) { $ctrl.addGuestTicket(e) }, icon: 'icon ion-android-add-circle', default: false }
         ];
-
-
+        
         $ctrl.title = 'Reservation Manager';
         $ctrl.description = "Manage Guest List";
 
@@ -71,12 +70,15 @@
             $ctrl.searchModel.isWaiting = null;
             $ctrl.searchModel.isMailed = null;
             $ctrl.searchModel.isAttending = null;
-            $ctrl.searchModel.isMailed = null;
+
+            $ctrl.showSendMail = null; 
+            $ctrl.showSendWaiting = null; 
 
             switch ($ctrl.quickFilter) {
                 case 'WaitingAndNotSent':
                     $ctrl.searchModel.isWaiting = true;
                     $ctrl.searchModel.isMailed = false;
+                    $ctrl.showSendWaiting = true; 
                     break;
                 case 'WaitingAndSent':
                     $ctrl.searchModel.isWaiting = true;
@@ -85,10 +87,13 @@
                 case 'TicketNotSent':
                     $ctrl.searchModel.isAttending = true;
                     $ctrl.searchModel.isMailed = false;
+                    $ctrl.searchModel.isWaiting = false;
+                    $ctrl.showSendMail = true; 
                     break;
                 case 'TicketSent':
                     $ctrl.searchModel.isAttending = true;
                     $ctrl.searchModel.isMailed = true;
+                    $ctrl.searchModel.isWaiting = false;
                     break;
                 default:
             }
@@ -96,17 +101,21 @@
         }
 
         $ctrl.addGuestTicket = function (e) {
-            //TODO: show modal to add tickets
-            e.additionalTickets = 2; 
-            $http.post('api/event/' + $ctrl.eventId + '/addticket/', e).then(function (r) {
-                var guest = r.data;
-                guest.choices = buildGuestOptions(guest);
-                angular.extend(e, guest);
-                toastr.success('Added ' + e.additionalTickets + ' tickets to ' + guest.name);
-            }).catch(function (err) {
-                console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong addig tickets to guest', err.data.message);
-            }); 
+            $modal.open({
+                component: 'guestEdit',
+                bindings: {
+                    modalInstance: "<"
+                },
+                resolve: {
+                    id: e.id
+                },
+                size: 'md'
+            }).result.then(function (result) {
+                result.choices = buildGuestOptions(result);
+                angular.extend(e, result);
+                toastr.info('Registered ' + result.name);
+            }, function (reason) {
+            });
         }
 
         $ctrl.reservationOverride = function (e) {
@@ -118,7 +127,7 @@
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
                 toastr.error('Oops. Something went wrong registering guest', err.data.message);
-            }); 
+            });
         }
 
         $ctrl.cancelRegistration = function (e) {
@@ -134,17 +143,29 @@
         }
 
         $ctrl.registerGuest = function (e) {
-            e.ticketCount = 1;
-            //TODO: edit modal shown here
-            $http.post('api/event/' + $ctrl.eventId + '/register/', e).then(function (r) {
-                var guest = r.data; 
-                guest.choices = buildGuestOptions(guest);
-                angular.extend(e, guest);
-                toastr.success('Registered ' + guest.name);
-            }).catch(function(err) {
-                console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong registering guest', err.data.message);
-            }); 
+            var newGuest = false;
+            if (!e) {
+                e = { id: null, eventId: $ctrl.eventId }
+                newGuest = true;
+            }
+
+            $modal.open({
+                component: 'guestEdit',
+                bindings: {
+                    modalInstance: "<"
+                },
+                resolve: {
+                    guestId: e.id,
+                    eventId: e.eventId
+                },
+                size: 'md'
+            }).result.then(function (result) {
+                result.choices = buildGuestOptions(result);
+                angular.extend(e, result);
+                if (newGuest) $ctrl.guests.unshift(e);
+                toastr.info('Registered ' + result.name);
+            }, function (reason) {
+            });
         }
 
         $ctrl.sendMail = function (e) {
@@ -157,6 +178,53 @@
                 console.log('Oops. Something went wrong', err);
                 toastr.error('Oops. Something went wrong mailing ticket', err.data.message);
             });
+        }
+
+        $ctrl.sendAllMail = function() {
+            $http.post('api/event/' + $ctrl.eventId + '/sendalltickets').then(function (r) {
+                toastr.success('Mailed all tickets');
+            }).catch(function (err) {
+                console.log('Oops. Something went wrong', err);
+                toastr.error('Oops. Something went wrong mailing tickets', err.data.message);
+            });
+        }
+
+        $ctrl.sendAllWaiting = function () {
+            $http.post('api/event/' + $ctrl.eventId + '/sendallwaiting').then(function (r) {
+                toastr.success('Mailed all letters');
+            }).catch(function (err) {
+                console.log('Oops. Something went wrong', err);
+                toastr.error('Oops. Something went wrong mailing letters', err.data.message);
+            });
+        }
+
+        $ctrl.export = function() {
+            $ctrl.isBusy = true;
+            $http.get('api/event/' + $ctrl.eventId + '/guests/export', { params: $ctrl.searchModel })
+                .then(function (data) {
+                    var contentType = data.headers()['content-type'];
+                    var filename = data.headers()['x-filename'];
+
+                    var linkElement = document.createElement('a');
+                    try {
+                        var blob = new Blob([data.data], { type: contentType });
+                        var url = window.URL.createObjectURL(blob);
+
+                        linkElement.setAttribute('href', url);
+                        linkElement.setAttribute("download", filename);
+
+                        var clickEvent = new MouseEvent("click", {
+                            "view": window,
+                            "bubbles": true,
+                            "cancelable": false
+                        });
+                        linkElement.dispatchEvent(clickEvent);
+                    } catch (ex) {
+                        logger.log(ex);
+                    }
+                }).finally(function () {
+                    $ctrl.isBusy = false;
+                });
         }
 
         function buildGuestOptions(guest) {
@@ -182,7 +250,7 @@
                 eventId: '<'
             },
             templateUrl: 'app/events/guest-list.component.html',
-            controller: ['$http', 'toastr', controller]
+            controller: ['$http', '$uibModal', 'toastr', controller]
         });
 
 }

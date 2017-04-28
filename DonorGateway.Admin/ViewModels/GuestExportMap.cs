@@ -1,4 +1,5 @@
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace DonorGateway.Admin.ViewModels
 {
@@ -13,7 +14,7 @@ namespace DonorGateway.Admin.ViewModels
             Map(m => m.SourceCode).Name("SourceCode");
             Map(m => m.InteractionId).Name("InteractionId");
             Map(m => m.MembershipYear).Name("MembershipYear");
-            Map(m => m.LeadershipCouncil).Name("LeadershipCouncil");
+            Map(m => m.LeadershipCouncil).Name("LeadershipCouncil").TypeConverter<MyBooleanConverter>();
 
             Map(m => m.InsideSalutation).Name("InsideSalutation");
             Map(m => m.OutsideSalutation).Name("OutsideSalutation");
@@ -59,6 +60,21 @@ namespace DonorGateway.Admin.ViewModels
 
 
 
+        }
+    }
+
+    public class MyBooleanConverter : DefaultTypeConverter
+    {
+        public override string ConvertToString(TypeConverterOptions options, object value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            var boolValue = (bool)value;
+
+            return boolValue ? "Yes" : "No";
         }
     }
 }
