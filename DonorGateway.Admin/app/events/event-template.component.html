@@ -1,0 +1,72 @@
+﻿<form name="form" novalidate="">
+    <div class="box no-border">
+        <div class="box-body">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <uib-tabset active="activeJustified">
+                        <uib-tab index="0" heading="Image">
+                            <div class="center-block">
+                                
+                                <div ngf-drop ngf-select
+                                     class="drop-box"
+                                     ng-model="$ctrl.file"
+                                     ngf-change="$ctrl.fileSelected($files, $file)"
+                                     ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="true"
+                                     accept="image/**"
+                                     ngf-pattern="'image/**'">
+
+                                    <div>
+                                        Drop image here or click to upload
+                                    </div>
+                                    <img ng-show="$ctrl.template.image" ng-src="{{$ctrl.template.image}}" class="img-responsive center-block" alt="Event Image">
+                                </div>
+                            </div>
+
+                        </uib-tab>
+                        <uib-tab index="1" heading="Header">
+                            <text-angular name="headerText" ng-model="$ctrl.template.headerText"></text-angular>
+                        </uib-tab>
+                        <uib-tab index="2" heading="Body">
+                            <text-angular name="bodyText" ng-model="$ctrl.template.bodyText" markdownedit></text-angular>
+                        </uib-tab>
+                        <uib-tab index="3" heading="Footer">
+                            <text-angular name="footerText" ng-model="$ctrl.template.footerText" markdownedit></text-angular>
+                        </uib-tab>
+                        <uib-tab index="4" heading="FAQ">
+                            <text-angular name="faqText" ng-model="$ctrl.template.faqText" markdownedit></text-angular>
+                        </uib-tab>
+
+                        <uib-tab index="5" heading="YES Response">
+                            <text-angular name="yesText" ng-model="$ctrl.template.yesResponseText" markdownedit></text-angular>
+                        </uib-tab>
+                        <uib-tab index="6" heading="NO Response">
+                            <text-angular name="noText" ng-model="$ctrl.template.noResponseText" markdownedit></text-angular>
+                        </uib-tab>
+
+                        <uib-tab index="7" heading="Wait List">
+                            <text-angular name="waitText" ng-model="$ctrl.template.waitingResponseText" markdownedit></text-angular>
+                        </uib-tab>
+                        <uib-tab index="8" heading="Cancel Response">
+                            <text-angular name="cancelText" ng-model="$ctrl.template.cancelledEventText" markdownedit></text-angular>
+                        </uib-tab>
+                        <uib-tab index="9" heading="Expire Response">
+                            <text-angular name="expireText" ng-model="$ctrl.template.expiredEventText" markdownedit></text-angular>
+                        </uib-tab>
+
+                    </uib-tabset>
+
+                </div>
+            </div>
+
+        </div><!--./box-body-->
+        <div class="box-footer">
+            <button class="btn btn-success btn-lg" ng-disabled="form.$pristine" ng-click="$ctrl.save(); form.$setPristine();">Save</button>
+            <button class="btn btn-default btn-lg" ng-disabled="form.$pristine" ng-click="$ctrl.cancel(); form.$setPristine();">Cancel</button>
+        </div><!--/box-footer-->
+        <div class="overlay" ng-show="$ctrl.isBusy">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+    </div><!--./box-->
+</form>

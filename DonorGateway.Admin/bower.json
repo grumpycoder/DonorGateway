@@ -43,7 +43,8 @@
     "Ionicons": "ionicons#^2.0.1",
     "angular-confirm-modal": "^1.2.5",
     "ng-csv": "^0.3.6",
-    "angular-duration-format": "^1.0.1"
+    "angular-duration-format": "^1.0.1",
+    "ngFileReader": "^0.0.8"
   },
   "overrides": {
     "angular-bootstrap-datetimepicker": {

@@ -14,6 +14,7 @@
                 'ui.bootstrap',
                 'ngTagsInput',
                 'ngFileUpload',
+                'ngFileReader',
                 'rzModule',
                 'switcher',
                 'gfl.textAvatar',

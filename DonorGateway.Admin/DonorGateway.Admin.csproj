@@ -235,6 +235,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MailerController.cs" />
     <Compile Include="Controllers\TaxController.cs" />
+    <Compile Include="Controllers\TemplateController.cs" />
     <Compile Include="Filters\AuthorizeExAtrribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -287,6 +288,8 @@
     <Content Include="app\events\event-dashboard.component.js" />
     <Content Include="app\events\event-detail.component.html" />
     <Content Include="app\events\event-detail.component.js" />
+    <Content Include="app\events\event-template.component.html" />
+    <Content Include="app\events\event-template.component.js" />
     <Content Include="app\events\guest-edit.component.html" />
     <Content Include="app\events\guest-edit.component.js" />
     <Content Include="app\events\guest-list.component.html" />
