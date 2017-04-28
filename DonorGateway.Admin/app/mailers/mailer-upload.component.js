@@ -29,7 +29,6 @@
         };
 
         $ctrl.saveCampaign = function () {
-            console.log('save', $ctrl.campaign);
             $http.post('api/mailer/createcampaign', $ctrl.campaign).then(function (r) {
                 $ctrl.campaigns.unshift(r.data);
                 $ctrl.selectedCampaign = r.data;
@@ -51,7 +50,7 @@
                 headers: { 'Content-Type': undefined }
             }).then(function (r) {
                 $ctrl.result.success = true;
-                $ctrl.result.message = r.data;
+                $ctrl.result.message = r.data.message[0];
             }).catch(function (error) {
                 $ctrl.result.message = error.data.message;
             }).finally(function () {

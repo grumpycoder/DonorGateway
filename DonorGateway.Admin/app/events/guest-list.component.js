@@ -6,7 +6,8 @@
         var $ctrl = this;
         var tableStateRef;
         var pageSizeDefault = 10;
-        var choices = [
+        var choices =
+            [
             { id: 1, name: "Register", command: function (e) { $ctrl.registerGuest(e) }, icon: 'icon ion-key', default: true },
             { id: 2, name: "Mail Ticket", command: function (e) { $ctrl.sendMail(e) }, icon: 'icon ion-android-mail', default: false },
             { id: 3, name: "Cancel", command: function (e) { $ctrl.cancelRegistration(e) }, icon: 'icon ion-android-cancel', default: false },
@@ -225,6 +226,22 @@
                 }).finally(function () {
                     $ctrl.isBusy = false;
                 });
+        }
+
+        $ctrl.import = function() {
+            $modal.open({
+                component: 'guestImport',
+                bindings: {
+                    modalInstance: "<"
+                },
+                resolve: {
+                    eventId: $ctrl.eventId
+                },
+                size: 'md'
+            }).result.then(function (result) {
+                $ctrl.search(tableStateRef);
+            }, function (reason) {
+            });
         }
 
         function buildGuestOptions(guest) {

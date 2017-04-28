@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using CsvHelper;
@@ -26,13 +28,13 @@ namespace DonorGateway.Admin.Controllers
         }
 
         [HttpPost, Route("mailer/{id:int}")]
-        public IHttpActionResult Mailer(int id)
+        public object Mailer(int id)
         {
-            var httpRequest = HttpContext.Current.Request;
-            var startTime = DateTime.Now;
+            var stopwatch = new Stopwatch();
+            stopwatch.Restart();
             try
             {
-                var postedFile = httpRequest.Files[0];
+                var postedFile = HttpContext.Current.Request.Files[0];
                 // Fix for IE file path issue.
                 var filename = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
                 var filePath = HttpContext.Current.Server.MapPath(@"~\app_data\" + filename);
@@ -62,11 +64,12 @@ namespace DonorGateway.Admin.Controllers
                 }
 
                 var message = $"Processed {list.Count} records";
-                var result = new OperationResult(true, message, DateTime.Now.Subtract(startTime));
+                stopwatch.Stop();
+                var result = new OperationResult(true, message, stopwatch.Elapsed);
 
                 csv.Dispose();
                 File.Delete(filePath);
-                return Ok(message);
+                return Ok(result);
 
             }
             catch (Exception ex)
@@ -78,55 +81,55 @@ namespace DonorGateway.Admin.Controllers
         }
 
 
-        //[HttpPost, Route("guest/{id:int}")]
-        //public IHttpActionResult Guest(int id)
-        //{
-        //    var httpRequest = HttpContext.Current.Request;
-        //    var startTime = DateTime.Now;
-        //    try
-        //    {
-        //        var postedFile = httpRequest.Files[0];
-        //        // Fix for IE file path issue.
-        //        var filename = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
-        //        var filePath = HttpContext.Current.Server.MapPath(@"~\app_data\" + filename);
-        //        postedFile.SaveAs(filePath);
+        [HttpPost, Route("guest/{id:int}")]
+        public object Guest(int id)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Restart();
 
-        //        var configuration = new CsvConfiguration()
-        //        {
-        //            IsHeaderCaseSensitive = false,
-        //            WillThrowOnMissingField = false,
-        //            IgnoreReadingExceptions = true,
-        //            ThrowOnBadData = false,
-        //            SkipEmptyRecords = true
-        //        };
-        //        var csv = new CsvReader(new StreamReader(filePath, Encoding.Default, true), configuration);
+            try
+            {
+                var postedFile = HttpContext.Current.Request.Files[0];
+                // Fix for IE file path issue.
+                var filename = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+                var filePath = HttpContext.Current.Server.MapPath(@"~\app_data\" + filename);
+                postedFile.SaveAs(filePath);
 
-        //        csv.Configuration.RegisterClassMap<GuestImportMap>();
-        //        var list = csv.GetRecords<Guest>().ToList();
-        //        foreach (var guest in list)
-        //        {
-        //            guest.EventId = id;
-        //        }
-        //        using (_context)
-        //        {
-        //            EFBatchOperation.For(_context, _context.Guests).InsertAll(list);
-        //        }
+                var configuration = new CsvConfiguration()
+                {
+                    IsHeaderCaseSensitive = false,
+                    WillThrowOnMissingField = false,
+                    IgnoreReadingExceptions = true,
+                    ThrowOnBadData = false,
+                    SkipEmptyRecords = true
+                };
+                var csv = new CsvReader(new StreamReader(filePath, Encoding.Default, true), configuration);
 
-        //        var message = $"Processed {list.Count} records";
-        //        var result = new OperationResult(true, message, DateTime.Now.Subtract(startTime));
+                csv.Configuration.RegisterClassMap<GuestImportMap>();
+                var list = csv.GetRecords<Guest>().ToList();
+                foreach (var guest in list) guest.EventId = id;
 
-        //        csv.Dispose();
-        //        File.Delete(filePath);
-        //        return Ok(message);
+                using (_context)
+                {
+                    EFBatchOperation.For(_context, _context.Guests).InsertAll(list);
+                }
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var message = $"Error occurred processing records. {ex.Message}";
-        //        return BadRequest(message);
-        //    }
+                var message = $"Processed {list.Count} records";
+                stopwatch.Stop();
+                var result = new OperationResult(true, message, stopwatch.Elapsed);
 
-        //}
+                csv.Dispose();
+                File.Delete(filePath);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                var message = $"Error occurred processing records. {ex.Message}";
+                return BadRequest(message);
+            }
+
+        }
 
 
 

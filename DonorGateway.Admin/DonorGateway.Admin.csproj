@@ -292,6 +292,8 @@
     <Content Include="app\events\event-template.component.js" />
     <Content Include="app\events\guest-edit.component.html" />
     <Content Include="app\events\guest-edit.component.js" />
+    <Content Include="app\events\guest-import.component.html" />
+    <Content Include="app\events\guest-import.component.js" />
     <Content Include="app\events\guest-list.component.html" />
     <Content Include="app\events\guest-list.component.js" />
     <Content Include="app\mailers\mailer-list.component.html" />

@@ -37,7 +37,7 @@ namespace DonorGateway.Admin.Controllers
 
         public async Task<object> Get()
         {
-            var list = await _context.Events.ProjectTo<EventSummaryViewModel>().ToListAsync();
+            var list = await _context.Events.OrderByDescending(e => e.CreatedDate).ProjectTo<EventSummaryViewModel>().ToListAsync();
             return Ok(list);
         }
 
@@ -181,27 +181,43 @@ namespace DonorGateway.Admin.Controllers
         [HttpPost, Route("{id:int}/register")]
         public async Task<object> RegisterGuest(int id, [FromBody]GuestViewModel model)
         {
-            var @event = _context.Events.Find(id);
+            var @event = await _context.Events.SingleOrDefaultAsync(e => e.Id == id);
             if (@event == null) return BadRequest("Event not found");
+
             var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
             if (guest == null) guest = Mapper.Map<Guest>(model);
 
-            Mapper.Map(model, guest);
+            var dto = Mapper.Map<Guest>(model);
+            if (guest != dto)
+            {
+                var demo = new DemographicChange()
+                {
+                    LookupId = dto.LookupId,
+                    FinderNumber = dto.FinderNumber,
+                    Name = dto.Name,
+                    Email = dto.Name,
+                    Phone = dto.Name,
+                    Street = dto.Address,
+                    Street2 = dto.Address2,
+                    City = dto.City,
+                    State = dto.State,
+                    Zipcode = dto.Zipcode, 
+                    Source = Source.RSVP
+                };
+                _context.DemographicChanges.AddOrUpdate(demo);
+                await _context.SaveChangesAsync();
+            }
 
+            Mapper.Map(model, guest);
             @event.RegisterGuest(guest);
             @event.SendEmail(guest);
 
-            //TODO: Create Demographic Change entry
-
-            _context.Entry(@event.Template).State = EntityState.Unchanged;
-
             _context.Events.AddOrUpdate(@event);
-
             _context.Guests.AddOrUpdate(guest);
             _context.SaveChanges();
 
-            var dto = Mapper.Map<GuestViewModel>(guest);
-            return Ok(dto);
+            model = Mapper.Map<GuestViewModel>(guest);
+            return Ok(model);
         }
 
         [HttpPost, Route("{id:int}/CancelRegister/{guestId:int}")]
@@ -245,39 +261,7 @@ namespace DonorGateway.Admin.Controllers
             var dto = Mapper.Map<GuestViewModel>(guest);
             return Ok(dto);
         }
-
-        [HttpPost, Route("{id:int}/addticket")]
-        public async Task<object> AddTicket(int id, GuestViewModel model)
-        {
-            var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == id);
-            if (@event == null) return BadRequest("Event not found");
-
-            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
-            if (guest == null) return BadRequest("Guest not found");
-
-            //TODO: Record demographic change update
-
-            //var guest = Mapper.Map<Guest>(dto);
-            //var current = _context.Guests.Find(dto.Id);
-
-            //if (current != guest)
-            //{
-            //    var demoChange = Mapper.Map<DemographicChange>(guest);
-            //    demoChange.Source = Source.RSVP;
-            //    _context.DemographicChanges.Add(demoChange);
-            //}
-
-            @event.AddTickets(guest, model.AdditionalTickets);
-
-            _context.Events.AddOrUpdate(@event);
-            _context.Guests.AddOrUpdate(guest);
-            _context.SaveChanges();
-
-            Mapper.Map(guest, model);
-            //dto.Event = @event;
-            return Ok(model);
-        }
-
+        
         [HttpGet, Route("guest/{id:int}")]
         public async Task<object> GetGuest(int id)
         {
