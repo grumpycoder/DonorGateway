@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /DonorGateway.Admin/lib/angular-duration-format
+/DonorGateway.RSVP/lib
