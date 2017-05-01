@@ -12,6 +12,6 @@ namespace DonorGateway.Admin.ViewModels
         public string Zipcode { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public string Source { get; set; }
+        public int? Source { get; set; }
     }
 }

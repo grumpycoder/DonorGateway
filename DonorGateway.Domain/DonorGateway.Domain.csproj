@@ -73,6 +73,7 @@
     <Compile Include="Helpers\RegexExtensions.cs" />
     <Compile Include="Mailer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source.cs" />
     <Compile Include="SuppressReason.cs" />
     <Compile Include="TaxItem.cs" />
     <Compile Include="Template.cs" />

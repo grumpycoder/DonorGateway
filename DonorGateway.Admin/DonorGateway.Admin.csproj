@@ -230,6 +230,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ConstituentController.cs" />
+    <Compile Include="Controllers\DemographicController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Helpers\HtmlHelpers.cs" />
     <Compile Include="Helpers\OrderExt.cs" />
     <Compile Include="Helpers\PredicateBuilder.cs" />
+    <Compile Include="Helpers\NumberExtensions.cs" />
     <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -270,6 +272,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\app.module.js" />
+    <Content Include="app\demographics\demographic-list.component.html" />
+    <Content Include="app\demographics\demographic-list.component.js" />
     <Content Include="app\directives\clear-key.directive.js" />
     <Content Include="app\directives\date-before.js" />
     <Content Include="app\directives\date-format.directive.js" />
