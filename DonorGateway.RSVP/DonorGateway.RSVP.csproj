@@ -146,7 +146,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\main.css" />
     <Content Include="css\site.min.css" />
+    <Content Include="css\splcenter-base.css" />
     <Content Include="css\vendor.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -155,6 +157,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="gulpfile.js" />
+    <Content Include="img\boxed-bg.jpg" />
+    <Content Include="img\boxed-bg.png" />
+    <Content Include="img\chevron-down.png" />
+    <Content Include="img\footer-bg.jpg" />
+    <Content Include="img\logo.png" />
+    <Content Include="img\logo_2x.png" />
+    <Content Include="img\missing-image.png" />
+    <Content Include="img\SPLC_LOGO.png" />
+    <Content Include="js\splc.js" />
     <Content Include="js\vendor.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -186,6 +197,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="package.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_Header.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
