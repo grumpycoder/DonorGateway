@@ -204,6 +204,7 @@
     <Content Include="img\SPLC_LOGO.png" />
     <Content Include="js\splc.js" />
     <Content Include="js\vendor.min.js" />
+    <Content Include="version.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
