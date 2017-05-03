@@ -1,0 +1,65 @@
+﻿@model FinishFormViewModel
+@{
+    ViewBag.Title = "Finish";
+}
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            @{
+                var imgSrc = @"/img/missing-image.png";
+                if (Model.Template.Image != null)
+                {
+                    imgSrc = Model.Template.Image;
+                }
+            }
+            <img src="@imgSrc" class="img-responsive center-block event-image" alt="Event Image" />
+        </div>
+    </div>
+
+    
+        @if (Model.IsAttending)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Raw(Model.Template.YesResponseText)
+                </div>
+            </div>
+        }
+
+        @if (!Model.IsAttending)
+            {
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Raw(Model.Template.NoResponseText)
+                </div>
+            </div>
+        }
+
+        @if (Model.IsWaiting)
+            {
+            <div class="row">
+                <div class="col-md-12">
+                    Your name has been placed on waiting list, and we will contact you by telephone if space becomes available.
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-12" id="faq">
+                @Html.Raw(Model.Template.FAQText)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                @Html.Raw(Model.Template.FooterText)
+            </div>
+        </div>
+
+    
+    @*@Html.ActionLink("Back", "Index", "Event", new { id = Model.EventName }, null)*@
+
+</div>

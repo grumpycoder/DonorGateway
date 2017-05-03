@@ -1,0 +1,130 @@
+﻿@model DonorGateway.RSVP.ViewModels.EventViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+@using (Html.BeginForm("Register", "Event"))
+{
+
+    @Html.HiddenFor(m => m.TemplateId)
+    @Html.HiddenFor(m => m.EventId)
+    @Html.HiddenFor(m => m.TicketAllowance)
+    @Html.HiddenFor(m => m.TicketRemainingCount)
+    @Html.HiddenFor(m => m.Capacity)
+
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-12">
+                @{
+                    var imgSrc = @"/img/missing-image.png";
+                    if (Model.Template.Image != null)
+                    {
+                        imgSrc = Model.Template.Image; 
+                    }
+                }
+                <img src="@imgSrc" class="img-responsive center-block event-image" alt="Event Image" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2>
+                    @Html.DisplayFor(m => Model.DisplayName)
+                </h2>
+            </div>
+        </div>
+
+
+        @if (Model.IsRegistrationClosed)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        Sorry, but registration for this event is closed.
+                    </p>
+                </div>
+            </div>
+        }
+
+        @if (Model.IsExpired)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Raw(Model.Template.ExpiredEventText)
+                </div>
+            </div>
+        }
+        @if (Model.IsCancelled)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Raw(Model.Template.CancelledEventText)
+                </div>
+            </div>
+        }
+
+        @if (!Model.IsExpired && !Model.IsCancelled)
+        {
+
+            <div class="row">
+                <div class="col-md-12">
+                    @Html.Raw(Model.Template.HeaderText)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    @Html.Raw(Model.Template.BodyText)
+
+                </div>
+            </div>
+
+            if (Model.IsAtCapacity)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        @*@Html.Raw(Model.Template.WaitingResponseText)*@
+                        <p style="text-decoration: underline"><strong>This event has now reached capacity. Your name will be added to a wait list, and we will contact you by telephone if space becomes available.</strong></p>
+                    </div>
+                </div>
+            }
+
+            if (!Model.IsExpired && !Model.IsRegistrationClosed && !Model.IsCancelled)
+            {
+                <div class="row">
+                    <div class="col-md-12">Enter the reservation code from your invitation below, then click the Submit button.</div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="input-group input-group-lg">
+                            @Html.TextBoxFor(x => x.PromoCode, new { @class = "form-control", placeholder = "example: 55566677788" })
+                            <span class="input-group-btn">
+                                <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                   
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12" id="faq">
+                        @Html.Raw(Model.Template.FAQText)
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.Raw(Model.Template.FooterText)
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+}
