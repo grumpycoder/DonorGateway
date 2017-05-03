@@ -7,6 +7,10 @@ using System.Data;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+
 
 namespace DonorGateway.Domain
 {
@@ -60,7 +64,7 @@ namespace DonorGateway.Domain
         {
             if (guest.IsMailed) TicketMailedCount -= guest.TicketCount ?? 0;
             if (guest.IsWaiting) GuestWaitingCount -= guest.TicketCount ?? 0;
-            
+
             GuestAttendanceCount -= guest.TicketCount ?? 0;
 
             guest.ResponseDate = DateTime.Now;
@@ -117,7 +121,7 @@ namespace DonorGateway.Domain
             GuestAttendanceCount += guest.TicketCount ?? 0;
         }
 
-        public void SendEmail(Guest guest)
+        public async Task SendEmail(Guest guest)
         {
             if (string.IsNullOrWhiteSpace(guest.Email)) return;
 
@@ -147,8 +151,8 @@ namespace DonorGateway.Domain
 
             var html = AlternateView.CreateAlternateViewFromString(message, null, "text/html");
 
-            var sendToAddress = new MailAddress(guest.Email);
-            var sendFromAddress = new MailAddress(ConfigurationManager.AppSettings["SendFromAddress"], ConfigurationManager.AppSettings["SendFromDisplay"]);
+            var sendToAddress = new EmailAddress(guest.Email);
+            var sendFromAddress = new EmailAddress(ConfigurationManager.AppSettings["SendFromAddress"], ConfigurationManager.AppSettings["SendFromDisplay"]);
             var subject = $"SPLC Event {DisplayName} Confirmation";
 
             var env = ConfigurationManager.AppSettings["Environment"];
@@ -157,22 +161,21 @@ namespace DonorGateway.Domain
                 case "Prod":
                     break;
                 default:
-                    sendToAddress = new MailAddress(ConfigurationManager.AppSettings["SendToOverride"]);
+                    sendToAddress = new EmailAddress(ConfigurationManager.AppSettings["SendToOverride"]);
                     break;
             }
 
+            var apiKey = ConfigurationManager.AppSettings["SENDGRID_APIKEY"];
 
-            var mail = new MailMessage(sendFromAddress, sendToAddress)
+            var client = new SendGridClient(apiKey);
+            var msg = new SendGridMessage
             {
+                From = sendFromAddress,
                 Subject = subject,
-                Body = message,
-                IsBodyHtml = true
+                HtmlContent = message
             };
-
-            mail.AlternateViews.Add(html);
-            var client = new SmtpClient();
-            client.Send(mail);
-
+            msg.AddTo(sendToAddress);
+            var response = await client.SendEmailAsync(msg);
         }
 
         public void ParseTemplate(Guest guest)

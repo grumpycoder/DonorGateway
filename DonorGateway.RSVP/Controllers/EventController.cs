@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using AutoMapper;
 using DonorGateway.Data;
@@ -56,7 +57,7 @@ namespace DonorGateway.RSVP.Controllers
         }
 
         [HttpPost]
-        public ActionResult Confirm(RegisterFormViewModel dto)
+        public async Task<ActionResult> Confirm(RegisterFormViewModel dto)
         {
             var @event = _eventService.GetEvent(dto.EventId);
 
@@ -92,7 +93,7 @@ namespace DonorGateway.RSVP.Controllers
             Mapper.Map(dto, guest);
 
             @event.RegisterGuest(guest);
-            @event.SendEmail(guest);
+            await @event.SendEmail(guest);
 
             _context.Events.AddOrUpdate(@event);
             _context.Guests.AddOrUpdate(guest);
