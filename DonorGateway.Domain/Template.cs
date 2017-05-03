@@ -19,5 +19,10 @@
         {
             return MemberwiseClone() as Template;
         }
+
+        public Template ParseTemplate(Guest guest)
+        {
+            return new Template();
+        }
     }
 }

@@ -210,7 +210,7 @@ namespace DonorGateway.Admin.Controllers
 
             Mapper.Map(model, guest);
             @event.RegisterGuest(guest);
-            @event.SendEmail(guest);
+            await @event.SendEmail(guest);
 
             _context.Events.AddOrUpdate(@event);
             _context.Guests.AddOrUpdate(guest);

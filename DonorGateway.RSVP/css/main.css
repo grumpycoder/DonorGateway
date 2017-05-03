@@ -1,0 +1,142 @@
+﻿html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 20px;
+    background-color: #f5f5f5;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    /*font-family: "Knockout 28 A","Knockout 28 B","Arial",sans-serif;*/
+}
+
+#faq p {
+    line-height: 1.5em;
+    padding-bottom: 1.1em;
+}
+
+div.validation-summary-errors {
+    color: red;
+}
+
+span.field-validation-error {
+    color: red;
+    font-weight: bold;
+}
+
+
+img.event-image {
+    margin-bottom: 2em;
+    width: 100%;
+}
+
+/*SPLC Overrides*/
+form h3 {
+    font-size: inherit;
+}
+
+
+/*Bootstrap Overrides*/
+
+td .btn-group {
+    display: flex;
+}
+
+.input-group-btn {
+    padding-left: 5px;
+}
+
+.btn {
+    -ms-border-radius: 0;
+    border-radius: 0;
+}
+
+.btn-primary {
+    background-color: #9c3022;
+    color: #fff;
+    border: none;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    /*font-family: "Knockout 28 A","Knockout 28 B","Arial",sans-serif;*/
+    letter-spacing: 0.03em;
+}
+
+    .btn-primary:hover {
+        background: #393635;
+        color: #fff;
+    }
+
+.input-group-lg > .form-control, .input-group-lg > .input-group-addon, .input-group-lg > .input-group-btn > .btn {
+    height: 46px;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    -ms-border-radius: 0;
+    border-radius: 0;
+}
+
+
+label.btn.btn-primary {
+    margin-right: 10px;
+    background-color: white;
+    font-size: 1.625rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    display: inline-block;
+    color: #393635;
+    padding: 0.5rem 1rem;
+    border: 3px solid #393635;
+    -webkit-transition: color 0.3s ease;
+    -moz-transition: color 0.3s ease;
+    -ms-transition: color 0.3s ease;
+    -o-transition: color 0.3s ease;
+    transition: color 0.3s ease;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    cursor: pointer;
+}
+
+    label.btn.btn-primary.active {
+        background: #d5292a;
+        border: 3px solid #cb1f20;
+        color: #ffffff;
+    }
+
+label.btn-primary.focus, label.btn-primary:focus,
+label.btn-primary.active:focus,
+label.btn-primary.active.focus, label.btn-primary.active:focus,
+label.btn-primary:active:focus, label.btn-primary:active:hover {
+    background: #d5292a;
+    border: 3px solid #cb1f20;
+    color: #ffffff;
+}
+
+.form-control:focus {
+    border: 2px solid #393635;
+    color: #393635;
+    outline: none;
+}

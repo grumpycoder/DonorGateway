@@ -1,0 +1,177 @@
+﻿@model RegisterFormViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+
+@using (Html.BeginForm("Confirm", "Event"))
+{
+    @Html.HiddenFor(m => m.GuestId)
+    @Html.HiddenFor(m => m.EventId)
+    @Html.HiddenFor(m => m.PromoCode)
+    @Html.HiddenFor(m => m.LookupId)
+    @Html.HiddenFor(m => m.EventTicketAllowance)
+
+    var imgSrc = @"/img/missing-image.png";
+    if (Model.Template.Image != null)
+    {
+        imgSrc = Model.Template.Image;
+    }
+
+    <img src="@imgSrc" class="img-responsive center-block" alt="Event Image" />
+
+
+    <div class="row">
+        @Html.ValidationSummary()
+    </div>
+
+    <h3>PLEASE RSVP BY SELECTING ONE OF THE OPTIONS BELOW.</h3>
+
+    <div class="form-group">
+        <label class="control-label">Attending?</label>
+
+        <div class="btn-group" data-toggle="buttons">
+
+            <label class="btn btn-primary">
+                @Html.RadioButtonFor(m => m.IsAttending, true, new { data_isAttending = true }) Yes, I wIll attend
+            </label>
+
+            <label class="btn btn-primary">
+                @Html.RadioButtonFor(m => m.IsAttending, false, new { data_isAttending = true }) No, I am not able to attend
+            </label>
+
+            <div class="error-messages">
+                @Html.ValidationMessageFor(m => m.IsAttending)
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-lg-4 col-xs-4">
+
+                <label class="control-label">Number Tickets</label>
+                @Html.DropDownListFor(m => m.TicketCount, Enumerable.Range(1, Model.EventTicketAllowance ?? 0).Select(i => new SelectListItem() { Value = i.ToString(), Text = i.ToString() }), "Choose Number Tickets", htmlAttributes: new { @class = "form-control" })
+
+            </div>
+        </div>
+    </div>
+
+    <h3>
+        Please fill in the form below. All fields are required.
+    </h3>
+
+    <div class="form-group">
+        <label class="control-label">Name</label>
+        @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="error-messages">
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                <label class="control-label">Address</label>
+                @Html.EditorFor(m => m.Address, new { htmlAttributes = new { @class = "form-control" } })
+                <div class="error-messages">
+                    @Html.ValidationMessageFor(m => m.Address)
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                <label class="control-label">Address</label>
+                @Html.EditorFor(m => m.Address2, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <label class="control-label">City</label>
+                @Html.EditorFor(m => m.City, new { htmlAttributes = new { @class = "form-control" } })
+                <div class="error-messages">
+                    @Html.ValidationMessageFor(m => m.City)
+                </div>
+            </div>
+
+
+            <div class="col-sm-4 col-md-4  col-lg-4">
+                <label class="control-label">State</label>
+                @Html.EditorFor(m => m.State, new { htmlAttributes = new { @class = "form-control", placeHolder = "State" } })
+                <div class="error-messages">
+                    @Html.ValidationMessageFor(m => m.State)
+                </div>
+            </div>
+
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <label class="control-label">Zipcode</label>
+                @Html.EditorFor(m => m.Zipcode, new { htmlAttributes = new { @class = "form-control", placeholder = "ZIP Code" } })
+                <div class="error-messages">
+                    @Html.ValidationMessageFor(m => m.Zipcode)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                <label class="control-label">Phone</label>
+                @Html.EditorFor(m => m.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                <div class="error-messages">
+                    @Html.ValidationMessageFor(m => m.Phone)
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6  col-sm-6">
+                <label class="control-label">Email Address</label>
+                @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+                <div class="error-messages">
+                    @Html.ValidationMessageFor(m => m.Email)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Comments</label>
+        @Html.TextAreaFor(m => m.Comment, new { htmlAttributes = new { @class = "form-control" } })
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-lg btn-primary">Submit</button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Raw(Model.Template.FAQText)
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Raw(Model.Template.FooterText)
+        </div>
+    </div>
+
+}
+@section scripts{
+    <script>
+        $(function () {
+            console.log('ready');
+            $('input[data-isAttending]')
+                .on('change',
+                    function (e) {
+                        var attending = e.target.value === 'True';
+
+                        if (!attending) {
+                            $('#TicketCount').val('');
+                        } else {
+                            $('#TicketCount').val('1');
+                        }
+                        $('#TicketCount').prop('disabled', !attending);
+                    });
+        })
+    </script>
+}
