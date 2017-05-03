@@ -1,0 +1,112 @@
+﻿<div class="modal-body" ng-cloak="">
+
+    <div class="box box-solid box-default">
+
+        <div class="box-header">
+            <h3 class="modal-title">{{ $ctrl.person.name }}</h3>
+        </div><!-- /box-header -->
+        <div class="box-body">
+        
+            <div class="row">
+                <div class="col-md-4 col-sm-4">
+
+                    <div class="form-group">
+                        <label class="control-label">Tax Year</label>
+                        <select ng-model="$ctrl.selectedYear" ng-options="year for year in $ctrl.years" ng-disabled="false" ng-change="$ctrl.yearChange()" class="form-control">
+                            <option value="">Choose a tax year</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <table class="table table-bordered table-condensed table-hover">
+                        <thead>
+                        <tr>
+                            <th class="col-md-1"></th>
+                            <th class="col-md-1">Donation Date</th>
+                            <th class="col-md-1">Amount</th>
+                            <th class="col-md-1">TaxYear</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><button class="btn btn-success" ng-click="$ctrl.addItem()" ng-disabled="!$ctrl.newItem.amount || !$ctrl.newItem.donationDate"><i class="fa fa-plus"></i> Add</button></td>
+                            <td>
+                                <div class="input-group">
+                                    <input type="text" class="form-control"
+                                           uib-datepicker-popup="MM/dd/yyyy"
+                                           datepicker-options="$ctrl.dateOptions"
+                                           ng-model="$ctrl.newItem.donationDate"
+                                           is-open="newStatus.opened"
+                                           ng-required="true"
+                                           close-text="Close"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="newStatus.opened = !newStatus.opened"><i class="fa fa-calendar"></i></button>
+                                    </span>
+                                </div>
+                            </td>
+                            <td><input type="number" class="form-control" ng-model="$ctrl.newItem.amount"></td>
+                            <td>
+                                <span>{{$ctrl.newItem.donationDate | date:'yyyy'}}</span>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="item in $ctrl.taxItems | orderBy: '-donationDate' | filter:{ taxYear : $ctrl.selectedYear } 
+                            track by $index">
+                            <td style="white-space: nowrap;">
+                                <span>
+                                    <button class="btn btn-primary" ng-click="$ctrl.edit(item)" ng-hide="$ctrl.currentEdit[item.id]"><i class="fa fa-edit"></i></button>
+                                    <button class="btn btn-danger" ng-click="$ctrl.delete(item)" ng-hide="$ctrl.currentEdit[item.id]"><i class="fa fa-trash"></i></button>
+
+                                    <button class="btn btn-success" ng-click="$ctrl.save(item)" ng-show="$ctrl.currentEdit[item.id]"><i class="fa fa-save"></i></button>
+                                    <button class="btn btn-warning" ng-click="$ctrl.cancelEdit(item)" ng-show="$ctrl.currentEdit[item.id]"><i class="fa fa-ban"></i></button>
+                                </span>
+                            </td>
+                            <td ng-hide="$ctrl.currentEdit[item.id]">
+                                {{item.donationDate | date:'MM/dd/yyyy'}}
+                            </td>
+                            <td style="width: 150px;" class="fourth" ng-show="$ctrl.currentEdit[item.id]">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" uib-datepicker-popup="MM/dd/yyyy"
+                                           datepicker-options="$ctrl.dateOptions"
+                                           ng-model="$ctrl.itemToEdit.donationDate"
+                                           is-open="status.opened"
+                                           ng-required="true"
+                                           close-text="Close"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="status.opened = !status.opened"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </td>
+
+                            <td ng-hide="$ctrl.currentEdit[item.id]">
+                                {{item.amount | currency}}
+                            </td>
+                            <td class="fourth" ng-show="$ctrl.currentEdit[item.id]">
+                                <input type="number" class="form-control" step="0.01" ng-model="$ctrl.itemToEdit.amount">
+                            </td>
+
+                            <td ng-hide="$ctrl.currentEdit[item.id]">{{item.taxYear}}</td>
+                            <td ng-show="$ctrl.currentEdit[item.id]">
+                                <input type="text" readonly="" ng-model="$ctrl.itemToEdit.taxYear" class="form-control">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><!-- /box-body -->
+
+        <div class="overlay" ng-show="$ctrl.isBusy">
+            <i class="fa fa-refresh fa-spin"></i>
+        </div>
+    </div><!-- /box -->
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" ng-hide="$ctrl.hasChanges" ng-click="$ctrl.cancel()">Close</button>
+</div><!-- /box-footer -->

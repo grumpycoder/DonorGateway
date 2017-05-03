@@ -1,0 +1,36 @@
+﻿<div class="navbar-custom-menu">
+    <ul class="nav navbar-nav">
+
+        <!-- User Account Menu -->
+        <li class="dropdown user user-menu">
+            <!-- Menu Toggle Button -->
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <!-- The user image in the navbar-->
+                    <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                    <span class="hidden-xs">@ViewBag.GivenName</span>
+                </a>
+            }
+            else
+            {
+                @*<a href="Account/signin">Sign In</a>*@
+                @Html.ActionLink("Sign In", "SignIn", "Account")
+            }
+            <ul class="dropdown-menu">
+                <!-- Menu Body -->
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <div class="pull-right">
+                            @Html.ActionLink("Sign out", "SignOut", "Account")
+                        </div>
+                    }
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+

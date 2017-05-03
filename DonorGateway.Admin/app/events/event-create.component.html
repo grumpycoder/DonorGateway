@@ -1,0 +1,85 @@
+﻿<form name="form" novalidate>
+    <div class="modal-header">
+        <h3 class="modal-title">
+            {{$ctrl.title}}
+        </h3>
+    </div>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label class="control-label">
+                Name - Url
+            </label>
+            <input type="text" ng-model="$ctrl.event.name" name="name" class="form-control" placeholder="New Event Name..." ng-required="true" />
+            <div ng-messages="form.name.$error" class="error-messages" ng-show="form.name.$invalid">
+                <div ng-message="required">Required</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">
+                Display Name
+            </label>
+            <input type="text" ng-model="$ctrl.event.displayName" name="displayName" class="form-control" placeholder="New Event Display Name..." ng-required="true" />
+            <div ng-messages="form.displayName.$error" class="error-messages" ng-show="form.displayName.$invalid">
+                <div ng-message="required">Required</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">
+                Venue
+            </label>
+            <input type="text" class="form-control" name="venue" ng-model="$ctrl.event.venue" placeholder="Venue"
+                   minlength="2"
+                   maxlength="50"
+                   required />
+            <div ng-messages="form.venue.$error" class="error-messages" ng-messages-multiple ng-show="form.venue.$invalid">
+                <div ng-message="required">Required</div>
+                <div ng-message="minlength">Too Short</div>
+                <div ng-message="maxlength">Too Long</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group">
+                <label class="control-label">
+                    Event Start Date/Time
+                </label>
+
+                <div class="dropdown">
+                    <a class="dropdown-toggle new-start-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+                        <div class="input-append">
+                            <input class="form-control" type="text"
+                                   ng-model="$ctrl.event.startDate"
+                                   date-input="{{$ctrl.dateFormat}}">
+                            <span class="add-on">
+                                <i class="icon-calendar"></i>
+                            </span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <datetimepicker data-ng-model="$ctrl.event.startDate"
+                                        date-format
+                                        data-datetimepicker-config="{ dropdownSelector: '.new-start-toggle-select' }"></datetimepicker>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="$ctrl.save()" ng-disabled="form.$pristine || form.$invalid || $ctrl.isSaving" ng-enabled="form.$dirty && !form.$invalid">
+            Create
+        </button>
+        <button class="btn btn-default pull-left" ng-click="$ctrl.cancel()">
+            Cancel
+        </button>
+    </div>
+    <!--<div class="col-md-12">
+
+        <div class="col-md-12">
+            Nested Form:
+            <pre>{{ form | json }}</pre>
+        </div>
+    </div>-->
+</form>

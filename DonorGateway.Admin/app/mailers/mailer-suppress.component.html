@@ -1,0 +1,17 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">
+        {{$ctrl.mailer.firstName}} {{$ctrl.mailer.lastName}}
+    </h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label>Reason to suppress</label>
+        <select class="form-control" ng-model="$ctrl.mailer.reasonId"
+                ng-options="reason.id as reason.name for reason in $ctrl.reasons"></select>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="$ctrl.cancel()">Cancel</button>
+    <button class="btn btn-primary" ng-click="$ctrl.save()">Save</button>
+</div>

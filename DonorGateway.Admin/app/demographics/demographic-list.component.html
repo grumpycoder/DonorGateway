@@ -1,0 +1,134 @@
+﻿<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        {{$ctrl.title}}
+        <small>{{$ctrl.description}}</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Updates</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-default box-solid">
+                <div class="box-header">
+
+                    <h3 class="box-title">{{$ctrl.subTitle}}</h3>
+                    <small>({{$ctrl.searchModel.filteredCount}} / {{$ctrl.searchModel.totalCount}}) Total Records</small>
+                    <span class="pull-right">
+                        <small>Page {{$ctrl.searchModel.page}} of {{$ctrl.searchModel.totalPages}}</small>
+                    </span>
+                </div><!-- /.box-header -->
+                <div class="box-body" st-table="$ctrl.demographics" st-pipe="$ctrl.search">
+                    <form novalidate name="form">
+                        <span>
+                            <button class="btn btn-primary" st-submit-search>
+                                <i class="fa fa-search"></i> Search
+                            </button>
+                            <button class="btn btn-default" st-reset-search ng-model="$ctrl.searchModel">Clear</button>
+                        </span>
+
+                        <span class="pull-right">
+                            <button class="btn btn-info" ng-click="$ctrl.export()">
+                                <i class="fa fa-download"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-warning" ng-click="$ctrl.deleteAll()">Update All</button>
+                        </span>
+                        <table class="table table-responsive table-striped">
+                            <thead class="text-nowrap">
+                                <tr>
+                                    <th class="sort-header" st-sort="LookupId">LookupId</th>
+                                    <th class="sort-header" st-sort="FinderNumber">FinderNumber</th>
+                                    <th class="sort-header" st-sort="Name">Name</th>
+                                    <th class="sort-header" st-sort="Address">Address</th>
+                                    <th class="sort-header" st-sort="City">City </th>
+                                    <th class="sort-header" st-sort="State">State</th>
+                                    <th class="sort-header" st-sort="Zipcode">Zip</th>
+                                    <th class="sort-header" st-sort="Email">Email</th>
+                                    <th class="sort-header" st-sort="Phone">Phone</th>
+                                    <th class="sort-header" st-sort="Source">Source</th>
+                                    <th class="sort-header" st-sort="UpdatedDate">Updated</th>
+                                    <th>
+
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th><input type="text" st-clear-key ng-model="$ctrl.searchModel.lookupId" class="form-control" placeholder="Lookup Id" /></th>
+                                    <th class="hidden-sm hidden-xs"><input type="text" st-clear-key ng-model="$ctrl.searchModel.finderNumber" class="form-control" placeholder="Finder Number" /></th>
+                                    <th><input type="text" st-clear-key ng-model="$ctrl.searchModel.name" class="form-control" placeholder="Name" /></th>
+                                    <th><input type="text" st-clear-key ng-model="$ctrl.searchModel.address" class="form-control" placeholder="Address" /></th>
+                                    <th><input type="text" st-clear-key ng-model="$ctrl.searchModel.city" class="form-control" placeholder="City" /></th>
+                                    <th><input type="text" st-clear-key ng-model="$ctrl.searchModel.state" class="form-control" placeholder="State" /></th>
+                                    <th><input type="text" st-clear-key ng-model="$ctrl.searchModel.zipcode" class="form-control" placeholder="Zip Code" /></th>
+                                    <th class="hidden-sm hidden-xs"><input type="text" st-clear-key ng-model="$ctrl.searchModel.email" class="form-control" placeholder="Email Address" /></th>
+                                    <th class="hidden-sm hidden-xs"><input type="text" st-clear-key ng-model="$ctrl.searchModel.phone" class="form-control" placeholder="Phone Number" /></th>
+                                    <th class="hidden-sm hidden-xs">
+                                        <select st-clear-key class="form-control" style="width: 75px;" ng-model="$ctrl.searchModel.source"
+                                                ng-options="source.id as source.name for source in $ctrl.sources"></select>
+
+                                    </th>
+                                    <th class="hidden-sm hidden-xs"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="d in $ctrl.demographics">
+                                    <td>{{d.lookupId}}</td>
+                                    <td>{{d.finderNumber}}</td>
+                                    <td>{{d.name}}</td>
+                                    <td>
+                                        <address>
+                                            {{d.street}}
+                                            <br>
+                                            {{d.street2}}
+                                        </address>
+                                    </td>
+                                    <td>{{d.city}}</td>
+                                    <td>{{d.state}}</td>
+                                    <td>{{d.zipcode}}</td>
+                                    <td>{{d.email}}</td>
+                                    <td>{{d.phone}}</td>
+                                    <td>{{d.source}}</td>
+                                    <td>{{d.updatedDate | date: 'MM/dd/yyyy'}}</td>
+                                    <td>
+                                        <button class="btn btn-default" ng-click="$ctrl.delete(d)">Update</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="14" class="text-center">
+                                        <span uib-pagination total-items="$ctrl.searchModel.filteredCount"
+                                              ng-model="$ctrl.searchModel.page"
+                                              max-size="5"
+                                              items-per-page="$ctrl.searchModel.pageSize"
+                                              class="pagination-sm"
+                                              boundary-link-numbers="true"
+                                              ng-change="$ctrl.paged()"
+                                              rotate="false">
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </form>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                </div>
+                <!-- ./box-footer -->
+                <div class="overlay" ng-show="$ctrl.isBusy">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+</section>
+<!-- /.content -->
