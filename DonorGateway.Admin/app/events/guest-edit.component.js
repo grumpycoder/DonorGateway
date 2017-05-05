@@ -8,7 +8,7 @@
 
         $ctrl.$onInit = function () {
             console.log('guest edit init');
-            
+
             if ($ctrl.resolve) {
                 $ctrl.id = $ctrl.resolve.guestId;
                 $ctrl.eventId = $ctrl.resolve.eventId;
