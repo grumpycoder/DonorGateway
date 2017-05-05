@@ -67,7 +67,7 @@ namespace DonorGateway.Domain
 
             GuestAttendanceCount -= guest.TicketCount ?? 0;
 
-            guest.ResponseDate = null;
+            guest.ResponseDate = DateTime.Now;
             guest.IsAttending = false;
             guest.IsMailed = false;
             guest.IsWaiting = false;
