@@ -37,12 +37,15 @@ namespace DonorGateway.RSVP.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(EventViewModel model)
+        public async Task<ActionResult> Register(EventViewModel model)
         {
-            var guest = _eventService.FindGuestByFinder(model.PromoCode);
+            var guest = await 
+                _context.Guests.SingleOrDefaultAsync(e => e.EventId == model.EventId &&
+                                                          e.FinderNumber == model.PromoCode);
             if (guest == null) ModelState.AddModelError("PromoCode", "Invalid Reservation Code");
 
-            var @event = _eventService.GetEvent(model.EventId);
+            var @event = await _context.Events.SingleOrDefaultAsync(e => e.Id == model.EventId);
+
             if (@event == null) ModelState.AddModelError("Event", "No event scheduled for this location");
 
             model.Template = @event.Template;
