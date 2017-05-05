@@ -48,6 +48,12 @@
                     log.error('Oops. Something went wrong saving event');
                 });
         }
+
+        $ctrl.toggleCancel = function() {
+            $ctrl.event.isCancelled = !$ctrl.event.isCancelled;
+            $ctrl.save(); 
+        }
+
     }
 
     module.component('eventDetail',
