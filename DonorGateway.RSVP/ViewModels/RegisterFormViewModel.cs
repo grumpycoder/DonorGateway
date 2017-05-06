@@ -12,7 +12,7 @@ using Heroic.AutoMapper;
 namespace DonorGateway.RSVP.ViewModels
 {
     [Validator(typeof(RegisterFormViewModelValidator))]
-    public class RegisterFormViewModel : IMapFrom<Guest>, IHaveCustomMappings
+    public class RegisterFormViewModel : IMapFrom<Guest>, IMapTo<Guest>, IHaveCustomMappings
     {
         public int GuestId { get; set; }
 
