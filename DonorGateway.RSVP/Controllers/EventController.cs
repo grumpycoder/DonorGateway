@@ -70,7 +70,10 @@ namespace DonorGateway.RSVP.Controllers
                 return View("Register", dto);
             }
 
-            var guest = _eventService.GetGuest(dto.GuestId);
+            //var guest = _eventService.GetGuest(dto.GuestId);
+            var guest = await _context.Guests.FirstOrDefaultAsync(
+                e => e.FinderNumber == dto.PromoCode && e.EventId == dto.EventId);
+
 
             var d = Mapper.Map<Guest>(dto);
             if (guest != d)

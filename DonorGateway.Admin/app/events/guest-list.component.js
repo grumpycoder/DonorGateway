@@ -12,7 +12,7 @@
             { id: 2, name: "Mail Ticket", command: function (e) { $ctrl.sendMail(e) }, icon: 'icon ion-android-mail', default: false },
             { id: 3, name: "Cancel", command: function (e) { $ctrl.cancelRegistration(e) }, icon: 'icon ion-android-cancel', default: false },
             { id: 4, name: "Guest List", command: function (e) { $ctrl.reservationOverride(e) }, icon: 'icon ion-android-add-circle', default: false },
-            { id: 5, name: "Add Tickets", command: function (e) { $ctrl.addGuestTicket(e) }, icon: 'icon ion-android-add-circle', default: false }
+            { id: 5, name: "Add Tickets", command: function (e) { $ctrl.registerGuest(e) }, icon: 'icon ion-android-add-circle', default: false }
         ];
         
         $ctrl.title = 'Reservation Manager';
@@ -99,24 +99,6 @@
                 default:
             }
             $ctrl.search(tableStateRef);
-        }
-
-        $ctrl.addGuestTicket = function (e) {
-            $modal.open({
-                component: 'guestEdit',
-                bindings: {
-                    modalInstance: "<"
-                },
-                resolve: {
-                    id: e.id
-                },
-                size: 'md'
-            }).result.then(function (result) {
-                result.choices = buildGuestOptions(result);
-                angular.extend(e, result);
-                toastr.info('Registered ' + result.name);
-            }, function (reason) {
-            });
         }
 
         $ctrl.reservationOverride = function (e) {
