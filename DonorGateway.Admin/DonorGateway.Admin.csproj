@@ -371,13 +371,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app\mailers\mailer-suppress.component.js" />
-    <None Include="Properties\PublishProfiles\DonorGateway - FTP.pubxml" />
-    <None Include="Properties\PublishProfiles\DonorGateway - Web Deploy.pubxml" />
     <Content Include="Views\Home\Mailers.cshtml" />
     <Content Include="Views\Home\Demographics.cshtml" />
     <Content Include="Views\Account\SignOutCallback.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Unauthorized.cshtml" />
+    <None Include="Properties\PublishProfiles\DonorGateway - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DonorGateway.Data\DonorGateway.Data.csproj">
