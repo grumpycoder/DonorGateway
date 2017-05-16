@@ -258,6 +258,7 @@
     <Content Include="Views\Event\Finish.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\EventRSVP - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\EventRSVP - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
