@@ -377,6 +377,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Unauthorized.cshtml" />
     <None Include="Properties\PublishProfiles\DonorGateway - Web Deploy.pubxml" />
+    <Content Include="Views\Shared\_Navbar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DonorGateway.Data\DonorGateway.Data.csproj">

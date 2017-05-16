@@ -7,8 +7,22 @@
             <h3><i class="fa fa-warning text-yellow"></i> Oops! You are not authorized to view this area.</h3>
 
             <p>
-                <a href="/account/signout">Logout</a> and login with a user account that has access or request appropriate access from your administrator.
-                Meanwhile, you may <a href="/">return to dashboard</a>.
+                @if (Request.IsAuthenticated)
+                {
+                    <div>
+                        <a href="/account/signout">Logout</a> and login with a user account that has access or request appropriate access from
+                        your administrator.
+                        Meanwhile, you may <a href="/">return to dashboard</a>.
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <a href="/account/signin">Login</a> with a user account that has access or request appropriate access from
+                        your administrator.
+                    </div>
+                }
+
             </p>
 
         </div>

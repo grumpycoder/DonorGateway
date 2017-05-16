@@ -1,0 +1,30 @@
+﻿@using DonorGateway.Admin.Helpers
+
+<header class="main-header">
+    <nav class="navbar navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="/" class="navbar-brand"><b>DonorGateway</b></a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.IconActionLink("fa fa-calendar", "RSVP", "Events", "Home")</li>
+                    <li>@Html.IconActionLink("fa fa-dollar", "Tax", "DonorTax", "Home")</li>
+                    <li>@Html.IconActionLink("fa fa-envelope-o", "MarkIt", "Mailers", "Home")</li>
+                    <li>@Html.IconActionLink("fa fa-info-circle", "Updates", "Demographics", "Home")</li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+            <!-- Navbar Right Menu -->
+            @Html.Partial("_LoginPartial")
+                    
+            <!-- /.navbar-custom-menu -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</header>
