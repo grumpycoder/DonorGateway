@@ -7,6 +7,7 @@ namespace DonorGateway.Admin.ViewModels
     public class EventSummaryViewModel : IMapFrom<Event>
     {
         public int Id { get; set; }
+        public string Initiative { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Speaker { get; set; }

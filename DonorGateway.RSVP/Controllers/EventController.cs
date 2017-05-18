@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,9 @@ namespace DonorGateway.RSVP.Controllers
         [Route("{id}")]
         public ActionResult Index(string id)
         {
-            var @event = _eventService.GetEvent(id);
+            //var @event = _eventService.GetEvent(id);
+            var @event = _context.Events.SingleOrDefault(e => e.Name == id && e.EndDate >= DateTime.Now);
+
             if (@event == null) return View("EventNotFound");
 
             var dto = Mapper.Map<EventViewModel>(@event);

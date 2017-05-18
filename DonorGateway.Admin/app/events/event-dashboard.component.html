@@ -32,7 +32,7 @@
 
                                 <div class="form-group">
                                     <select ng-model="$ctrl.selectedEvent"
-                                            ng-options="event.name for event in $ctrl.events"
+                                            ng-options="event.initiative for event in $ctrl.events"
                                             ng-disabled="$ctrl.events.length == 0"
                                             ng-change="$ctrl.changeEvent(); showNewEvent = false"
                                             class="form-control">

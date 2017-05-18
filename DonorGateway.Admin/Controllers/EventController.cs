@@ -87,7 +87,6 @@ namespace DonorGateway.Admin.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
-                throw;
             }
         }
 

@@ -1,6 +1,6 @@
-﻿using DonorGateway.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using DonorGateway.Domain;
 using Heroic.AutoMapper;
 
 namespace DonorGateway.Admin.ViewModels
@@ -8,6 +8,8 @@ namespace DonorGateway.Admin.ViewModels
     public class EventViewModel : IMapFrom<Event>, IMapTo<Event>
     {
         public int Id { get; set; }
+
+        public string Initiative { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Speaker { get; set; }

@@ -21,6 +21,7 @@ namespace DonorGateway.Domain
             Guests = new List<Guest>();
         }
 
+        public string Initiative { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string EventCode { get; set; }
