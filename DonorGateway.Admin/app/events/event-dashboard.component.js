@@ -13,7 +13,6 @@
             
             $http.get('api/event').then(function (r) {
                 $ctrl.events = r.data;
-                console.log($ctrl.events);
             }).catch(function (err) {
                 console.log("Oops. Can't get list of events", err);
                 toastr.error("Oops. Can't get list of events");

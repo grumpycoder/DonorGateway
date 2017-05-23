@@ -75,6 +75,16 @@ namespace DonorGateway.Admin.Controllers
                 var @event = await _context.Events.FirstOrDefaultAsync(e => e.Id == model.Id);
                 if (@event == null) return BadRequest("Event not found");
 
+                var existingEvent =
+                    await _context.Events.FirstOrDefaultAsync(
+                        e => e.Name == model.Name && e.Id != model.Id && e.EndDate >= DateTime.Now);
+
+                if (existingEvent != null)
+                {
+                    ModelState.AddModelError("Name", "Active event name already exists with this url name");
+                    return BadRequest(ModelState);
+                }
+
                 Mapper.Map(model, @event);
 
                 _context.Events.AddOrUpdate(@event);
