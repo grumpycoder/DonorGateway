@@ -1,6 +1,6 @@
 ﻿
 
-<form novalidate name="$ctrl.form">
+<form novalidate name="form">
     <div class="box no-border">
 
         <div class="box-body">
@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <div class="row">
                         <div>
-                            <pre>{{ $ctrl.event | json}}</pre>
+                            <pre>{{ form | json}}</pre>
                         </div>
                     </div>
 
@@ -96,12 +96,11 @@
                             <input type="text" class="form-control" ng-model="$ctrl.event.initiative" />
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label">
-                                Url
-                            </label>
-                            <input type="text" class="form-control" ng-model="$ctrl.event.name" name="name"/>
-                            <span ng-show="$ctrl.form.name.$error.namecheck">You had an error {{ error }}</span>
+                        <div class="form-group" ng-class="{'has-error' : form.name.$error.name && !form.name.$pristine }">
+                            <label class="control-label">Url</label>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.name" name="name" ng-model-options="{ debounce: 400 }" eventurl />
+                            <span ng-show="form.name.$pending.name" class="help-block">Checking if this url is available...</span>
+                            <span ng-show="form.name.$error.name && !form.name.$pristine" class="help-block">This url is already taken!</span>
                         </div>
 
                         <div class="form-group">
@@ -314,7 +313,7 @@
                         confirm="Delete {{$ctrl.event.name}} Event?" confirm-settings="{size: 'sm'}">
                     <i class="fa fa-trash"></i> Delete
                 </button>
-                <button class="btn btn-primary" ng-click="$ctrl.save()" ng-disabled="$ctrl.form.$pristine"><i class="fa fa-save"></i> Save</button>
+                <button class="btn btn-primary" ng-click="$ctrl.save()" ng-disabled="form.$pristine || form.$invalid"><i class="fa fa-save"></i> Save</button>
             </div>
         </div><!-- /.box-footer-->
         <div class="overlay" ng-show="$ctrl.isBusy">

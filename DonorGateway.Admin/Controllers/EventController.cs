@@ -388,6 +388,15 @@ namespace DonorGateway.Admin.Controllers
             }
         }
 
+        [HttpGet, Route("eventnameurlavailable/{name}")]
+        public async Task<bool> EventNameUrlAvailable(string name)
+        {
+            var existingEvent =
+                await _context.Events.FirstOrDefaultAsync(
+                    e => e.Name == name && e.EndDate >= DateTime.Now);
 
+            return existingEvent == null;
+
+        }
     }
 }

@@ -278,6 +278,7 @@
     <Content Include="app\directives\date-before.js" />
     <Content Include="app\directives\date-format.directive.js" />
     <Content Include="app\directives\date-input.directive.js" />
+    <Content Include="app\directives\event-url.directive.js" />
     <Content Include="app\directives\smart-table.directive.js" />
     <Content Include="app\directives\toggleCheckbox.directive.js" />
     <Content Include="app\donortax\constituent-edit.component.html" />
