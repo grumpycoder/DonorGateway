@@ -33,6 +33,7 @@
             $ctrl.isBusy = true;
             $http.get('api/event/' + $ctrl.eventId).then(function (r) {
                 $ctrl.event = r.data;
+                console.log($ctrl.event);
             }).catch(function (err) {
                 console.log('Opps. Something went wrong', err);
             }).finally(function () {

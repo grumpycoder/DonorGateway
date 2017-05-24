@@ -44,7 +44,7 @@ namespace DonorGateway.Admin.Controllers
         [Route("{name}")]
         public async Task<object> Get(string name)
         {
-            var model = await _context.Events.FirstOrDefaultAsync(e => e.Name == name);
+            var model = await _context.Events.FirstOrDefaultAsync(e => e.NameUrl == name);
             if (model == null) return BadRequest("Event not found");
 
             var @event = Mapper.Map<EventSummaryViewModel>(model);
@@ -77,7 +77,7 @@ namespace DonorGateway.Admin.Controllers
 
                 var existingEvent =
                     await _context.Events.FirstOrDefaultAsync(
-                        e => e.Name == model.Name && e.Id != model.Id && e.EndDate >= DateTime.Now);
+                        e => e.NameUrl == model.NameUrl && e.Id != model.Id && e.EndDate >= DateTime.Now);
 
                 if (existingEvent != null)
                 {
@@ -104,7 +104,7 @@ namespace DonorGateway.Admin.Controllers
         {
             try
             {
-                var @event = await _context.Events.FirstOrDefaultAsync(e => e.Name == model.Name);
+                var @event = await _context.Events.FirstOrDefaultAsync(e => e.NameUrl == model.NameUrl);
                 if (@event != null) return BadRequest("Event name already exists");
 
                 @event = Mapper.Map<Event>(model);
@@ -393,7 +393,7 @@ namespace DonorGateway.Admin.Controllers
         {
             var existingEvent =
                 await _context.Events.FirstOrDefaultAsync(
-                    e => e.Name == name && e.EndDate >= DateTime.Now);
+                    e => e.NameUrl == name && e.EndDate >= DateTime.Now);
 
             return existingEvent == null;
 

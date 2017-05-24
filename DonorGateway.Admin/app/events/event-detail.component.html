@@ -96,11 +96,11 @@
                             <input type="text" class="form-control" ng-model="$ctrl.event.initiative" />
                         </div>
 
-                        <div class="form-group" ng-class="{'has-error' : form.name.$error.name && !form.name.$pristine }">
+                        <div class="form-group" ng-class="{'has-error' : form.nameUrl.$error.name && !form.nameUrl.$pristine }">
                             <label class="control-label">Url</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.event.name" name="name" ng-model-options="{ debounce: 400 }" eventurl />
-                            <span ng-show="form.name.$pending.name" class="help-block">Checking if this url is available...</span>
-                            <span ng-show="form.name.$error.name && !form.name.$pristine" class="help-block">This url is already taken!</span>
+                            <input type="text" class="form-control" ng-model="$ctrl.event.nameUrl" name="nameUrl" ng-model-options="{ debounce: 400 }" eventurl />
+                            <span ng-show="form.nameUrl.$pending.name" class="help-block">Checking if this url is available...</span>
+                            <span ng-show="form.nameUrl.$error.name && !form.nameUrl.$pristine" class="help-block">This url is already taken!</span>
                         </div>
 
                         <div class="form-group">

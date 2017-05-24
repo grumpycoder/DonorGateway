@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using DonorGateway.Data;
 using DonorGateway.Domain;
 using DonorGateway.RSVP.Interfaces;
@@ -50,7 +45,7 @@ namespace DonorGateway.RSVP.Services
 
         public Event GetEventByName(string name)
         {
-            return _context.Events.FirstOrDefault(e => e.Name == name);
+            return _context.Events.FirstOrDefault(e => e.NameUrl == name);
         }
 
         public Event GetEventById(int eventId)

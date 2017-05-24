@@ -1,5 +1,4 @@
-﻿using DonorGateway.Domain.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DonorGateway.Domain.Helpers;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -22,7 +22,7 @@ namespace DonorGateway.Domain
         }
 
         public string Initiative { get; set; }
-        public string Name { get; set; }
+        public string NameUrl { get; set; }
         public string DisplayName { get; set; }
         public string EventCode { get; set; }
         public string Speaker { get; set; }

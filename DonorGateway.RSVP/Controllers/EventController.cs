@@ -31,7 +31,7 @@ namespace DonorGateway.RSVP.Controllers
         public ActionResult Index(string id)
         {
             //var @event = _eventService.GetEvent(id);
-            var @event = _context.Events.SingleOrDefault(e => e.Name == id && e.EndDate >= DateTime.Now);
+            var @event = _context.Events.SingleOrDefault(e => e.NameUrl == id && e.EndDate >= DateTime.Now);
 
             if (@event == null) return View("EventNotFound");
 
@@ -42,7 +42,7 @@ namespace DonorGateway.RSVP.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(EventViewModel model)
         {
-            var guest = await 
+            var guest = await
                 _context.Guests.SingleOrDefaultAsync(e => e.EventId == model.EventId &&
                                                           e.FinderNumber == model.PromoCode);
             if (guest == null) ModelState.AddModelError("PromoCode", "Invalid Reservation Code");

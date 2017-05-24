@@ -8,7 +8,7 @@ namespace DonorGateway.Admin.ViewModels
     {
         public int Id { get; set; }
         public string Initiative { get; set; }
-        public string Name { get; set; }
+        public string NameUrl { get; set; }
         public string DisplayName { get; set; }
         public string Speaker { get; set; }
         public string Venue { get; set; }
