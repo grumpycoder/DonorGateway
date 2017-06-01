@@ -63,7 +63,7 @@ namespace DonorGateway.Admin.Controllers
 
                 var results = await filteredQuery.Where(pred)
                                            .Order(pager.OrderBy, pager.OrderDirection == "desc" ? SortDirection.Descending : SortDirection.Ascending)
-                                           //.ThenByDescending(e => e.CampaignId)
+                                           .Order("Id", SortDirection.Descending)
                                            .Skip(pager.PageSize * (pager.Page - 1) ?? 0)
                                            .Take(pager.PageSize ?? PAGE_SIZE)
                                            .ProjectTo<MailerViewModel>().ToListAsync();

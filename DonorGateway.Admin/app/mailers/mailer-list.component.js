@@ -70,7 +70,6 @@
             if ($ctrl.searchModel.suppress === null) $ctrl.searchModel.suppress = false;
             return $http.get('api/mailer', { params: $ctrl.searchModel })
                 .then(function (r) {
-                    console.log('r', r.data);
                     $ctrl.mailers = r.data.results;
                     $ctrl.searchModel = r.data;
                     delete $ctrl.searchModel.results;
