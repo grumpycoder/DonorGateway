@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using System.Web.Mvc;
-using DonorGateway.Admin.Filters;
 
 namespace DonorGateway.Admin.Controllers
 {
@@ -18,25 +17,25 @@ namespace DonorGateway.Admin.Controllers
             return View();
         }
 
-        [AuthorizeEx]
+        [Authorize]
         public ActionResult Events()
         {
             return View();
         }
 
-        [AuthorizeEx]
+        [Authorize]
         public ActionResult DonorTax()
         {
             return View();
         }
 
-        [AuthorizeEx]
+        [Authorize]
         public ActionResult Mailers()
         {
             return View();
         }
 
-        [AuthorizeEx]
+        [Authorize]
         public ActionResult Demographics()
         {
             return View();
