@@ -10,7 +10,7 @@
 
         $ctrl.$onInit = function () {
             console.log('event dashboard init');
-            
+            $ctrl.isBusy = true; 
             $http.get('api/event').then(function (r) {
                 $ctrl.events = r.data;
             }).catch(function (err) {
