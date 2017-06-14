@@ -62,8 +62,10 @@
 
         </div><!--./box-body-->
         <div class="box-footer">
-            <button class="btn btn-success btn-lg" ng-disabled="form.$pristine" ng-click="$ctrl.save(); form.$setPristine();">Save</button>
-            <button class="btn btn-default btn-lg" ng-disabled="form.$pristine" ng-click="$ctrl.cancel(); form.$setPristine();">Cancel</button>
+            <div class="pull-right">
+                <button class="btn btn-success" ng-disabled="form.$pristine" ng-click="$ctrl.save(); form.$setPristine();">Save</button>
+                <button class="btn btn-default" ng-disabled="form.$pristine" ng-click="$ctrl.cancel(); form.$setPristine();">Cancel</button>
+            </div>
         </div><!--/box-footer-->
         <div class="overlay" ng-show="$ctrl.isBusy">
             <i class="fa fa-refresh fa-spin"></i>

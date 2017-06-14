@@ -74,9 +74,9 @@
                             <div class="col-md-12">
 
                                 <uib-tabset>
-                                    
+
                                     <uib-tab index="0" heading="Details">
-                                        <event-detail event-id="$ctrl.selectedEvent.id" on-delete="$ctrl.eventDeleted()"></event-detail>
+                                        <event-detail event-id="$ctrl.selectedEvent.id" on-delete="$ctrl.eventDeleted()" on-updated="$ctrl.eventUpdated(event)"></event-detail>
                                     </uib-tab>
                                     <uib-tab index="1" heading="Guests">
                                         <guest-list event-id="$ctrl.selectedEvent.id"></guest-list>
@@ -93,7 +93,10 @@
                     <div class="overlay" ng-show="$ctrl.isBusy">
                         <i class="fa fa-refresh fa-spin"></i>
                     </div>
+
                 </div><!--/box-->
+
+
             </div>
         </div>
     </section>

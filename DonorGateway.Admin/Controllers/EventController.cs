@@ -391,11 +391,8 @@ namespace DonorGateway.Admin.Controllers
         [HttpGet, Route("eventnameurlavailable/{name}")]
         public async Task<bool> EventNameUrlAvailable(string name)
         {
-            var existingEvent =
-                await _context.Events.FirstOrDefaultAsync(
-                    e => e.NameUrl == name && e.EndDate >= DateTime.Now);
-
-            return existingEvent == null;
+            return await _context.Events.Where(
+                    e => e.NameUrl == name && e.EndDate >= DateTime.Now).CountAsync() == 0;
 
         }
     }
