@@ -2,26 +2,26 @@
 (function () {
     var module = angular.module('app');
 
-    function controller($http, $modal, toastr) {
-        var $ctrl = this;
+    function eventDashboardController($http, $modal, toastr) {
+        var ctrl = this;
 
-        $ctrl.title = 'Event Manager';
-        $ctrl.description = "Manage Donor Events";
+        ctrl.title = 'Event Manager';
+        ctrl.description = "Manage Donor Events";
 
-        $ctrl.$onInit = function () {
+        ctrl.$onInit = function () {
             console.log('event dashboard init');
-            $ctrl.isBusy = true; 
+            ctrl.isBusy = true; 
             $http.get('api/event').then(function (r) {
-                $ctrl.events = r.data;
+                ctrl.events = r.data;
             }).catch(function (err) {
                 console.log("Oops. Can't get list of events", err);
                 toastr.error("Oops. Can't get list of events");
             }).finally(function () {
-                $ctrl.isBusy = false;
+                ctrl.isBusy = false;
             });
         }
 
-        $ctrl.create = function() {
+        ctrl.create = function() {
             $modal.open({
                 component: 'eventCreate',
                 bindings: {
@@ -29,22 +29,26 @@
                 },
                 size: 'md'
             }).result.then(function (result) {
-                $ctrl.selectedEvent = result;
-                $ctrl.events.unshift($ctrl.selectedEvent);
-                console.log('selected event', $ctrl.selectedEvent);
+                ctrl.selectedEvent = result;
+                ctrl.events.unshift(ctrl.selectedEvent);
+                console.log('selected event', ctrl.selectedEvent);
                 toastr.info('Created Event ' + result.name);
             }, function (reason) {
             });            
         }
 
-        $ctrl.changeEvent = function() {
-            
+        ctrl.changeEvent = function() {
+            ctrl.selectedEventId = ctrl.selectedEvent.id; 
         }
 
-        $ctrl.eventDeleted = function() {
-            var idx = $ctrl.events.indexOf($ctrl.selectedEvent);
-            $ctrl.events.splice(idx, 1);
-            $ctrl.selectedEvent = null; 
+        ctrl.eventDeleted = function() {
+            var idx = ctrl.events.indexOf(ctrl.selectedEvent);
+            ctrl.events.splice(idx, 1);
+            ctrl.selectedEvent = null; 
+        }
+
+        ctrl.eventUpdated = function(event) {
+            angular.extend(ctrl.selectedEvent, event);
         }
     }
 
@@ -53,7 +57,7 @@
             bindings: {
             },
             templateUrl: 'app/events/event-dashboard.component.html',
-            controller: ['$http', '$uibModal', 'toastr', controller]
+            controller: ['$http', '$uibModal', 'toastr', eventDashboardController]
         });
 }
 )();

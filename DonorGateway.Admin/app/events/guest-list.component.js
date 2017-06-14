@@ -2,107 +2,107 @@
 (function () {
     var module = angular.module('app');
 
-    function controller($http, $modal, toastr) {
-        var $ctrl = this;
+    function guestListController($http, $modal, toastr) {
+        var ctrl = this;
         var tableStateRef;
         var pageSizeDefault = 10;
         var choices =
             [
-            { id: 1, name: "Register", command: function (e) { $ctrl.registerGuest(e) }, icon: 'icon ion-key', default: true },
-            { id: 2, name: "Mail Ticket", command: function (e) { $ctrl.sendMail(e) }, icon: 'icon ion-android-mail', default: false },
-            { id: 3, name: "Cancel", command: function (e) { $ctrl.cancelRegistration(e) }, icon: 'icon ion-android-cancel', default: false },
-            { id: 4, name: "Guest List", command: function (e) { $ctrl.reservationOverride(e) }, icon: 'icon ion-android-add-circle', default: false },
-            { id: 5, name: "Add Tickets", command: function (e) { $ctrl.registerGuest(e) }, icon: 'icon ion-android-add-circle', default: false }
+            { id: 1, name: "Register", command: function (e) { ctrl.registerGuest(e) }, icon: 'icon ion-key', default: true },
+            { id: 2, name: "Mail Ticket", command: function (e) { ctrl.sendMail(e) }, icon: 'icon ion-android-mail', default: false },
+            { id: 3, name: "Cancel", command: function (e) { ctrl.cancelRegistration(e) }, icon: 'icon ion-android-cancel', default: false },
+            { id: 4, name: "Guest List", command: function (e) { ctrl.reservationOverride(e) }, icon: 'icon ion-android-add-circle', default: false },
+            { id: 5, name: "Add Tickets", command: function (e) { ctrl.registerGuest(e) }, icon: 'icon ion-android-add-circle', default: false }
         ];
         
-        $ctrl.title = 'Reservation Manager';
-        $ctrl.description = "Manage Guest List";
+        ctrl.title = 'Reservation Manager';
+        ctrl.description = "Manage Guest List";
 
-        $ctrl.searchModel = {
+        ctrl.searchModel = {
             page: 1,
             pageSize: pageSizeDefault,
             orderBy: 'id',
             orderDirection: 'asc'
         };
 
-        $ctrl.$onChanges = function () {
-            $ctrl.search();
+        ctrl.$onChanges = function () {
+            ctrl.search();
         }
 
-        $ctrl.$onInit = function () {
+        ctrl.$onInit = function () {
             console.log('guest list init');
         }
 
-        $ctrl.resetSearch = function () {
-            $ctrl.searchModel = {
+        ctrl.resetSearch = function () {
+            ctrl.searchModel = {
                 page: 1,
                 pageSize: pageSizeDefault,
                 orderBy: 'id',
                 orderDirection: 'asc'
             };
-            $ctrl.quickFilter = null;
-            $ctrl.search(tableStateRef);
+            ctrl.quickFilter = null;
+            ctrl.search(tableStateRef);
         }
 
-        $ctrl.search = function () {
-            $ctrl.isBusy = true;
-            if ($ctrl.eventId === undefined) return;
-            $http.get('api/event/' + $ctrl.eventId + '/guests', { params: $ctrl.searchModel }).then(function (r) {
-                $ctrl.searchModel = r.data;
-                $ctrl.guests = [];
+        ctrl.search = function () {
+            ctrl.isBusy = true;
+            if (ctrl.eventId === undefined) return;
+            $http.get('api/event/' + ctrl.eventId + '/guests', { params: ctrl.searchModel }).then(function (r) {
+                ctrl.searchModel = r.data;
+                ctrl.guests = [];
                 r.data.results.map(function (guest) {
                     guest.choices = buildGuestOptions(guest);
-                    $ctrl.guests.push(guest);
+                    ctrl.guests.push(guest);
                 });
-                delete $ctrl.searchModel.results;
+                delete ctrl.searchModel.results;
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
             }).finally(function () {
-                $ctrl.isBusy = false;
+                ctrl.isBusy = false;
             });
         }
 
-        $ctrl.paged = function paged() {
-            $ctrl.search(tableStateRef);
+        ctrl.paged = function paged() {
+            ctrl.search(tableStateRef);
         };
 
-        $ctrl.quickFilterChange = function () {
-            $ctrl.searchModel.page = 1;
-            $ctrl.searchModel.isWaiting = null;
-            $ctrl.searchModel.isMailed = null;
-            $ctrl.searchModel.isAttending = null;
+        ctrl.quickFilterChange = function () {
+            ctrl.searchModel.page = 1;
+            ctrl.searchModel.isWaiting = null;
+            ctrl.searchModel.isMailed = null;
+            ctrl.searchModel.isAttending = null;
 
-            $ctrl.showSendMail = null; 
-            $ctrl.showSendWaiting = null; 
+            ctrl.showSendMail = null; 
+            ctrl.showSendWaiting = null; 
 
-            switch ($ctrl.quickFilter) {
+            switch (ctrl.quickFilter) {
                 case 'WaitingAndNotSent':
-                    $ctrl.searchModel.isWaiting = true;
-                    $ctrl.searchModel.isMailed = false;
-                    $ctrl.showSendWaiting = true; 
+                    ctrl.searchModel.isWaiting = true;
+                    ctrl.searchModel.isMailed = false;
+                    ctrl.showSendWaiting = true; 
                     break;
                 case 'WaitingAndSent':
-                    $ctrl.searchModel.isWaiting = true;
-                    $ctrl.searchModel.isMailed = true;;
+                    ctrl.searchModel.isWaiting = true;
+                    ctrl.searchModel.isMailed = true;;
                     break;
                 case 'TicketNotSent':
-                    $ctrl.searchModel.isAttending = true;
-                    $ctrl.searchModel.isMailed = false;
-                    $ctrl.searchModel.isWaiting = false;
-                    $ctrl.showSendMail = true; 
+                    ctrl.searchModel.isAttending = true;
+                    ctrl.searchModel.isMailed = false;
+                    ctrl.searchModel.isWaiting = false;
+                    ctrl.showSendMail = true; 
                     break;
                 case 'TicketSent':
-                    $ctrl.searchModel.isAttending = true;
-                    $ctrl.searchModel.isMailed = true;
-                    $ctrl.searchModel.isWaiting = false;
+                    ctrl.searchModel.isAttending = true;
+                    ctrl.searchModel.isMailed = true;
+                    ctrl.searchModel.isWaiting = false;
                     break;
                 default:
             }
-            $ctrl.search(tableStateRef);
+            ctrl.search(tableStateRef);
         }
 
-        $ctrl.reservationOverride = function (e) {
-            $http.post('api/event/' + $ctrl.eventId + '/register/', e).then(function (r) {
+        ctrl.reservationOverride = function (e) {
+            $http.post('api/event/' + ctrl.eventId + '/register/', e).then(function (r) {
                 var guest = r.data;
                 guest.choices = buildGuestOptions(guest);
                 angular.extend(e, guest);
@@ -113,8 +113,8 @@
             });
         }
 
-        $ctrl.cancelRegistration = function (e) {
-            $http.post('api/event/' + $ctrl.eventId + '/cancelregister/' + e.id).then(function (r) {
+        ctrl.cancelRegistration = function (e) {
+            $http.post('api/event/' + ctrl.eventId + '/cancelregister/' + e.id).then(function (r) {
                 var guest = r.data;
                 guest.choices = buildGuestOptions(guest);
                 angular.extend(e, guest);
@@ -125,10 +125,10 @@
             });
         }
 
-        $ctrl.registerGuest = function (e) {
+        ctrl.registerGuest = function (e) {
             var newGuest = false;
             if (!e) {
-                e = { id: null, eventId: $ctrl.eventId }
+                e = { id: null, eventId: ctrl.eventId }
                 newGuest = true;
             }
 
@@ -145,14 +145,14 @@
             }).result.then(function (result) {
                 result.choices = buildGuestOptions(result);
                 angular.extend(e, result);
-                if (newGuest) $ctrl.guests.unshift(e);
+                if (newGuest) ctrl.guests.unshift(e);
                 toastr.info('Registered ' + result.name);
             }, function (reason) {
             });
         }
 
-        $ctrl.sendMail = function (e) {
-            $http.post('api/event/' + $ctrl.eventId + '/mailticket/' + e.id).then(function (r) {
+        ctrl.sendMail = function (e) {
+            $http.post('api/event/' + ctrl.eventId + '/mailticket/' + e.id).then(function (r) {
                 var guest = r.data;
                 guest.choices = buildGuestOptions(guest);
                 angular.extend(e, guest);
@@ -163,8 +163,8 @@
             });
         }
 
-        $ctrl.sendAllMail = function() {
-            $http.post('api/event/' + $ctrl.eventId + '/sendalltickets').then(function (r) {
+        ctrl.sendAllMail = function() {
+            $http.post('api/event/' + ctrl.eventId + '/sendalltickets').then(function (r) {
                 toastr.success('Mailed all tickets');
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
@@ -172,8 +172,8 @@
             });
         }
 
-        $ctrl.sendAllWaiting = function () {
-            $http.post('api/event/' + $ctrl.eventId + '/sendallwaiting').then(function (r) {
+        ctrl.sendAllWaiting = function () {
+            $http.post('api/event/' + ctrl.eventId + '/sendallwaiting').then(function (r) {
                 toastr.success('Mailed all letters');
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
@@ -181,9 +181,9 @@
             });
         }
 
-        $ctrl.export = function() {
-            $ctrl.isBusy = true;
-            $http.get('api/event/' + $ctrl.eventId + '/guests/export', { params: $ctrl.searchModel })
+        ctrl.export = function() {
+            ctrl.isBusy = true;
+            $http.get('api/event/' + ctrl.eventId + '/guests/export', { params: ctrl.searchModel })
                 .then(function (data) {
                     var contentType = data.headers()['content-type'];
                     var filename = data.headers()['x-filename'];
@@ -206,22 +206,22 @@
                         logger.log(ex);
                     }
                 }).finally(function () {
-                    $ctrl.isBusy = false;
+                    ctrl.isBusy = false;
                 });
         }
 
-        $ctrl.import = function() {
+        ctrl.import = function() {
             $modal.open({
                 component: 'guestImport',
                 bindings: {
                     modalInstance: "<"
                 },
                 resolve: {
-                    eventId: $ctrl.eventId
+                    eventId: ctrl.eventId
                 },
                 size: 'md'
             }).result.then(function (result) {
-                $ctrl.search(tableStateRef);
+                ctrl.search(tableStateRef);
             }, function (reason) {
             });
         }
@@ -249,7 +249,7 @@
                 eventId: '<'
             },
             templateUrl: 'app/events/guest-list.component.html',
-            controller: ['$http', '$uibModal', 'toastr', controller]
+            controller: ['$http', '$uibModal', 'toastr', guestListController]
         });
 
 }

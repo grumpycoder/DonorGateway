@@ -308,6 +308,7 @@
     <Content Include="app\mailers\mailer-suppress.component.html" />
     <Content Include="app\mailers\mailer-upload.component.html" />
     <Content Include="app\mailers\mailer-upload.component.js" />
+    <Content Include="App_Data\readme.txt" />
     <Content Include="css\site.min.css" />
     <Content Include="css\vendor.min.css" />
     <Content Include="favicon.ico" />
@@ -343,7 +344,6 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Content\" />
   </ItemGroup>
   <ItemGroup>

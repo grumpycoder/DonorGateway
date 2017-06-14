@@ -16,36 +16,36 @@
         return errors;
     }
 
-    function controller($http, log) {
-        var $ctrl = this;
+    function eventDetailController($http, log, $scope) {
+        var ctrl = this;
 
-        $ctrl.dateFormat = "MM/DD/YYYY h:mm a";
-        $ctrl.hostLocation = window.__env.rsvpUrl + '/';
+        ctrl.dateFormat = "MM/DD/YYYY h:mm a";
+        ctrl.hostLocation = window.__env.rsvpUrl + '/';
 
-        $ctrl.$onChanges = function () {
-            $ctrl.refresh();
+        ctrl.$onChanges = function () {
+            ctrl.refreshEvent();
         }
 
-        $ctrl.$onInit = function () { console.log('event detail init'); }
+        ctrl.$onInit = function () { console.log('event detail init'); }
 
-        $ctrl.refresh = function () {
-            if ($ctrl.eventId === undefined) return;
-            $ctrl.isBusy = true;
-            $http.get('api/event/' + $ctrl.eventId).then(function (r) {
-                $ctrl.event = r.data;
-                console.log($ctrl.event);
+        ctrl.refreshEvent = function () {
+            if (ctrl.eventId === undefined) return;
+            ctrl.isBusy = true;
+            $http.get('api/event/' + ctrl.eventId).then(function (r) {
+                ctrl.event = r.data;
+                ctrl.nameUrl = r.data.nameUrl; 
             }).catch(function (err) {
                 console.log('Opps. Something went wrong', err);
             }).finally(function () {
-                $ctrl.isBusy = false;
+                ctrl.isBusy = false;
             });
         }
 
-        $ctrl.delete = function () {
-            $http.delete('api/event/' + $ctrl.eventId).then(function (r) {
-                $ctrl.event = null;
+        ctrl.delete = function () {
+            $http.delete('api/event/' + ctrl.eventId).then(function (r) {
+                ctrl.event = null;
                 log.warning('Deleted event');
-                $ctrl.onDelete();
+                ctrl.onDelete();
             }).catch(function (err) {
                 console.log('Oops. Something went wrong deleting event', err);
                 log.error('Oops. Something went wrong deleting event');
@@ -53,21 +53,22 @@
 
         }
 
-        $ctrl.save = function () {
-            return $http.put('api/event', $ctrl.event)
+        ctrl.saveEvent = function () {
+            return $http.put('api/event', ctrl.event)
                 .then(function (r) {
-                    angular.extend($ctrl.event, r.data);
-                    log.success('Updated ' + $ctrl.event.name);
+                    angular.extend(ctrl.event, r.data);
+                    log.success('Updated ' + ctrl.event.initiative);
+                    ctrl.onUpdated({ event: ctrl.event });
                 }).catch(function (err) {
                     console.log('Oops. Something went wrong saving event');
                     log.error('Oops. Something went wrong saving event');
-                    $ctrl.errors = parseErrors(err.data);
+                    ctrl.errors = parseErrors(err.data);
                 });
         }
 
-        $ctrl.toggleCancel = function () {
-            $ctrl.event.isCancelled = !$ctrl.event.isCancelled;
-            $ctrl.save();
+        ctrl.toggleCancel = function () {
+            ctrl.event.isCancelled = !ctrl.event.isCancelled;
+            ctrl.saveEvent();
         }
 
     }
@@ -75,11 +76,12 @@
     module.component('eventDetail',
         {
             bindings: {
+                onDelete: '&',
                 eventId: '<',
-                onDelete: '&'
+                onUpdated: '&'
             },
             templateUrl: 'app/events/event-detail.component.html',
-            controller: ['$http', 'toastr', controller]
+            controller: ['$http', 'toastr', '$scope', eventDetailController]
         });
 }
 )();
