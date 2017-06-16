@@ -190,7 +190,7 @@
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle start-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" ng-model="$ctrl.event.startDate"
+                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.startDate"
                                                date-input="{{$ctrl.dateFormat}}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">
@@ -200,7 +200,7 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.startDate"
-                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mm a' }"
+                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
                                                     data-datetimepicker-config="{ dropdownSelector: '.start-toggle-select' }"></datetimepicker>
                                 </ul>
                             </div>
@@ -224,7 +224,7 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.endDate"
-                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mm a' }"
+                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
                                                     data-datetimepicker-config="{ dropdownSelector: '.end-toggle-select' }"></datetimepicker>
                                 </ul>
                             </div>
@@ -239,7 +239,7 @@
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle venue-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" ng-model="$ctrl.event.venueOpenDate"
+                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.venueOpenDate"
                                                date-input="{{$ctrl.dateFormat}}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">
@@ -249,7 +249,7 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.venueOpenDate"
-                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mm a' }"
+                                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
                                                     data-datetimepicker-config="{ dropdownSelector: '.venue-toggle-select' }"></datetimepicker>
                                 </ul>
                             </div>
@@ -263,7 +263,7 @@
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle registration-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" ng-model="$ctrl.event.registrationCloseDate"
+                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.registrationCloseDate"
                                                date-input="{{$ctrl.dateFormat}}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">

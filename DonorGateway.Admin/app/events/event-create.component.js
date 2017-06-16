@@ -6,7 +6,7 @@
         var ctrl = this;
 
         ctrl.title = 'Create Event';
-        ctrl.dateFormat = "MM/DD/YYYY hh:mm";
+        ctrl.dateFormat = "MM/DD/YYYY h:mm";
 
         ctrl.$onInit = function () {
             ctrl.event = {
@@ -21,6 +21,9 @@
         }
 
         ctrl.save = function () {
+            ctrl.event.startDate = convertDate(ctrl.event.startDate);
+            ctrl.event.endDate = convertDate(ctrl.event.endDate);
+
             $http.post('api/event', ctrl.event).then(function (r) {
                 angular.extend(ctrl.event, r.data);
                 console.log('event', ctrl.event);
@@ -29,6 +32,10 @@
                 console.log('Oops. Something went wrong saving event', err);
                 log.error('Oops. Something went wrong saving event');
             });
+        }
+
+        function convertDate(date) {
+            if (date) return moment(date).format('YYYY-MM-DDTHH:mm');
         }
 
     }

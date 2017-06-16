@@ -19,7 +19,7 @@
     function eventDetailController($http, log, $scope) {
         var ctrl = this;
 
-        ctrl.dateFormat = "MM/DD/YYYY h:mm a";
+        ctrl.dateFormat = "MM/DD/YYYY h:mmA";
         ctrl.hostLocation = window.__env.rsvpUrl + '/';
 
         ctrl.$onChanges = function () {
@@ -33,7 +33,8 @@
             ctrl.isBusy = true;
             $http.get('api/event/' + ctrl.eventId).then(function (r) {
                 ctrl.event = r.data;
-                ctrl.nameUrl = r.data.nameUrl; 
+                ctrl.nameUrl = r.data.nameUrl;
+                console.log('get event', ctrl.event);
             }).catch(function (err) {
                 console.log('Opps. Something went wrong', err);
             }).finally(function () {
@@ -54,6 +55,11 @@
         }
 
         ctrl.saveEvent = function () {
+            ctrl.event.startDate = convertDate(ctrl.event.startDate);
+            ctrl.event.endDate = convertDate(ctrl.event.endDate);
+            ctrl.event.venueOpenDate = convertDate(ctrl.event.venueOpenDate);
+            ctrl.event.registrationCloseDate = convertDate(ctrl.event.registrationCloseDate);
+
             return $http.put('api/event', ctrl.event)
                 .then(function (r) {
                     angular.extend(ctrl.event, r.data);
@@ -71,6 +77,9 @@
             ctrl.saveEvent();
         }
 
+        function convertDate(date) {
+            if(date) return moment(date).format('YYYY-MM-DDTHH:mm');
+        }
     }
 
     module.component('eventDetail',
