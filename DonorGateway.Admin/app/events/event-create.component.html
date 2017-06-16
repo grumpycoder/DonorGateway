@@ -5,7 +5,7 @@
         </h3>
     </div>
     <div class="modal-body">
-        
+
         <div class="form-group">
             <label class="control-label">
                 Initiative
@@ -52,65 +52,62 @@
         </div>
 
         <div class="form-group">
-            <div class="form-group">
-                <label class="control-label">
-                    Event Start Date/Time
-                </label>
-
-                <div class="dropdown">
-                    <a class="dropdown-toggle new-start-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
-                        <div class="input-append">
-                            <input class="form-control" type="text"
-                                   ng-model="$ctrl.event.startDate"
-                                   date-input="{{$ctrl.dateFormat}}">
-                            <span class="add-on">
-                                <i class="icon-calendar"></i>
-                            </span>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                        <datetimepicker data-ng-model="$ctrl.event.startDate"
-                                        date-format
-                                        data-datetimepicker-config="{ dropdownSelector: '.new-start-toggle-select' }"></datetimepicker>
-                    </ul>
+            <label class="control-label">
+                Event Start Date/Time
+            </label>
+            <div class="dropdown">
+                <a href="" class="dropdown-toggle start-toggle-select" role="button" data-toggle="dropdown" data-target="#">
+                    <div class="input-group">
+                        <input type="datetime" class="form-control" ng-model="$ctrl.event.startDate" name="startDate"
+                               required
+                               date-input="{{$ctrl.dateFormat}}"
+                               datepicker-config="$ctrl.dateOptions" />
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </a>
+                <div ng-messages="form.startDate.$error" class="error-messages" ng-messages-multiple ng-show="form.startDate.$invalid">
+                    <div ng-message="required">Required</div>
                 </div>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <datetimepicker data-ng-model="$ctrl.event.startDate"
+                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
+                                    data-datetimepicker-config="{ dropdownSelector: '.start-toggle-select' }"></datetimepicker>
+                </ul>
             </div>
         </div>
-        
+
         <div class="form-group">
-            <div class="form-group">
-                <label class="control-label">
-                    Event End Date/Time
-                </label>
-
-                <div class="dropdown">
-                    <a class="dropdown-toggle new-end-toggle-select" id="label2" role="button" data-toggle="dropdown" data-target="#" href="">
-                        <div class="input-append">
-                            <input class="form-control" type="text" name="endDate" 
-                                   ng-model="$ctrl.event.endDate"
-                                   required
-                                   date-input="{{$ctrl.dateFormat}}">
-                            <span class="add-on">
-                                <i class="icon-calendar"></i>
-                            </span>
-                        </div>
-                    </a>
-          
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                        <datetimepicker data-ng-model="$ctrl.event.endDate"
-                                        date-format
-                                        data-datetimepicker-config="{ dropdownSelector: '.new-end-toggle-select' }"></datetimepicker>
-                    </ul>
-
-                    <div ng-messages="form.endDate.$error" class="error-messages" ng-messages-multiple ng-show="form.endDate.$invalid">
-                        <div ng-message="required">Required</div>
+            <label class="control-label">
+                Event End Date/Time
+            </label>
+            <div class="dropdown">
+                <a href="" class="dropdown-toggle end-toggle-select" role="button" data-toggle="dropdown" data-target="#">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="$ctrl.event.endDate" name="endDate"
+                               required
+                               date-input="{{$ctrl.dateFormat}}"
+                               datepicker-config="$ctrl.dateOptions" />
+                        <span class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </span>
                     </div>
-
+                </a>
+                <div ng-messages="form.endDate.$error" class="error-messages" ng-messages-multiple ng-show="form.endDate.$invalid">
+                    <div ng-message="required">Required</div>
                 </div>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <datetimepicker data-ng-model="$ctrl.event.endDate"
+                                    ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
+                                    data-datetimepicker-config="{ dropdownSelector: '.end-toggle-select' }"></datetimepicker>
+                </ul>
             </div>
+
         </div>
 
     </div>
+
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="$ctrl.save()" ng-disabled="form.$pristine || form.$invalid || $ctrl.isSaving" ng-enabled="form.$dirty && !form.$invalid">
             Create
@@ -119,11 +116,11 @@
             Cancel
         </button>
     </div>
-    <!--<div class="col-md-12">
 
+    <div class="row">
         <div class="col-md-12">
-            Nested Form:
             <pre>{{ form | json }}</pre>
         </div>
-    </div>-->
+    </div>
+
 </form>

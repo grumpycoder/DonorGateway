@@ -6,18 +6,19 @@
         var ctrl = this;
 
         ctrl.title = 'Create Event';
-        ctrl.dateFormat = "MM/DD/YYYY h:mm";
+        ctrl.dateFormat = "MM/DD/YYYY h:mmA";
 
         ctrl.$onInit = function () {
             ctrl.event = {
-                startDate: new Date(),
+                startDate: moment(new Date()).add(1, 'hour').startOf('hour'),
+                endDate: moment(new Date()).add(5, 'days').startOf('hour'),
                 capacity: 1,
                 template: {}
             };
         }
 
         ctrl.cancel = function () {
-            $modal.dismiss();
+            ctrl.dismiss();
         }
 
         ctrl.save = function () {
