@@ -36,6 +36,7 @@
         }
 
         ctrl.save = function () {
+            ctrl.isBusy = true; 
             $http.put('api/template', ctrl.template).then(function (r) {
                 angular.extend(ctrl.template, r.data);
                 ctrl.templateDelta = angular.copy(ctrl.template);
@@ -43,6 +44,8 @@
             }).catch(function (err) {
                 console.log('Oops. Error updating template', err);
                 log.error('Oops. Something went wrong updating template: ' + err.data.message);
+            }).finally(function() {
+                ctrl.isBusy = false; 
             });
         }
 

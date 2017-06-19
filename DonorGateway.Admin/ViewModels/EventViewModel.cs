@@ -46,7 +46,7 @@ namespace DonorGateway.Admin.ViewModels
 
         }
 
-        public Template Template { get; set; }
+        //public virtual Template Template { get; set; }
 
         public ICollection<Guest> Guests { get; set; }
     }

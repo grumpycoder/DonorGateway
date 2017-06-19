@@ -34,7 +34,6 @@
             $http.get('api/event/' + ctrl.eventId).then(function (r) {
                 ctrl.event = r.data;
                 ctrl.nameUrl = r.data.nameUrl;
-                console.log('get event', ctrl.event);
             }).catch(function (err) {
                 console.log('Opps. Something went wrong', err);
             }).finally(function () {
@@ -59,7 +58,7 @@
             ctrl.event.endDate = convertDate(ctrl.event.endDate);
             ctrl.event.venueOpenDate = convertDate(ctrl.event.venueOpenDate);
             ctrl.event.registrationCloseDate = convertDate(ctrl.event.registrationCloseDate);
-
+            ctrl.isBusy = true;
             return $http.put('api/event', ctrl.event)
                 .then(function (r) {
                     angular.extend(ctrl.event, r.data);
@@ -69,6 +68,8 @@
                     console.log('Oops. Something went wrong saving event');
                     log.error('Oops. Something went wrong saving event');
                     ctrl.errors = parseErrors(err.data);
+                }).finally(function () {
+                    ctrl.isBusy = false;
                 });
         }
 
@@ -78,7 +79,7 @@
         }
 
         function convertDate(date) {
-            if(date) return moment(date).format('YYYY-MM-DDTHH:mm');
+            if (date) return moment(date).format('YYYY-MM-DDTHH:mm');
         }
     }
 

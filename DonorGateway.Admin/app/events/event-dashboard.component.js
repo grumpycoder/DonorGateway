@@ -47,8 +47,10 @@
             ctrl.selectedEvent = null; 
         }
 
-        ctrl.eventUpdated = function(event) {
+        ctrl.eventUpdated = function (event) {
+            ctrl.isBusy = true; 
             angular.extend(ctrl.selectedEvent, event);
+            ctrl.isBusy = false; 
         }
     }
 

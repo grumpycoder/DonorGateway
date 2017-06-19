@@ -85,6 +85,7 @@ namespace DonorGateway.Admin.Controllers
                     return BadRequest(ModelState);
                 }
 
+
                 Mapper.Map(model, @event);
 
                 _context.Events.AddOrUpdate(@event);
@@ -107,8 +108,8 @@ namespace DonorGateway.Admin.Controllers
                 var @event = await _context.Events.FirstOrDefaultAsync(e => e.NameUrl == model.NameUrl);
                 if (@event != null) return BadRequest("Event name already exists");
 
-                model.Template.Name = model.NameUrl;
                 @event = Mapper.Map<Event>(model);
+                @event.Template = new Template(){Name = model.NameUrl};
                 _context.Events.AddOrUpdate(@event);
                 await _context.SaveChangesAsync();
                 Mapper.Map(@event, model);
