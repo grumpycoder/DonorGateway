@@ -54,10 +54,6 @@
         }
 
         ctrl.saveEvent = function () {
-            ctrl.event.startDate = convertDate(ctrl.event.startDate);
-            ctrl.event.endDate = convertDate(ctrl.event.endDate);
-            ctrl.event.venueOpenDate = convertDate(ctrl.event.venueOpenDate);
-            ctrl.event.registrationCloseDate = convertDate(ctrl.event.registrationCloseDate);
             ctrl.isBusy = true;
             return $http.put('api/event', ctrl.event)
                 .then(function (r) {

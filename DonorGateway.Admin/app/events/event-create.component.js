@@ -22,12 +22,8 @@
         }
 
         ctrl.save = function () {
-            ctrl.event.startDate = convertDate(ctrl.event.startDate);
-            ctrl.event.endDate = convertDate(ctrl.event.endDate);
-
             $http.post('api/event', ctrl.event).then(function (r) {
                 angular.extend(ctrl.event, r.data);
-                console.log('event', ctrl.event);
                 ctrl.modalInstance.close(ctrl.event);
             }).catch(function (err) {
                 console.log('Oops. Something went wrong saving event', err);
