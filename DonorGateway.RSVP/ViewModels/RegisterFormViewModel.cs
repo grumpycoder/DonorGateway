@@ -54,7 +54,7 @@ namespace DonorGateway.RSVP.ViewModels
 
         public string EventName { get; set; }
 
-        public bool IsRegistered => ResponseDate != null;
+        public bool IsRegistered => ResponseDate != null && IsAttending == true;
 
         public Template Template { get; set; }
 
