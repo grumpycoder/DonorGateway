@@ -6,7 +6,7 @@
         var ctrl = this;
 
         ctrl.title = 'Create Event';
-        ctrl.dateFormat = "MM/DD/YYYY h:mmA";
+        ctrl.dateFormat = "MM/DD/YYYY h:mm A";
 
         ctrl.$onInit = function () {
             ctrl.event = {

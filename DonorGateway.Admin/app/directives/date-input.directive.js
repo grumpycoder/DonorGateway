@@ -15,7 +15,6 @@
 
                     dateFormat = newValue;
                     ctrl.$modelValue = moment(ctrl.$setViewValue).format(dateFormat);
-                    //ctrl.$modelValue = new Date(ctrl.$setViewValue);
                 });
 
                 ctrl.$formatters.unshift(function (modelValue) {

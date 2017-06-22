@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -54,7 +55,7 @@ namespace DonorGateway.RSVP.ViewModels
 
         public string EventName { get; set; }
 
-        public bool IsRegistered => ResponseDate != null;
+        public bool IsRegistered => ResponseDate != null && IsAttending == true;
 
         public Template Template { get; set; }
 
@@ -122,10 +123,13 @@ namespace DonorGateway.RSVP.ViewModels
             RuleFor(x => x.City).NotNull().WithMessage("City is required.");
             RuleFor(x => x.State).NotNull().WithMessage("State is required.");
             RuleFor(x => x.Zipcode).NotNull().WithMessage("Zipcode is required.");
-            RuleFor(x => x.Phone).NotNull().WithMessage("Phone is required.");
-            RuleFor(x => x.Email).NotNull().WithMessage("Email is required.");
+            RuleFor(x => x.Phone).NotNull().WithMessage("Phone is required.").Matches(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$").WithMessage("Invalid Phone");
+            RuleFor(x => x.Email).NotNull().WithMessage("Email is required.").Matches(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$").WithMessage("Invalid email address");
             RuleFor(x => x.IsAttending).NotNull().WithMessage("Please select Yes or No if you are attending.");
         }
 
     }
+
+
 }
+

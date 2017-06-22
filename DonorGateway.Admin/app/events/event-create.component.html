@@ -6,37 +6,38 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : form.initiative.$invalid && !form.initiative.$pristine }">
             <label class="control-label">
                 Initiative
             </label>
-            <input type="text" ng-model="$ctrl.event.initiative" name="initiative" class="form-control" placeholder="New initiative..." ng-required="true" />
+            <input type="text" ng-model="$ctrl.event.initiative" name="initiative" class="form-control" placeholder="New initiative..." required />
             <div ng-messages="form.initiative.$error" class="error-messages" ng-show="form.initiative.$invalid">
                 <div ng-message="required">Required</div>
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : form.nameUrl.$invalid && !form.nameUrl.$pristine }">
             <label class="control-label">
                 Name - Url
             </label>
-            <input type="text" ng-model="$ctrl.event.nameUrl" name="nameUrl" class="form-control" placeholder="New Event Url..." ng-required="true" />
+            <input type="text" ng-model="$ctrl.event.nameUrl" name="nameUrl" class="form-control" placeholder="New Event Url..." required ng-model-options="{ debounce: 400 }" />
             <div ng-messages="form.nameUrl.$error" class="error-messages" ng-show="form.nameUrl.$invalid">
                 <div ng-message="required">Required</div>
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : form.displayName.$invalid && !form.displayName.$pristine }">
             <label class="control-label">
                 Display Name
             </label>
-            <input type="text" ng-model="$ctrl.event.displayName" name="displayName" class="form-control" placeholder="New Event Display Name..." ng-required="true" />
+            <input type="text" ng-model="$ctrl.event.displayName" name="displayName" class="form-control" placeholder="New Event Display Name..." required />
+
             <div ng-messages="form.displayName.$error" class="error-messages" ng-show="form.displayName.$invalid">
                 <div ng-message="required">Required</div>
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : form.venue.$invalid && !form.venue.$pristine }">
             <label class="control-label">
                 Venue
             </label>
@@ -51,7 +52,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : form.startDate.$invalid && !form.startDate.$pristine }">
             <label class="control-label">
                 Event Start Date/Time
             </label>
@@ -60,6 +61,7 @@
                     <div class="input-group">
                         <input type="datetime" class="form-control" ng-model="$ctrl.event.startDate" name="startDate"
                                required
+                               date-lower-than="{{ $ctrl.event.endDate }}"
                                date-input="{{$ctrl.dateFormat}}"
                                datepicker-config="$ctrl.dateOptions" />
                         <span class="input-group-addon">
@@ -69,7 +71,9 @@
                 </a>
                 <div ng-messages="form.startDate.$error" class="error-messages" ng-messages-multiple ng-show="form.startDate.$invalid">
                     <div ng-message="required">Required</div>
+                    <div ng-message="dateLowerThan">Date must be before End Date</div>
                 </div>
+
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                     <datetimepicker data-ng-model="$ctrl.event.startDate"
                                     ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
@@ -78,7 +82,7 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{'has-error' : form.endDate.$invalid && !form.endDate.$pristine }">
             <label class="control-label">
                 Event End Date/Time
             </label>
@@ -87,6 +91,7 @@
                     <div class="input-group">
                         <input type="text" class="form-control" ng-model="$ctrl.event.endDate" name="endDate"
                                required
+                               date-higher-than="{{ $ctrl.event.startDate }}"
                                date-input="{{$ctrl.dateFormat}}"
                                datepicker-config="$ctrl.dateOptions" />
                         <span class="input-group-addon">
@@ -96,6 +101,7 @@
                 </a>
                 <div ng-messages="form.endDate.$error" class="error-messages" ng-messages-multiple ng-show="form.endDate.$invalid">
                     <div ng-message="required">Required</div>
+                    <div ng-message="dateHigherThan">Date must be after Start Date</div>
                 </div>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                     <datetimepicker data-ng-model="$ctrl.event.endDate"
