@@ -88,7 +88,8 @@
 
                         <div class="form-group" ng-class="{'has-error' : form.nameUrl.$invalid && !form.nameUrl.$pristine }">
                             <label class="control-label">Url</label>
-                            <input type="text" class="form-control" ng-model="$ctrl.event.nameUrl" name="nameUrl" ng-model-options="{ debounce: 400 }" url-available initial-value="{{$ctrl.nameUrl}}" required />
+                            <input type="text" class="form-control" ng-model="$ctrl.event.nameUrl" name="nameUrl" 
+                                   ng-model-options="{ debounce: 400 }" url-available initial-value="{{$ctrl.nameUrl}}" required />
                             <span ng-show="form.nameUrl.$pending.unique" class="help-block">Checking if this url is available...</span>
                             <span ng-show="form.nameUrl.$error.unique && !form.nameUrl.$error.$pristine" class="help-block">This url is already taken!</span>
                             <span ng-show="form.nameUrl.$error.required" class="help-block">*Required</span>
@@ -183,14 +184,16 @@
                             Event Date/Times
                         </legend>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error' : form.startDate.$invalid && !form.startDate.$pristine }">
                             <label class="control-label">
                                 Event Start Date/Time
                             </label>
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle start-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.startDate"
+                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.startDate" name="startDate"
+                                               required
+                                               date-lower-than="{{ $ctrl.event.endDate }}"
                                                date-input="{{$ctrl.dateFormat}}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">
@@ -198,6 +201,12 @@
                                         </span>
                                     </div>
                                 </a>
+                                
+                                <div ng-messages="form.startDate.$error" class="error-messages" ng-messages-multiple ng-show="form.startDate.$invalid">
+                                    <div ng-message="required">Required</div>
+                                    <div ng-message="dateLowerThan">Date must be before End Date</div>
+                                </div>
+
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.startDate"
                                                     ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
@@ -207,14 +216,16 @@
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error' : form.endDate.$invalid && !form.endDate.$pristine }">
                             <label class="control-label">
                                 Event End Date/Time
                             </label>
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle end-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" ng-model="$ctrl.event.endDate"
+                                        <input type="text" class="form-control" ng-model="$ctrl.event.endDate" name="endDate" 
+                                               required
+                                               date-higher-than="{{ $ctrl.event.startDate }}"
                                                date-input="{{$ctrl.dateFormat}}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">
@@ -222,6 +233,12 @@
                                         </span>
                                     </div>
                                 </a>
+
+                                <div ng-messages="form.endDate.$error" class="error-messages" ng-messages-multiple ng-show="form.endDate.$invalid">
+                                    <div ng-message="required">Required</div>
+                                    <div ng-message="dateHigherThan">Date must be after Start Date</div>
+                                </div>
+
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.endDate"
                                                     ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"

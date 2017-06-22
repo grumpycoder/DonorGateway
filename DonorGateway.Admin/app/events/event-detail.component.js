@@ -19,7 +19,7 @@
     function eventDetailController($http, log, $scope) {
         var ctrl = this;
 
-        ctrl.dateFormat = "MM/DD/YYYY h:mmA";
+        ctrl.dateFormat = "MM/DD/YYYY h:mm A";
         ctrl.hostLocation = window.__env.rsvpUrl + '/';
 
         ctrl.$onChanges = function () {

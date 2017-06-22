@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <AssemblyVersion>2017.6.21.6382</AssemblyVersion>
+    <AssemblyVersion>2017.6.22.6383</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -276,9 +276,10 @@
     <Content Include="app\demographics\demographic-list.component.html" />
     <Content Include="app\demographics\demographic-list.component.js" />
     <Content Include="app\directives\clear-key.directive.js" />
-    <Content Include="app\directives\date-before.js" />
     <Content Include="app\directives\date-format.directive.js" />
+    <Content Include="app\directives\date-higher-than.directive.js" />
     <Content Include="app\directives\date-input.directive.js" />
+    <Content Include="app\directives\date-lower-than.directive.js" />
     <Content Include="app\directives\event-url.directive.js" />
     <Content Include="app\directives\smart-table.directive.js" />
     <Content Include="app\directives\toggleCheckbox.directive.js" />
