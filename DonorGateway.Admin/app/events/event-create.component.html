@@ -8,7 +8,7 @@
 
         <div class="form-group" ng-class="{'has-error' : form.initiative.$invalid && !form.initiative.$pristine }">
             <label class="control-label">
-                Initiative
+                Event City / Year
             </label>
             <input type="text" ng-model="$ctrl.event.initiative" name="initiative" class="form-control" placeholder="New initiative..." required />
             <div ng-messages="form.initiative.$error" class="error-messages" ng-show="form.initiative.$invalid">
@@ -18,17 +18,25 @@
 
         <div class="form-group" ng-class="{'has-error' : form.nameUrl.$invalid && !form.nameUrl.$pristine }">
             <label class="control-label">
-                Name - Url
+                Url
             </label>
-            <input type="text" ng-model="$ctrl.event.nameUrl" name="nameUrl" class="form-control" placeholder="New Event Url..." required ng-model-options="{ debounce: 400 }" />
-            <div ng-messages="form.nameUrl.$error" class="error-messages" ng-show="form.nameUrl.$invalid">
+            <input type="text" ng-model="$ctrl.event.nameUrl" name="nameUrl"
+                   class="form-control"
+                   placeholder="New Event Url..."
+                   required
+                   url-available
+                   ng-model-options="{ debounce: 400 }" />
+
+            <div ng-messages="form.nameUrl.$error" class="error-messages" ng-messages-multiple ng-show="form.nameUrl.$invalid">
                 <div ng-message="required">Required</div>
+                <span ng-show="form.nameUrl.$pending.unique" class="help-block">Checking if this url is available...</span>
+                <span ng-show="form.nameUrl.$error.unique && !form.nameUrl.$error.$pristine" class="help-block">This url is already taken!</span>
             </div>
         </div>
 
         <div class="form-group" ng-class="{'has-error' : form.displayName.$invalid && !form.displayName.$pristine }">
             <label class="control-label">
-                Display Name
+                Web Page Header
             </label>
             <input type="text" ng-model="$ctrl.event.displayName" name="displayName" class="form-control" placeholder="New Event Display Name..." required />
 

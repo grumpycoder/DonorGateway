@@ -1,4 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CsvHelper;
+using DonorGateway.Admin.Helpers;
+using DonorGateway.Admin.ViewModels;
+using DonorGateway.Data;
+using DonorGateway.Domain;
+using EntityFramework.Extensions;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
@@ -11,14 +19,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Http;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using CsvHelper;
-using DonorGateway.Admin.Helpers;
-using DonorGateway.Admin.ViewModels;
-using DonorGateway.Data;
-using DonorGateway.Domain;
-using EntityFramework.Extensions;
 
 #pragma warning disable 618
 
@@ -105,11 +105,11 @@ namespace DonorGateway.Admin.Controllers
         {
             try
             {
-                var @event = await _context.Events.FirstOrDefaultAsync(e => e.NameUrl == model.NameUrl);
+                var @event = await _context.Events.FirstOrDefaultAsync(e => e.NameUrl == model.NameUrl && e.EndDate >= DateTime.Now);
                 if (@event != null) return BadRequest("Event name already exists");
 
                 @event = Mapper.Map<Event>(model);
-                @event.Template = new Template(){Name = model.NameUrl};
+                @event.Template = new Template() { Name = model.NameUrl };
                 _context.Events.AddOrUpdate(@event);
                 await _context.SaveChangesAsync();
                 Mapper.Map(@event, model);
