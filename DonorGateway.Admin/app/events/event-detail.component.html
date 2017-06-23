@@ -248,7 +248,7 @@
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error' : form.venueOpenDate.$invalid && !form.venueOpenDate.$pristine }">
                             <label class="control-label">
                                 Venue Doors Open Date/Time
                             </label>
@@ -256,14 +256,18 @@
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle venue-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.venueOpenDate"
+                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.venueOpenDate" name="venueOpenDate"
                                                date-input="{{$ctrl.dateFormat}}"
+                                               date-lower-than="{{ $ctrl.event.startDate }}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
                                     </div>
                                 </a>
+                                <div ng-messages="form.venueOpenDate.$error" class="error-messages" ng-messages-multiple ng-show="form.venueOpenDate.$invalid">
+                                    <div ng-message="dateLowerThan">Date must be before Start Date</div>
+                                </div>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.venueOpenDate"
                                                     ui-date="{ dateFormat: 'MM/DD/YYYY h:mma' }"
@@ -272,7 +276,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" ng-class="{'has-error' : form.registrationCloseDate.$invalid && !form.registrationCloseDate.$pristine }">
                             <label class="control-label">
                                 Registration Close Date/Time
                             </label>
@@ -280,7 +284,8 @@
                             <div class="dropdown">
                                 <a href="" class="dropdown-toggle registration-toggle-select" role="button" data-toggle="dropdown" data-target="#">
                                     <div class="input-group">
-                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.registrationCloseDate"
+                                        <input type="datetime" class="form-control" ng-model="$ctrl.event.registrationCloseDate" name="registrationCloseDate"
+                                               date-higher-than="{{ $ctrl.event.startDate }}"
                                                date-input="{{$ctrl.dateFormat}}"
                                                datepicker-config="$ctrl.dateOptions" />
                                         <span class="input-group-addon">
@@ -288,6 +293,9 @@
                                         </span>
                                     </div>
                                 </a>
+                                <div ng-messages="form.registrationCloseDate.$error" class="error-messages" ng-messages-multiple ng-show="form.registrationCloseDate.$invalid">
+                                    <div ng-message="dateHigherThan">Date must be after Start Date</div>
+                                </div>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     <datetimepicker data-ng-model="$ctrl.event.registrationCloseDate"
                                                     ui-date="{ dateFormat: 'MM/DD/YYYY h:mm a' }"
