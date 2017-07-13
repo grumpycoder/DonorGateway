@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <AssemblyVersion>2017.6.23.6384</AssemblyVersion>
+    <AssemblyVersion>2017.7.13.6403</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -329,7 +329,9 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="templates\datetimepicker.html" />
     <Content Include="version.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -381,6 +383,7 @@
     <Content Include="Views\Home\Unauthorized.cshtml" />
     <None Include="Properties\PublishProfiles\DonorGateway - Web Deploy.pubxml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
+    <None Include="Properties\PublishProfiles\DonorGatewayStage - Web Deploy.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DonorGateway.Data\DonorGateway.Data.csproj">
