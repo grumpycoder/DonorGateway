@@ -36,6 +36,7 @@
                     $ctrl.people = r.data.results;
                     $ctrl.searchModel = r.data;
                     delete $ctrl.searchModel.results;
+                }).finally(function () {
                     $ctrl.isBusy = false;
                 });
         }
