@@ -1,4 +1,11 @@
-﻿using System;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CsvHelper;
+using DonorGateway.Admin.Helpers;
+using DonorGateway.Admin.ViewModels;
+using DonorGateway.Data;
+using DonorGateway.Domain;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Diagnostics;
@@ -11,13 +18,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Http;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using CsvHelper;
-using DonorGateway.Admin.Helpers;
-using DonorGateway.Admin.ViewModels;
-using DonorGateway.Data;
-using DonorGateway.Domain;
 
 namespace DonorGateway.Admin.Controllers
 {
@@ -50,7 +50,7 @@ namespace DonorGateway.Admin.Controllers
                 if (!string.IsNullOrWhiteSpace(pager.Address)) pred = pred.And(p => p.Address.Contains(pager.Address));
                 if (!string.IsNullOrWhiteSpace(pager.City)) pred = pred.And(p => p.City.Contains(pager.City));
                 if (!string.IsNullOrWhiteSpace(pager.State)) pred = pred.And(p => p.State.Equals(pager.State));
-                if (!string.IsNullOrWhiteSpace(pager.ZipCode)) pred = pred.And(p => p.ZipCode.Contains(pager.ZipCode));
+                if (!string.IsNullOrWhiteSpace(pager.ZipCode)) pred = pred.And(p => p.ZipCode.StartsWith(pager.ZipCode));
                 if (!string.IsNullOrWhiteSpace(pager.SourceCode)) pred = pred.And(p => p.SourceCode.Equals(pager.SourceCode));
                 if (!string.IsNullOrWhiteSpace(pager.FinderNumber)) pred = pred.And(p => p.FinderNumber.Equals(pager.FinderNumber));
                 if (pager.CampaignId != null) pred = pred.And(p => p.CampaignId == pager.CampaignId);
