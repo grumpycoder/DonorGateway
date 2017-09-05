@@ -53,18 +53,38 @@
             ctrl.guest.isAttending = ctrl.guest.ticketCount !== null;
         }
 
+        ctrl.incrementTicket = function () {
+            ctrl.guest.additionalTickets++;
+        }
+
+        ctrl.decrementTicket = function () {
+            ctrl.guest.additionalTickets--;
+        }
+
         ctrl.cancel = function () {
             ctrl.dismiss();
         }
 
         ctrl.save = function () {
-            $http.post('api/event/' + ctrl.guest.eventId + '/register/', ctrl.guest).then(function (r) {
-                angular.extend(ctrl.guest, r.data);
-                ctrl.modalInstance.close(ctrl.guest);
-            }).catch(function (err) {
-                console.log('Oops. Something went wrong', err);
-                log.error('Oops. Something went wrong registering guest', err.data.message);
-            });
+            if (ctrl.guest.responseDate !== null) {
+                $http.post('api/event/' + ctrl.guest.eventId + '/updateregistration/', ctrl.guest).then(function (r) {
+                    angular.extend(ctrl.guest, r.data);
+                    ctrl.modalInstance.close(ctrl.guest);
+                }).catch(function (err) {
+                    console.log('Oops. Something went wrong', err);
+                    log.error('Oops. Something went wrong updating guest registration', err.data.message);
+                });
+            }
+            else {
+                $http.post('api/event/' + ctrl.guest.eventId + '/register/', ctrl.guest).then(function (r) {
+                    angular.extend(ctrl.guest, r.data);
+                    ctrl.modalInstance.close(ctrl.guest);
+                }).catch(function (err) {
+                    console.log('Oops. Something went wrong', err);
+                    log.error('Oops. Something went wrong registering guest', err.data.message);
+                });
+            }
+
         }
     }
 

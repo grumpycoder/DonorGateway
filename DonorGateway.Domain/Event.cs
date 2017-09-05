@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DonorGateway.Domain.Helpers;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
@@ -7,9 +10,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DonorGateway.Domain.Helpers;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 
 
 namespace DonorGateway.Domain
@@ -137,22 +137,8 @@ namespace DonorGateway.Domain
             if (guest.IsAttending == true && guest.IsWaiting == false) message += Template.YesResponseText;
             if (guest.IsAttending == false) message += Template.NoResponseText;
 
-            //if (guest.IsWaiting && guest.IsAttending == true)
-            //{
-            //    message += Template.WaitingResponseText;
-            //}
-            //if (guest.IsAttending == false)
-            //{
-            //    message += Template.NoResponseText;
-            //}
-            //if (guest.IsAttending == true && guest.IsWaiting == false)
-            //{
-            //    message += Template.YesResponseText;
-            //}
-
             message += "<div class=row><div class=\"col-md-12 col-sm-12\"><div><div style=float:left;width:121px><img src=http://donate.splcenter.org/image/morris_dees_photo.png alt=\"\"class=\"img-responsive inline-block\"></div><div style=margin-left:135px><p>Sincerely,<div style=height:93px><img src=http://donate.splcenter.org/image/morris_dees_sig2.png style=margin-top:10px;height:32px></div><span>Morris Dees<br>Founder, Southern Poverty Law Center</span></div></div></div></div><hr><div class=row><div class=\"col-md-12 col-sm-12\"><p class=small><i><a href=\"https://donate.splcenter.org/sslpage.aspx?pid=463&erid=3925852&trid=5cf6eac0-d290-4710-a6ee-7252ba7c10fa&efndnum=10196485410\">Make a contribution</a> to support our work fighting hate, teaching tolerance, and seeking justice.<br></i><p class=small><i>Take advantage of corporate matching gift opportunities. Contact your employer\'s HR department to see if they <a href=https://www.splcenter.org/support-us/employer-matching>will match your contributions to the SPLC.</a></i><p class=small><i>We welcome your feedback.<br>Contact us <a href=https://www.splcenter.org/contact-us>online</a>.<br>400 Washington Ave.<br>Montgomery, AL 36104</i></div></div>";
             message += "</body>";
-
 
             var html = AlternateView.CreateAlternateViewFromString(message, null, "text/html");
 
@@ -172,6 +158,7 @@ namespace DonorGateway.Domain
 
             var apiKey = ConfigurationManager.AppSettings["SENDGRID_APIKEY"];
 
+
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage
             {
@@ -179,7 +166,9 @@ namespace DonorGateway.Domain
                 Subject = subject,
                 HtmlContent = message
             };
+
             msg.AddTo(sendToAddress);
+
             var response = await client.SendEmailAsync(msg);
         }
 

@@ -199,29 +199,35 @@ namespace DonorGateway.Admin.Controllers
             if (guest == null) guest = Mapper.Map<Guest>(model);
 
             var dto = Mapper.Map<Guest>(model);
-            if (guest != dto)
-            {
-                var demo = new DemographicChange()
-                {
-                    LookupId = dto.LookupId,
-                    FinderNumber = dto.FinderNumber,
-                    Name = dto.Name,
-                    Email = dto.Name,
-                    Phone = dto.Name,
-                    Street = dto.Address,
-                    Street2 = dto.Address2,
-                    City = dto.City,
-                    State = dto.State,
-                    Zipcode = dto.Zipcode,
-                    Source = Source.RSVP
-                };
-                _context.DemographicChanges.AddOrUpdate(demo);
-                await _context.SaveChangesAsync();
-            }
-
+            if (guest != dto) await CreateDemographicRecord(dto);
+            
             Mapper.Map(model, guest);
             @event.RegisterGuest(guest);
             await @event.SendEmail(guest);
+
+            _context.Events.AddOrUpdate(@event);
+            _context.Guests.AddOrUpdate(guest);
+            _context.SaveChanges();
+
+            model = Mapper.Map<GuestViewModel>(guest);
+            return Ok(model);
+        }
+        
+        [HttpPost, Route("{id:int}/updateregistration")]
+        public async Task<object> UpdateRegistration(int id, [FromBody]GuestViewModel model)
+        {
+            var @event = await _context.Events.SingleOrDefaultAsync(e => e.Id == id);
+            if (@event == null) return BadRequest("Event not found");
+
+            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
+            if (guest == null) return BadRequest("Guest not found");
+
+            var dto = Mapper.Map<Guest>(model);
+            if (guest != dto) await CreateDemographicRecord(guest);
+
+            Mapper.Map(model, guest);
+
+            @event.AddTickets(guest, model.AdditionalTickets);
 
             _context.Events.AddOrUpdate(@event);
             _context.Guests.AddOrUpdate(guest);
@@ -396,6 +402,42 @@ namespace DonorGateway.Admin.Controllers
             return await _context.Events.Where(
                     e => e.NameUrl == name && e.EndDate >= DateTime.Now).CountAsync() == 0;
 
+        }
+
+        private async Task CreateDemographicRecord(Guest dto)
+        {
+            var demo = _context.DemographicChanges.FirstOrDefault(d => d.FinderNumber == dto.FinderNumber);
+
+            if (demo == null)
+            {
+                demo = new DemographicChange()
+                {
+                    LookupId = dto.LookupId,
+                    FinderNumber = dto.FinderNumber,
+                    Name = dto.Name,
+                    Email = dto.Name,
+                    Phone = dto.Name,
+                    Street = dto.Address,
+                    Street2 = dto.Address2,
+                    City = dto.City,
+                    State = dto.State,
+                    Zipcode = dto.Zipcode,
+                    Source = Source.RSVP
+                };
+            }
+            else
+            {
+                demo.Name = dto.Name;
+                demo.Email = dto.Name;
+                demo.Phone = dto.Name;
+                demo.Street = dto.Address;
+                demo.Street2 = dto.Address2;
+                demo.City = dto.City;
+                demo.State = dto.State;
+                demo.Zipcode = dto.Zipcode;
+            }
+            _context.DemographicChanges.AddOrUpdate(demo);
+            await _context.SaveChangesAsync();
         }
     }
 }
