@@ -81,7 +81,6 @@ namespace DonorGateway.Domain
         {
             guest.ResponseDate = DateTime.Now;
             guest.TicketCount = guest.TicketCount ?? 0;
-            //guest.IsAttending = true;
 
             if (TicketRemainingCount - guest.TicketCount < 0)
             {
@@ -178,12 +177,12 @@ namespace DonorGateway.Domain
 
             foreach (var prop in properties)
             {
-                if (prop.GetValue(this.Template, null) == null) continue;
+                if (prop.GetValue(Template, null) == null) continue;
 
-                var propValue = guest.Parse(prop.GetValue(this.Template, null).ToString());
+                var propValue = guest.Parse(prop.GetValue(Template, null).ToString());
                 if (string.IsNullOrWhiteSpace(propValue)) continue;
 
-                prop.SetValue(this.Template, Convert.ChangeType(propValue, prop.PropertyType), null);
+                prop.SetValue(Template, Convert.ChangeType(propValue, prop.PropertyType), null);
 
             }
 

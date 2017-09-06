@@ -200,7 +200,7 @@ namespace DonorGateway.Admin.Controllers
 
             var dto = Mapper.Map<Guest>(model);
             if (guest != dto) await CreateDemographicRecord(dto);
-            
+
             Mapper.Map(model, guest);
             @event.RegisterGuest(guest);
             await @event.SendEmail(guest);
@@ -212,7 +212,7 @@ namespace DonorGateway.Admin.Controllers
             model = Mapper.Map<GuestViewModel>(guest);
             return Ok(model);
         }
-        
+
         [HttpPost, Route("{id:int}/updateregistration")]
         public async Task<object> UpdateRegistration(int id, [FromBody]GuestViewModel model)
         {
@@ -415,8 +415,8 @@ namespace DonorGateway.Admin.Controllers
                     LookupId = dto.LookupId,
                     FinderNumber = dto.FinderNumber,
                     Name = dto.Name,
-                    Email = dto.Name,
-                    Phone = dto.Name,
+                    Email = dto.Email,
+                    Phone = dto.Phone,
                     Street = dto.Address,
                     Street2 = dto.Address2,
                     City = dto.City,

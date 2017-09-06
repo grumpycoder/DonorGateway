@@ -1,16 +1,16 @@
-﻿using System;
-using System.Data.Entity;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using AutoMapper;
+﻿using AutoMapper;
 using DonorGateway.Data;
 using DonorGateway.Domain;
 using DonorGateway.RSVP.Helpers;
 using DonorGateway.RSVP.Interfaces;
 using DonorGateway.RSVP.Services;
 using DonorGateway.RSVP.ViewModels;
+using System;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 #pragma warning disable 618
 
 namespace DonorGateway.RSVP.Controllers
@@ -30,7 +30,6 @@ namespace DonorGateway.RSVP.Controllers
         [Route("{id}")]
         public ActionResult Index(string id)
         {
-            //var @event = _eventService.GetEvent(id);
             var @event = _context.Events.SingleOrDefault(e => e.NameUrl == id && e.EndDate >= DateTime.Now);
 
             if (@event == null) return View("EventNotFound");
@@ -73,7 +72,6 @@ namespace DonorGateway.RSVP.Controllers
                 return View("Register", dto);
             }
 
-            //var guest = _eventService.GetGuest(dto.GuestId);
             var guest = await _context.Guests.FirstOrDefaultAsync(
                 e => e.FinderNumber == dto.PromoCode && e.EventId == dto.EventId);
 
@@ -86,8 +84,8 @@ namespace DonorGateway.RSVP.Controllers
                     LookupId = dto.LookupId,
                     FinderNumber = dto.PromoCode,
                     Name = dto.Name,
-                    Email = dto.Name,
-                    Phone = dto.Name,
+                    Email = dto.Email,
+                    Phone = dto.Phone,
                     Street = dto.Address,
                     Street2 = dto.Address2,
                     City = dto.City,
