@@ -1,6 +1,6 @@
-using System;
 using DonorGateway.Domain;
 using Heroic.AutoMapper;
+using System;
 
 namespace DonorGateway.Admin.ViewModels
 {
@@ -14,7 +14,7 @@ namespace DonorGateway.Admin.ViewModels
         public string InteractionId { get; set; }
 
         public string MembershipYear { get; set; }
-        public bool LeadershipCouncil { get; set; }
+        public bool? LeadershipCouncil { get; set; }
         public string InsideSalutation { get; set; }
         public string OutsideSalutation { get; set; }
         public string HouseholdSalutation1 { get; set; }
@@ -35,9 +35,9 @@ namespace DonorGateway.Admin.ViewModels
         public string Country { get; set; }
 
         public int? TicketCount { get; set; }
-        public string IsMailed { get; set; }
+        public bool? IsMailed { get; set; }
 
-        public string Attending { get; set; }
+        public bool? IsAttending { get; set; }
 
 
         //ADDED FOR IMPORT/EXPORT FIELDS

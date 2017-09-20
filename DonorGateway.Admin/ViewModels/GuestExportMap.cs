@@ -37,8 +37,8 @@ namespace DonorGateway.Admin.ViewModels
             Map(m => m.Country).Name("Country");
 
             Map(m => m.TicketCount).Name("TicketCount").Default(0);
-            Map(m => m.IsMailed).Name("TicketMailed").Default(false);
-            Map(m => m.Attending).Name("Attending");
+            Map(m => m.IsMailed).Name("TicketMailed").Default(false).TypeConverter<MyBooleanConverter>();
+            Map(m => m.IsAttending).Name("Attending").TypeConverter<MyBooleanConverter>();
 
             Map(m => m.ActualDate).Name("ActualDate");
             Map(m => m.ExpectedDate).Name("ExpectedDate");
