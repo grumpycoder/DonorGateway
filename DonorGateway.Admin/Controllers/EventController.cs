@@ -205,6 +205,8 @@ namespace DonorGateway.Admin.Controllers
             @event.RegisterGuest(guest);
             await @event.SendEmail(guest);
 
+            _context.Entry(@event.Template).State = EntityState.Unchanged;
+
             _context.Events.AddOrUpdate(@event);
             _context.Guests.AddOrUpdate(guest);
             _context.SaveChanges();
