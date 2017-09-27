@@ -145,8 +145,12 @@
             }).result.then(function (result) {
                 result.choices = buildGuestOptions(result);
                 angular.extend(e, result);
-                if (newGuest) ctrl.guests.unshift(e);
-                toastr.info('Registered ' + result.name);
+                if (newGuest) {
+                    ctrl.guests.unshift(e);
+                    toastr.info('Registered ' + result.name);
+                } else {
+                    toastr.info('Updated ' + result.name);
+                }
             }, function (reason) {
             });
         }
