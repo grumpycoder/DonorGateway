@@ -1,7 +1,7 @@
-using DonorGateway.Domain;
-using System;
 using AutoMapper;
+using DonorGateway.Domain;
 using Heroic.AutoMapper;
+using System;
 
 namespace DonorGateway.Admin.ViewModels
 {
@@ -37,7 +37,7 @@ namespace DonorGateway.Admin.ViewModels
         public string Comment { get; set; }
         public string SPLCComment { get; set; }
 
-        public int? TicketCount { get; set; }
+        public int? TicketCount { get; set; } = 0;
         public bool IsMailed { get; set; } = false;
 
         public bool? IsAttending { get; set; } = false;
