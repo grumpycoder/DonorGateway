@@ -16,6 +16,9 @@
 
             getGuestDetails().then(function (r) {
                 ctrl.guest = r;
+                if (ctrl.guest.isAttending === null) {
+                    ctrl.guest.isAttending = false; 
+                }
             }).then(function () {
                 ctrl.title = ctrl.guest.name || 'New Guest'; 
                 for (var i = 1; i < (ctrl.guest.ticketAllowance || 5) + 1; i++) {
@@ -65,7 +68,7 @@
             ctrl.dismiss();
         }
 
-        ctrl.save = function () {
+        ctrl.save = function () { 
             if (ctrl.guest.responseDate !== null) {
                 $http.post('api/event/' + ctrl.guest.eventId + '/updateregistration/', ctrl.guest).then(function (r) {
                     angular.extend(ctrl.guest, r.data);
