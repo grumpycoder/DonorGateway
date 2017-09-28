@@ -202,6 +202,8 @@ namespace DonorGateway.Admin.Controllers
             if (guest != dto) await CreateDemographicRecord(dto);
 
             Mapper.Map(model, guest);
+            if (string.IsNullOrWhiteSpace(guest.InsideSalutation)) guest.InsideSalutation = guest.Name;
+
             @event.RegisterGuest(guest);
             await @event.SendEmail(guest);
 
@@ -228,6 +230,7 @@ namespace DonorGateway.Admin.Controllers
             if (guest != dto) await CreateDemographicRecord(guest);
 
             Mapper.Map(model, guest);
+            guest.ResponseDate = DateTime.Now;
 
             @event.AddTickets(guest, model.AdditionalTickets);
 
