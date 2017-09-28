@@ -16,8 +16,9 @@
 
             getGuestDetails().then(function (r) {
                 ctrl.guest = r;
+                ctrl.guest.isAttending = ctrl.guest.isAttending || false; 
             }).then(function () {
-                ctrl.title = ctrl.guest.name || 'New Guest'; 
+                ctrl.title = ctrl.guest.name || 'New Guest';
                 for (var i = 1; i < (ctrl.guest.ticketAllowance || 5) + 1; i++) {
                     ctrl.ticketCountList.push(i);
                 }
@@ -66,7 +67,6 @@
         }
 
         ctrl.save = function () {
-            console.log('save', ctrl.guest.responseDate);
             if (ctrl.guest.responseDate !== undefined) {
                 $http.post('api/event/' + ctrl.guest.eventId + '/updateregistration/', ctrl.guest).then(function (r) {
                     angular.extend(ctrl.guest, r.data);
