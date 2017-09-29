@@ -144,13 +144,15 @@
                 size: 'md'
             }).result.then(function (result) {
                 result.choices = buildGuestOptions(result);
+                var message = 'Registered '; 
+                if (e.isAttending) message = 'Updated '; 
+
+                message += result.name; 
                 angular.extend(e, result);
-                if (newGuest) {
-                    ctrl.guests.unshift(e);
-                    toastr.info('Registered ' + result.name);
-                } else {
-                    toastr.info('Updated ' + result.name);
-                }
+                if (newGuest) ctrl.guests.unshift(e);
+
+                toastr.info(message);
+
             }, function (reason) {
             });
         }

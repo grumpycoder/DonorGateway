@@ -37,7 +37,7 @@ namespace DonorGateway.Admin.ViewModels
         public string Comment { get; set; }
         public string SPLCComment { get; set; }
 
-        public int? TicketCount { get; set; } = 0;
+        public int? TicketCount { get; set; }
         public bool IsMailed { get; set; } = false;
 
         public bool? IsAttending { get; set; } = false;
@@ -103,6 +103,8 @@ namespace DonorGateway.Admin.ViewModels
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
                 .ForMember(d => d.TicketAllowance, opt => opt.MapFrom(s => s.Event.TicketAllowance))
+                .ForMember(d => d.TicketCount, opt => opt.NullSubstitute(0))
+                .ForMember(d => d.IsAttending, opt => opt.NullSubstitute(false))
                 .ReverseMap();
         }
     }

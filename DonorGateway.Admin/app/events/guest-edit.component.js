@@ -4,6 +4,7 @@
 
     function guestEditController($http, log) {
         var ctrl = this;
+
         ctrl.ticketCountList = [];
 
         ctrl.$onInit = function () {
@@ -13,10 +14,8 @@
                 ctrl.id = ctrl.resolve.guestId;
                 ctrl.eventId = ctrl.resolve.eventId;
             }
-
             getGuestDetails().then(function (r) {
                 ctrl.guest = r;
-                ctrl.guest.isAttending = ctrl.guest.isAttending || false; 
             }).then(function () {
                 ctrl.title = ctrl.guest.name || 'New Guest';
                 for (var i = 1; i < (ctrl.guest.ticketAllowance || 5) + 1; i++) {
@@ -37,7 +36,7 @@
                 return $http.get('api/event/' + ctrl.eventId).then(function (r) {
                     return { eventId: ctrl.eventId, ticketAllowance: r.data.ticketAllowance }
                 }).catch(function (err) {
-                    console.log('Opps. Something went wrong getting event', err);
+                    console.log('Opps. Something went wrong getting event ticket allowance', err);
                 });
             }
         }
