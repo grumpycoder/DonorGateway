@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <AssemblyVersion>2017.9.20.6473</AssemblyVersion>
+    <AssemblyVersion>2017.10.2.6485</AssemblyVersion>
     <Use64BitIISExpress />
     <ShouldCreateLogs>True</ShouldCreateLogs>
     <AdvancedSettingsExpanded>False</AdvancedSettingsExpanded>

@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-4 col-xs-4">
-                    <div class="form-group" ng-hide="$ctrl.guest.responseDate">
+                    <div class="form-group" ng-show="$ctrl.guest.canRegister">
                         <div>
                             <label class="control-label">Tickets Requested</label>
 
@@ -49,7 +49,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" ng-show="$ctrl.guest.responseDate">
+                    <div class="form-group" ng-show="$ctrl.guest.canAddTickets">
                         <label>Additional Tickets</label>
 
                         <div class="input-group number-spinner">

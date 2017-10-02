@@ -198,6 +198,8 @@ namespace DonorGateway.Admin.Controllers
             var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
             if (guest == null) guest = Mapper.Map<Guest>(model);
 
+            //if (model.TicketCount == null) model.TicketCount = 0;
+
             var dto = Mapper.Map<Guest>(model);
             if (guest != dto) await CreateDemographicRecord(dto);
 
@@ -205,7 +207,7 @@ namespace DonorGateway.Admin.Controllers
             if (string.IsNullOrWhiteSpace(guest.InsideSalutation)) guest.InsideSalutation = guest.Name;
 
             @event.RegisterGuest(guest);
-            await @event.SendEmail(guest);
+            //await @event.SendEmail(guest);
 
             _context.Entry(@event.Template).State = EntityState.Unchanged;
 
@@ -233,6 +235,29 @@ namespace DonorGateway.Admin.Controllers
             guest.ResponseDate = DateTime.Now;
 
             @event.AddTickets(guest, model.AdditionalTickets);
+
+            _context.Events.AddOrUpdate(@event);
+            _context.Guests.AddOrUpdate(guest);
+            _context.SaveChanges();
+
+            model = Mapper.Map<GuestViewModel>(guest);
+            return Ok(model);
+        }
+
+        [HttpPost, Route("{id:int}/removewaiting")]
+        public async Task<object> RemoveFromWaiting(int id, [FromBody]GuestViewModel model)
+        {
+            var @event = await _context.Events.SingleOrDefaultAsync(e => e.Id == id);
+            if (@event == null) return BadRequest("Event not found");
+
+            var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
+            if (guest == null) return BadRequest("Guest not found");
+
+            var dto = Mapper.Map<Guest>(model);
+            Mapper.Map(model, guest);
+
+            @event.RemoveFromWaiting(guest);
+            _context.Entry(@event.Template).State = EntityState.Unchanged;
 
             _context.Events.AddOrUpdate(@event);
             _context.Guests.AddOrUpdate(guest);

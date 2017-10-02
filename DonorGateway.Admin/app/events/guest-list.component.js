@@ -2,7 +2,7 @@
 (function () {
     var module = angular.module('app');
 
-    function guestListController($http, $modal, toastr) {
+    function guestListController($http, $modal, log) {
         var ctrl = this;
         var tableStateRef;
         var pageSizeDefault = 10;
@@ -102,14 +102,12 @@
         }
 
         ctrl.reservationOverride = function (e) {
-            $http.post('api/event/' + ctrl.eventId + '/register/', e).then(function (r) {
-                var guest = r.data;
-                guest.choices = buildGuestOptions(guest);
-                angular.extend(e, guest);
-                toastr.success('Registered ' + guest.name);
+            $http.post('api/event/' + ctrl.eventId + '/removewaiting/', e).then(function (r) {
+                angular.extend(e, r.data);
+                buildGuestOptions(e);
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong registering guest', err.data.message);
+                log.error('Oops. Something went wrong updating guest registration', err.data.message);
             });
         }
 
@@ -118,10 +116,10 @@
                 var guest = r.data;
                 guest.choices = buildGuestOptions(guest);
                 angular.extend(e, guest);
-                toastr.success('Canceled registration for ' + guest.name);
+                log.success('Canceled registration for ' + guest.name);
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong cancelling registration', err.data.message);
+                log.error('Oops. Something went wrong cancelling registration', err.data.message);
             });
         }
 
@@ -151,7 +149,7 @@
                 angular.extend(e, result);
                 if (newGuest) ctrl.guests.unshift(e);
 
-                toastr.info(message);
+                log.info(message);
 
             }, function (reason) {
             });
@@ -162,28 +160,28 @@
                 var guest = r.data;
                 guest.choices = buildGuestOptions(guest);
                 angular.extend(e, guest);
-                toastr.success('Mailed ticket for ' + guest.name);
+                log.success('Mailed ticket for ' + guest.name);
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong mailing ticket', err.data.message);
+                log.error('Oops. Something went wrong mailing ticket', err.data.message);
             });
         }
 
         ctrl.sendAllMail = function() {
             $http.post('api/event/' + ctrl.eventId + '/sendalltickets').then(function (r) {
-                toastr.success('Mailed all tickets');
+                log.success('Mailed all tickets');
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong mailing tickets', err.data.message);
+                log.error('Oops. Something went wrong mailing tickets', err.data.message);
             });
         }
 
         ctrl.sendAllWaiting = function () {
             $http.post('api/event/' + ctrl.eventId + '/sendallwaiting').then(function (r) {
-                toastr.success('Mailed all letters');
+                log.success('Mailed all letters');
             }).catch(function (err) {
                 console.log('Oops. Something went wrong', err);
-                toastr.error('Oops. Something went wrong mailing letters', err.data.message);
+                log.error('Oops. Something went wrong mailing letters', err.data.message);
             });
         }
 

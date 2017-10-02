@@ -66,7 +66,7 @@
         }
 
         ctrl.save = function () {
-            if (ctrl.guest.responseDate !== undefined) {
+            if (ctrl.guest.hasRegistered) {
                 $http.post('api/event/' + ctrl.guest.eventId + '/updateregistration/', ctrl.guest).then(function (r) {
                     angular.extend(ctrl.guest, r.data);
                     ctrl.modalInstance.close(ctrl.guest);
