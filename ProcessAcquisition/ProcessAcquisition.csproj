@@ -11,7 +11,7 @@
     <AssemblyName>ProcessAcquisition</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AssemblyVersion>2017.9.20.6473</AssemblyVersion>
+    <AssemblyVersion>2017.10.2.6485</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

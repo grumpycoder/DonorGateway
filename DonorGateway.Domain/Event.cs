@@ -73,7 +73,7 @@ namespace DonorGateway.Domain
             guest.IsMailed = false;
             guest.IsWaiting = false;
             guest.WaitingDate = null;
-            guest.TicketCount = 0;
+            guest.TicketCount = null;
 
         }
 
@@ -110,6 +110,13 @@ namespace DonorGateway.Domain
             guest.TicketCount = guest.TicketCount + additionalTickets;
             if (guest.IsMailed) TicketMailedCount += additionalTickets;
             GuestAttendanceCount += additionalTickets;
+        }
+
+        public void RemoveFromWaiting(Guest guest)
+        {
+            guest.IsWaiting = false;
+            GuestWaitingCount -= guest.TicketCount ?? 0;
+            GuestAttendanceCount += guest.TicketCount ?? 0;
         }
 
         public void MoveToMailQueue(Guest guest)
@@ -233,6 +240,7 @@ namespace DonorGateway.Domain
             return matches.Replace(stringToReplace, fieldValue);
 
         }
+
     }
 
 

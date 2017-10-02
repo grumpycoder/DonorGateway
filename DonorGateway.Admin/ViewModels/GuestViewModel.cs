@@ -56,8 +56,7 @@ namespace DonorGateway.Admin.ViewModels
         {
             get
             {
-                if (IsAttending == null) return true;
-                return (bool)!IsAttending && !IsWaiting;
+                return (bool)!IsAttending;
             }
         }
 
@@ -79,11 +78,11 @@ namespace DonorGateway.Admin.ViewModels
                 return (bool)IsAttending;
             }
         }
+
         public bool CanAddTickets
         {
             get
             {
-                if (IsAttending == null) return false;
                 return (bool)IsAttending;
             }
         }
@@ -92,8 +91,16 @@ namespace DonorGateway.Admin.ViewModels
         {
             get
             {
-                //if (IsAttending == null) return false;
                 return IsWaiting;
+            }
+        }
+
+
+        public bool HasRegistered
+        {
+            get
+            {
+                return ResponseDate != null;
             }
         }
 
@@ -103,7 +110,6 @@ namespace DonorGateway.Admin.ViewModels
                 .ForMember(d => d.Id, opt => opt.MapFrom(s => s.Id))
                 .ForMember(d => d.Name, opt => opt.MapFrom(s => s.Name))
                 .ForMember(d => d.TicketAllowance, opt => opt.MapFrom(s => s.Event.TicketAllowance))
-                .ForMember(d => d.TicketCount, opt => opt.NullSubstitute(0))
                 .ForMember(d => d.IsAttending, opt => opt.NullSubstitute(false))
                 .ReverseMap();
         }
