@@ -198,8 +198,6 @@ namespace DonorGateway.Admin.Controllers
             var guest = await _context.Guests.FirstOrDefaultAsync(e => e.Id == model.Id);
             if (guest == null) guest = Mapper.Map<Guest>(model);
 
-            //if (model.TicketCount == null) model.TicketCount = 0;
-
             var dto = Mapper.Map<Guest>(model);
             if (guest != dto) await CreateDemographicRecord(dto);
 
@@ -207,7 +205,7 @@ namespace DonorGateway.Admin.Controllers
             if (string.IsNullOrWhiteSpace(guest.InsideSalutation)) guest.InsideSalutation = guest.Name;
 
             @event.RegisterGuest(guest);
-            //await @event.SendEmail(guest);
+            await @event.SendEmail(guest);
 
             _context.Entry(@event.Template).State = EntityState.Unchanged;
 
