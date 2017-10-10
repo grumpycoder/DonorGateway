@@ -1,9 +1,10 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using DonorGateway.Admin.Models;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Configuration;
 using System.Web.Mvc;
-using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace DonorGateway.Admin.Controllers
 {
@@ -18,7 +19,7 @@ namespace DonorGateway.Admin.Controllers
             var table = tableClient.GetTableReference("acquisition");
             table.CreateIfNotExists();
 
-            var acquisition = new FileEntity(Guid.NewGuid())
+            var acquisition = new AcquistionFileEntity(Guid.NewGuid())
             {
                 Filename = "TestFile1.csv",
                 Filesize = "19MB",
@@ -40,23 +41,5 @@ namespace DonorGateway.Admin.Controllers
 
             return View(acquisition);
         }
-    }
-
-    public class FileEntity : TableEntity
-    {
-        public FileEntity(Guid fileId)
-        {
-            PartitionKey = "acquisition";
-            RowKey = fileId.ToString();
-        }
-
-        public FileEntity() { }
-
-        public string Filename { get; set; }
-        public string Filesize { get; set; }
-        public Int64 RecordCount { get; set; }
-        public Int64 ProcessedRecordCount { get; set; }
-        public double TotalProcessTime { get; set; }
-        public DateTime? DateProcessed { get; set; }
     }
 }
