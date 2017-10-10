@@ -3,6 +3,9 @@
   "WebJobs": [
     {
       "filePath": "../ProcessAcquisition/ProcessAcquisition.csproj"
+    },
+    {
+      "filePath": "../AcquisitionProcessor/AcquisitionProcessor.csproj"
     }
   ]
 }
