@@ -1,19 +1,22 @@
-﻿using System;
-using System.Data.SqlClient;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Http;
-using CsvHelper;
+﻿using CsvHelper;
 using CsvHelper.Configuration;
 using DonorGateway.Admin.Models;
 using DonorGateway.Admin.ViewModels;
 using DonorGateway.Data;
 using DonorGateway.Domain;
 using EntityFramework.Utilities;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.WindowsAzure.Storage.Table;
+using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web;
+using System.Web.Http;
 
 namespace DonorGateway.Admin.Controllers
 {
@@ -21,63 +24,115 @@ namespace DonorGateway.Admin.Controllers
     public class FileController : ApiController
     {
         private readonly DataContext _context;
+        private static CloudStorageAccount _cloudStorageAccount;
+        private static string _storageConnectionString;
 
         public FileController()
         {
             _context = DataContext.Create();
+            _storageConnectionString = ConfigurationManager.ConnectionStrings["StorageConnectionString"].ConnectionString;
+            _cloudStorageAccount = CloudStorageAccount.Parse(_storageConnectionString);
         }
 
         [HttpPost, Route("mailer/{id:int}")]
         public object Mailer(int id)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Restart();
             try
             {
+                var context = DataContext.Create();
+                var campaign = context.Campaigns.Find(id);
+
+                //Load file into blob storage 
+                // Create the blob client.
+                CloudBlobClient blobClient = _cloudStorageAccount.CreateCloudBlobClient();
+
+                // Retrieve reference to a previously created container.
+                CloudBlobContainer container = blobClient.GetContainerReference("acquisitions");
+                container.CreateIfNotExists();
+
                 var postedFile = HttpContext.Current.Request.Files[0];
                 // Fix for IE file path issue.
                 var filename = postedFile.FileName.Substring(postedFile.FileName.LastIndexOf("\\", StringComparison.Ordinal) + 1);
                 var filePath = HttpContext.Current.Server.MapPath(@"~\app_data\" + filename);
                 postedFile.SaveAs(filePath);
 
-                var configuration = new CsvConfiguration()
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(filename);
+                using (var fileStream = File.OpenRead(filePath))
                 {
-                    IsHeaderCaseSensitive = false,
-                    WillThrowOnMissingField = false,
-                    IgnoreReadingExceptions = true,
-                    ThrowOnBadData = false,
-                    SkipEmptyRecords = true,
-                    TrimHeaders = true
+                    blockBlob.UploadFromStream(fileStream);
+                }
+
+
+                //Load record into table storage 
+                var tableClient = _cloudStorageAccount.CreateCloudTableClient();
+                var table = tableClient.GetTableReference("acquisitions");
+                table.CreateIfNotExists();
+
+                var acquisition = new AcquistionFileEntity(Guid.NewGuid())
+                {
+                    Filename = filename,
+                    CampaignId = id,
+                    Campaign = campaign?.Name ?? "Unknown"
                 };
-                var csv = new CsvReader(new StreamReader(filePath, Encoding.Default, true), configuration);
 
-                csv.Configuration.RegisterClassMap<MailerMap>();
-                var list = csv.GetRecords<Mailer>().ToList();
-                foreach (var mailer in list)
-                {
-                    mailer.CampaignId = id;
-                    mailer.Suppress = false;
-                }
-                using (_context)
-                {
-                    EFBatchOperation.For(_context, _context.Mailers).InsertAll(list);
-                }
+                var insertOperation = TableOperation.Insert(acquisition);
+                table.Execute(insertOperation);
 
-                var message = $"Processed {list.Count} records";
-                stopwatch.Stop();
-                var result = new OperationResult(true, message, stopwatch.Elapsed);
+                //Add to queue for processing
+                var queueClient = _cloudStorageAccount.CreateCloudQueueClient();
+                var queue = queueClient.GetQueueReference("acquisitions");
 
-                csv.Dispose();
+                queue.CreateIfNotExists();
+
+                var queueMessage = new CloudQueueMessage(acquisition.RowKey);
+
+                queue.AddMessage(queueMessage);
+
+                //Delete server upload file
                 File.Delete(filePath);
+
+                var result = new OperationResult(true, $"Queued file for processing for {campaign?.Name}");
                 return Ok(result);
 
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                var message = $"Error occurred processing records. {ex.Message}";
-                return BadRequest(message);
+                return BadRequest(e.Message);
             }
 
+        }
+
+        private static void CreateFileBlob(string filePath)
+        {
+            // Create the blob client.
+            var blobClient = _cloudStorageAccount.CreateCloudBlobClient();
+
+            // Retrieve reference to a previously created container.
+            var containerName = ConfigurationManager.AppSettings["Container"];
+            var container = blobClient.GetContainerReference(containerName);
+            container.CreateIfNotExists();
+
+            //// Fix for IE file path issue.
+            var filename = filePath.Substring(filePath.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+
+            var blockBlob = container.GetBlockBlobReference(filename);
+            using (var fileStream = File.OpenRead(filePath))
+            {
+                blockBlob.UploadFromStream(fileStream);
+            }
+        }
+
+        private static void CreateTableRecord(AcquistionFileEntity acquisition)
+        {
+            var tableClient = _cloudStorageAccount.CreateCloudTableClient();
+
+            var table = tableClient.GetTableReference("acquistions");
+
+            table.CreateIfNotExists();
+
+            var insertOperation = TableOperation.Insert(acquisition);
+
+            table.Execute(insertOperation);
         }
 
 
@@ -192,4 +247,6 @@ namespace DonorGateway.Admin.Controllers
 
 
     }
+
+
 }

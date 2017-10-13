@@ -49,8 +49,8 @@
                 transformRequest: angular.identity,
                 headers: { 'Content-Type': undefined }
             }).then(function (r) {
-                $ctrl.result.success = true;
-                $ctrl.result.message = r.data.message[0];
+                $ctrl.result.success = r.data.success;
+                $ctrl.result.message = r.data.messages[0];
             }).catch(function (error) {
                 $ctrl.result.message = error.data.message;
             }).finally(function () {

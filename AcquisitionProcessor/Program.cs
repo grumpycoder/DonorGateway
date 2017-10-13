@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 
-namespace ProcessAcquisition
+namespace AcquisitionProcessor
 {
     // To learn more about Microsoft Azure WebJobs SDK, please see https://go.microsoft.com/fwlink/?LinkID=320976
     class Program
@@ -16,10 +16,10 @@ namespace ProcessAcquisition
         {
             var config = new JobHostConfiguration();
 
-            if (config.IsDevelopment)
-            {
-                config.UseDevelopmentSettings();
-            }
+            //if (config.IsDevelopment)
+            //{
+            //    config.UseDevelopmentSettings();
+            //}
 
             var host = new JobHost(config);
             // The following code ensures that the WebJob will be running continuously
