@@ -39,7 +39,6 @@ namespace DonorGateway.Admin.Controllers
         {
             try
             {
-
                 var context = DataContext.Create();
                 var campaign = context.Campaigns.Find(id);
 
@@ -92,7 +91,8 @@ namespace DonorGateway.Admin.Controllers
                 //Delete server upload file
                 File.Delete(filePath);
 
-                return Ok($"Queued file for processing for {campaign?.Name}");
+                var result = new OperationResult(true, $"Queued file for processing for {campaign?.Name}");
+                return Ok(result);
 
             }
             catch (Exception e)

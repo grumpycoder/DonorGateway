@@ -1,7 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 using System;
 
-namespace DonorGateway.Admin.Models
+namespace AcquisitionProcessor.Models
 {
     public class AcquistionFileEntity : TableEntity
     {

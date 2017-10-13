@@ -16,10 +16,10 @@ namespace AcquisitionProcessor
         {
             var config = new JobHostConfiguration();
 
-            if (config.IsDevelopment)
-            {
-                config.UseDevelopmentSettings();
-            }
+            //if (config.IsDevelopment)
+            //{
+            //    config.UseDevelopmentSettings();
+            //}
 
             var host = new JobHost(config);
             // The following code ensures that the WebJob will be running continuously
