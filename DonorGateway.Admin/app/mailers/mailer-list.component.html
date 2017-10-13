@@ -28,7 +28,7 @@
                 <div class="box-body" st-table="$ctrl.mailers" st-pipe="$ctrl.search">
 
                     <div class="row">
-                        <div class="col-md-9 col-sm-9">
+                        <div class="col-md-6 col-sm-6">
                             <div class="form-group">
                                 <span>
                                     <button class="btn btn-primary" st-submit-search>
@@ -46,14 +46,19 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3 col-sm-3">
+                        <div class="col-md-6 col-sm-6">
 
                             <div class="pull-right">
                                 <div class="form-group">
-                                    <button class="btn" ng-click="$ctrl.showUpload()"><i class="fa fa-cloud-upload"></i> Upload</button>
+                                    <button class="btn" ng-click="$ctrl.showHistory()">
+                                        <i class="fa fa-history"></i> 
+                                    </button>
+
+                                    <button class="btn" ng-click="$ctrl.showUpload()">
+                                        <i class="fa fa-cloud-upload"></i> Upload
+                                    </button>
                                     <button class="btn btn-info" ng-click="$ctrl.download()">
-                                        <i class="fa fa-download"></i>
-                                        Export
+                                        <i class="fa fa-download"></i> Export
                                     </button>
                                 </div>
                             </div>

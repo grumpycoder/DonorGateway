@@ -25,7 +25,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <AssemblyVersion>2017.10.2.6485</AssemblyVersion>
+    <AssemblyVersion>2017.10.13.6495</AssemblyVersion>
     <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -248,13 +248,13 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AcquistionsController.cs" />
     <Compile Include="Controllers\ConstituentController.cs" />
     <Compile Include="Controllers\DemographicController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MailerController.cs" />
-    <Compile Include="Controllers\StorageController.cs" />
     <Compile Include="Controllers\TaxController.cs" />
     <Compile Include="Controllers\TemplateController.cs" />
     <Compile Include="Filters\AuthorizeExAtrribute.cs" />
@@ -267,6 +267,7 @@
     <Compile Include="Helpers\OrderExt.cs" />
     <Compile Include="Helpers\PredicateBuilder.cs" />
     <Compile Include="Helpers\NumberExtensions.cs" />
+    <Compile Include="Models\AcquistionFileEntity.cs" />
     <Compile Include="Models\OperationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -328,6 +329,8 @@
     <Content Include="app\mailers\mailer-suppress.component.html" />
     <Content Include="app\mailers\mailer-upload.component.html" />
     <Content Include="app\mailers\mailer-upload.component.js" />
+    <Content Include="app\mailers\upload-history.component.html" />
+    <Content Include="app\mailers\upload-history.component.js" />
     <Content Include="App_Data\readme.txt" />
     <Content Include="css\site.min.css" />
     <Content Include="css\vendor.min.css" />

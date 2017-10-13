@@ -89,7 +89,30 @@
                 },
                 size: 'md'
             }).result.then(function (result) {
-                toastr.info('Uploaded ' + result.title);
+                if (result.success) {
+                    toastr.info('Uploaded ' + result.message);
+                } else {
+                    toastr.error('Failed: ' + result.message);
+                }
+                
+            }, function (reason) {
+            });
+        }
+
+        $ctrl.showHistory = function () {
+            $modal.open({
+                component: 'uploadHistory',
+                bindings: {
+                    modalInstance: "<"
+                },
+                size: 'lg'
+            }).result.then(function (result) {
+                if (result.success) {
+                    toastr.info('Uploaded ' + result.message);
+                } else {
+                    toastr.error('Failed: ' + result.message);
+                }
+
             }, function (reason) {
             });
         }
